@@ -282,7 +282,7 @@ var tc_icon = L.icon({
 	"shadowUrl": "tc/markerShadow.png",
 	"iconSize": [20, 34],
 	"iconAnchor": [10, 34],
-	"infoWindowAnchor": [10, 15],
+	"popupAnchor": [0, -30],
 	"shadowSize": [37, 34]
 });
 var fn_mousemove = function (e) {
@@ -445,7 +445,7 @@ $(document).observe("dom:loaded", function () {
 		var n = layers.length;
 
 		for (var i = 0; i < n; ++i) {
-			var data = layers[i]; //Object.clone(layers[i]);
+			var data = layers[i];
 			var name = data["_name"];
 			var url = data["_url"];
 			var layer;
