@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+ <meta name="copyright" content="see mirkarte.js" />
+ <title>Leaflet test page</title>
+ <link rel="stylesheet" type="text/css" href="/javascript/leaflet/leaflet.css" />
+ <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  #map {
+	height:100%;
+	width:100%;
+	position:relative;
+  }
+  #map_coors {
+	position:fixed;
+	right:0; bottom:16px;
+	padding:6px;
+	font:11px monospace, sans-serif;
+	text-align:right;
+  }
+  #map_coors span {
+	background:rgba(255, 255, 255, 0.33);
+  }
+  #map_wrapper {
+	position:absolute;
+	top:0; left:0;
+	bottom:0; right:0;
+  }
+  .myzoomcontrol-text {
+	font:bold 14px 'Lucida Console', Monaco, monospace;
+	text-align:center;
+	vertical-align:center;
+  }
+ /*]]>*/--></style>
+ <script type="text/javascript" src="/javascript/leaflet/leaflet-src.js"></script>
+ <script type="text/javascript" src="/javascript/prototype/prototype.js"></script>
+ <script type="text/javascript" src="mirkarte.js"></script>
+</head><body>
+<div id="map_wrapper">
+ <div id="map"></div>
+ <div id="map_coors">
+  <span id="map_coors_ns"></span><br />
+  <span id="map_coors_we"></span>
+ </div>
+</div>
+</body></html>

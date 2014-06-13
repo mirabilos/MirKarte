@@ -1,0 +1,527 @@
+/*-
+ * Copyright © 2014
+ *	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
+ *
+ * Provided that these terms and disclaimer and all copyright notices
+ * are retained or reproduced in an accompanying document, permission
+ * is granted to deal in this work without restriction, including un‐
+ * limited rights to use, publicly perform, distribute, sell, modify,
+ * merge, give away, or sublicence.
+ *
+ * This work is provided “AS IS” and WITHOUT WARRANTY of any kind, to
+ * the utmost extent permitted by applicable law, neither express nor
+ * implied; without malicious intent or gross negligence. In no event
+ * may a licensor, author or contributor be held liable for indirect,
+ * direct, other damage, loss, or other issues arising in any way out
+ * of dealing in the work, even if advised of the possibility of such
+ * damage or existence of a defect, except proven that it results out
+ * of said person’s immediate fault when using the work as intended.
+ */
+
+var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
+var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
+var map_initialised = false, myzoomcontrol_text;
+var map, marker = false, params, params_saved = '';
+
+function zeropad(n, len) {
+	n = '' + n;
+	while (n.length < len)
+		n = '0' + n;
+	return (n);
+}
+
+function llformat(lat, lon) {
+	var ns, we, sns, swe, t;
+
+	ns = lat;
+	we = lon;
+	if (ns < 0) {
+		ns = -ns;
+		sns = "S ";
+	} else
+		sns = "N ";
+	if (we < 0) {
+		we = -we;
+		swe = "W ";
+	} else
+		swe = "E ";
+	t = ns | 0;
+	ns = (ns - t) * 60;
+	sns = sns + zeropad(t, 2) + "° " + zeropad(ns.toFixed(3), 6);
+	t = we | 0;
+	we = (we - t) * 60;
+	swe = swe + zeropad(t, 3) + "° " + zeropad(we.toFixed(3), 6);
+
+	return ([sns, swe]);
+}
+
+function marker_popup(marker, text) {
+	marker.bindPopup(text);
+	marker.on('popupopen', function () {
+		var xtext, f, pos = marker.getLatLng();
+
+		f = llformat(pos.lat, pos.lng);
+		xtext = text.replace("°N", f[0], "g").replace("°E", f[1], "g");
+		marker.setPopupContent(xtext);
+	    });
+}
+
+if (typeof(window.onhashchange) !== "undefined" &&
+    (document.documentMode === undefined || document.documentMode > 7)) {
+	(function () {
+		var prevhash = "" + location.href.split("#")[1];
+		this.checkHash = function () {
+			var newhash = "" + location.href.split("#")[1];
+			if (prevhash !== newhash) {
+				prevhash = newhash;
+				/*
+				 * Event.fire(document, "hashchange");
+				 * doesn't work here
+				 */
+				fn_hashchange(this);
+			}
+		    }.bind(this);
+		window.onhashchange = this.checkHash;
+	    })();
+}
+var marker_icon = L.icon({
+	"iconUrl": "leaflet/marker-icon.png",
+	"iconRetinaUrl": "leaflet/marker-icon-2x.png",
+	"shadowUrl": "leaflet/marker-shadow.png",
+
+	/* copied from L.Icon.Default */
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+
+	shadowSize: [41, 41]
+});
+var tc_icon = L.icon({
+	"iconUrl": "tc/markerTC.png",
+	"shadowUrl": "tc/markerShadow.png",
+	"iconSize": [20, 34],
+	"iconAnchor": [10, 34],
+	"infoWindowAnchor": [10, 15],
+	"shadowSize": [37, 34]
+});
+var fn_mousemove = function (e) {
+	var f = llformat(e.latlng.lat, e.latlng.lng);
+
+	$("map_coors_ns").update(f[0]);
+	$("map_coors_we").update(f[1]);
+};
+var ign_hashchange = false;
+var update_hash = function () {
+	ign_hashchange = true;
+	window.location.hash =
+	    $H(params).toQueryString().replace("%2C", ",", "gi");
+};
+var fn_hashchange = function (event) {
+	var newhash = "" + location.href.split("#")[1];
+	if (newhash !== params_saved) {
+		params_saved = newhash;
+		params = {};
+		$H(newhash.parseQuery()).each(function (pair) {
+			switch (pair.key) {
+			case 'center_lat':
+			case 'center_lon':
+			case 'll':
+			case 'zoom':
+			case 'mlat':
+			case 'mlon':
+			case 'm':
+				params[pair.key] = pair.value;
+				break;
+			}
+		    });
+	}
+	if (ign_hashchange) {
+		ign_hashchange = false;
+		return;
+	}
+	if (map_initialised) {
+		var clat = NaN, clon = NaN;
+		if (isTwoNum.test(params["ll"])) {
+			clat = parseFloat(params["ll"].split(",")[0]);
+			clon = parseFloat(params["ll"].split(",")[1]);
+			if (isNaN(clat) || isNaN(clon) ||
+			    clat < -85 || clat > 85 ||
+			    clon < -180 || clon > 180) {
+				clat = NaN;
+				clon = NaN;
+			}
+		}
+		if ((isNaN(clat) || isNaN(clon)) &&
+		    isNum.test(params["center_lat"]) &&
+		    isNum.test(params["center_lon"])) {
+			clat = parseFloat(params["center_lat"]);
+			clon = parseFloat(params["center_lon"]);
+		}
+		/* defer until we know marker pos */
+
+		var czoom;
+		if (/^\d+$/.test(params["zoom"]) &&
+		    !isNaN((czoom = parseFloat(params["zoom"]))) &&
+		    czoom >= 0 && czoom < 32) {
+			/* convert to int */
+			czoom = czoom | 0;
+		} else {
+			/* default value */
+			czoom = 14;
+		}
+		params["zoom"] = czoom;
+
+		var wantMarker = false, mlat, mlon;
+		if (isTwoNum.test(params["m"])) {
+			wantMarker = true;
+			mlat = parseFloat(params["m"].split(",")[0]);
+			mlon = parseFloat(params["m"].split(",")[1]);
+			if (isNaN(mlat) || isNaN(mlon) ||
+			    mlat < -85 || mlat > 85 ||
+			    mlon < -180 || mlon > 180)
+				wantMarker = false;
+		}
+		if (!wantMarker &&
+		    isNum.test(params["mlat"]) &&
+		    isNum.test(params["mlon"])) {
+			wantMarker = true;
+			mlat = parseFloat(params["mlat"]);
+			mlon = parseFloat(params["mlon"]);
+			if (isNaN(mlat) || isNaN(mlon) ||
+			    mlat < -85 || mlat > 85 ||
+			    mlon < -180 || mlon > 180)
+				wantMarker = false;
+		}
+		if (!wantMarker && /1/.test(params["m"])) {
+			wantMarker = true;
+			mlat = clat;
+			mlon = clon;
+			if (isNaN(mlat) || isNaN(mlon) ||
+			    mlat < -85 || mlat > 85 ||
+			    mlon < -180 || mlon > 180)
+				wantMarker = false;
+		}
+		delete params["mlat"];
+		delete params["mlon"];
+		if (!wantMarker) {
+			delete params["m"];
+			if (marker !== false) {
+				map.removeControl(marker);
+				marker = false;
+			}
+		} else {
+			params["m"] = mlat + "," + mlon;
+			if (marker === false) {
+				marker = L.marker([mlat, mlon], {
+					"icon": marker_icon,
+					"draggable": true
+				    }).addTo(map).on('dragend', function(e) {
+					var newloc = marker.getLatLng();
+
+					params["m"] = newloc.lat + "," + newloc.lng;
+					update_hash();
+				    });
+				marker_popup(marker, "Marker<br />°N<br />°E");
+			} else
+				marker.setLatLng([mlat, mlon]);
+		}
+
+		if (isNaN(clat) || isNaN(clon) ||
+		    clat < -85 || clat > 85 ||
+		    clon < -180 || clon > 180) {
+			/* default value */
+			clat = 50.7;
+			clon = 7.11;
+			/* jump to marker position */
+			if (wantMarker) {
+				clat = mlat;
+				clon = mlon;
+			}
+		}
+		delete params["center_lat"];
+		delete params["center_lon"]
+		params["ll"] = clat + "," + clon;
+
+		map.setView([clat, clon], czoom);
+		update_hash();
+	}
+};
+$(document).observe("hashchange", fn_hashchange);
+$(document).observe("dom:loaded", function () {
+	map_initialised = false;
+	fn_hashchange(false);
+	map = L.map("map", {
+/*		"worldCopyJump": true,*/
+		"maxBounds": [[-85, -180], [85, 180]],
+		"zoomControl": false
+	    });
+	var myzoomclass = L.Control.Zoom.extend({
+		onAdd: function (map) {
+			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
+
+			myzoomcontrol_text = L.DomUtil.create("a",
+			    "myzoomcontrol-text", false);
+			myzoomcontrol_text.innerHTML = "-";
+			container.insertBefore(myzoomcontrol_text,
+			    this._zoomOutButton);
+
+			return (container);
+		}
+	    });
+	var myzoomcontrol = new myzoomclass();
+	map.addControl(myzoomcontrol);
+	var attributions = {
+		"OSM": '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"OCM": '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"MapQuestOpen": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"MapQuestAerial": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
+		"MapBox": 'Imagery from <a href="http://mapbox.com/about/maps/">MapBox</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"Stamen": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"Esri": "Tiles &copy; Esri",
+		"EsriDeLorme": "Tiles &copy; Esri &mdash; Copyright: ©2012 DeLorme",
+		"EsriWorldTopoMap": "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community",
+		"EsriWorldImagery": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+		"EsriOceanBasemap": "Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri",
+		"EsriNatGeoWorldMap": "Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
+		"Google": 'Map data &copy; <a href="http://googlemaps.com">Google</a>',
+		"Geocommons": 'Tiles by Geocommons &copy; <a href="http://geocommons.com/overlays/acetate">Esri & Stamen</a>. &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		"TC": "&copy; 2004-2014, Terra Interactive, LLC &mdash; http://www.terracaching.com/"
+	    };
+	var baseMaps = function (map, layers) {
+		var baseMaps = {};
+		var n = layers.length;
+
+		for (var i = 0; i < n; ++i) {
+			var data = layers[i]; //Object.clone(layers[i]);
+			var name = data["_name"];
+			var url = data["_url"];
+			var layer;
+
+			delete data["_name"];
+			delete data["_url"];
+			if (data["_wms"]) {
+				delete data["_wms"];
+				layer = L.tileLayer.wms(url, data);
+			} else
+				layer = L.tileLayer(url, data);
+			if (i == 0)
+				layer.addTo(map);
+			baseMaps[name] = layer;
+		}
+		L.control.layers(baseMaps).addTo(map);
+
+		return (baseMaps);
+	    } (map, [
+		{
+			"_name": "OpenStreetMap (0..18)",
+			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_name": "OSM Black&White (0..18)",
+			"_url": "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_name": "OSM Germany (0..18)",
+			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_name": "MapQuestOpen OSM (0..18)",
+			"_url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+			"subdomains": "1234",
+			"attribution": attributions["MapQuestOpen"]
+		},
+		{
+			"_name": "MapQuestOpen Aerial (0..18)",
+			"_url": "http://oatile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg",
+			"subdomains": "1234",
+			"attribution": attributions["MapQuestAerial"]
+		},
+		{
+			"_name": "Thunderforest OpenCycleMap (0..18)",
+			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "Thunderforest Transport (0..18)",
+			"_url": "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "Thunderforest Landscape (0..18)",
+			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "MapBox Warden (0..18)",
+			"_url": "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-warden/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"attribution": attributions["MapBox"]
+		},
+		{
+			"_name": "Stamen Toner (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+/* otherwise it gets too much
+		{
+			"_name": "Stamen TonerBackground (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerHybrid (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner-hybrid/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerLines (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerLabels (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+too much */
+		{
+			"_name": "Stamen TonerLite (0..20)",
+			"_url": "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen Terrain (4..18)",
+			"_url": "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 4,
+			"maxZoom": 18,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen Watercolor (3..16)",
+			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 3,
+			"maxZoom": 16,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Esri WorldStreetMap (0..18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["Esri"]
+		},
+		{
+			"_name": "Esri DeLorme (0..11)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/{z}/{y}/{x}",
+			"maxZoom": 11,
+			"attribution": attributions["EsriDeLorme"]
+		},
+		{
+			"_name": "Esri WorldTopoMap (0..18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriWorldTopoMap"]
+		},
+		{
+			"_name": "Esri WorldImagery (0..18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriWorldImagery"]
+		},
+		{
+			"_name": "Esri OceanBasemap (0..11)",
+			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}",
+			"maxZoom": 11,
+			"attribution": attributions["EsriOceanBasemap"]
+		},
+		{
+			"_name": "Esri NatGeoWorldMap (0..18)",
+			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriNatGeoWorldMap"]
+		},
+/* 403
+		{
+			"_name": "CloudMade (0..18)",
+			"_url": "http://{s}.tile.cloudmade.com/31913eba82dc43a998d52a5804668c11/997/256/{z}/{x}/{y}.png",
+			"subdomains": "ab",
+			"tileSize": 256,
+			"attribution": "CloudMade"
+		},
+*/
+		{
+			"_name": "de Topo (WMS)",
+			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
+			"_wms": true,
+			"attribution": "Bundesamt für Kartographie und Geodäsie",
+			"format": "image/jpeg",
+			"layers": "webatlasde"
+		},
+		{
+			"_name": "Google Maps (0..18)",
+			"_url": "http://mt{s}.googleapis.com/vt?x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Google Satellite (0..18)",
+			"_url": "http://khm{s}.googleapis.com/kh?v=142&x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Geocommons Acetate (2..18)",
+			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
+			"subdomains": "0123456",
+			"attribution": attributions["Geocommons"]
+		},
+		{
+			"_name": "OpenCycleMap (0..18)",
+			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		}
+	    ]);
+	L.control.scale().addTo(map);
+	map_initialised = true;
+	map.on('moveend', function () {
+		var newloc = map.getCenter();
+
+		params["ll"] = newloc.lat + "," + newloc.lng;
+		update_hash();
+	    });
+	map.on('zoomend', function () {
+		myzoomcontrol_text.innerHTML = map.getZoom();
+		params["zoom"] = map.getZoom();
+		update_hash();
+	    });
+	map.on('contextmenu', function (e) {
+		var f = llformat(e.latlng.lat, e.latlng.lng);
+
+		L.popup().setLatLng(e.latlng).setContent("d: " +
+		    e.latlng.lat + "," + e.latlng.lng + "<br />dm: " +
+		    f[0] + " " + f[1]).openOn(map);
+	    });
+	map.on('mousemove', fn_mousemove);
+	map.on('dragstart', function () { map.off('mousemove', fn_mousemove); });
+	map.on('dragend', function () { map.on('mousemove', fn_mousemove); });
+	fn_hashchange(false);
+	$("map").focus();
+});
