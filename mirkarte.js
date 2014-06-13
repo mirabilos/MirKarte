@@ -79,6 +79,7 @@ function nuke_marker() {
 var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
+	var current_filename = "";
 
 	if (window.File && window.FileList && window.FileReader && window.Blob) {
 		hasfile = true;
@@ -90,25 +91,27 @@ var show_menu_marker = (function () {
 	}
 
 	var handleGpxFileLoaded = function (e) {
-		$("gpxupload").update("GPX loaded.");
+		$("gpxupload").update("GPX " + current_filename + " loaded.");
 		if (!/<gpx/.test(e.target.result))
-			$("gpxupload").update("Not a valid GPX file.");
+			$("gpxupload").update(current_filename +
+			    " is not a valid GPX file.");
 		var dom = (new DOMParser()).parseFromString(e.target.result,
 		    "text/xml");
 		var gjsn = toGeoJSON.gpx(dom);
-		alert(JSON.stringify(gjsn));
+		alert(current_filename + " => " + JSON.stringify(gjsn));
 	};
 
 	var handleZipExtraction = function (entry) {
-		$("gpxupload").update("Extracting");
+		current_filename = entry.filename;
+		$("gpxupload").update("Extracting " + current_filename);
 		entry.getData(new zip.BlobWriter(), function (asblob) {
-			$("gpxupload").update("Extracted");
+			$("gpxupload").update("Extracted " + current_filename);
 			var reader = new FileReader();
 			reader.onload = handleGpxFileLoaded;
 			reader.readAsText(asblob);
 		    }, function (current, total) {
-			$("gpxupload").update("Extracting... " +
-			    current + "/" + total);
+			$("gpxupload").update("Extracting " +
+			    current_filename + "… " + current + "/" + total);
 		    }, true);
 	};
 
@@ -125,18 +128,23 @@ var show_menu_marker = (function () {
 			ents.appendChild(new Element("li").update(a));
 		    });
 		if (ents.empty())
-			ents = "Empty ZIP file.";
-		$("gpxupload").update(ents);
+			$("gpxupload").update("Empty ZIP file: " +
+			    current_filename);
+		else
+			$("gpxupload").update("Directory of " +
+			    current_filename + ":").appendChild(ents);
 	};
 
 	var handleFileSelect = function (e, filetype, cb) {
 		var reader, f = e.target.files[0];
 
 		if (!f) {
+			current_filename = "";
 			$("gpxupload").update("No file found.");
 			return;
 		}
-		$("gpxupload").update("Loading…");
+		current_filename = f.name;
+		$("gpxupload").update("Loading " + current_filename + "…");
 		if (filetype == "zip") {
 			zip.createReader(new zip.BlobReader(f),
 			    function (zipReader) {
