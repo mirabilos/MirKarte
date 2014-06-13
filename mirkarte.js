@@ -93,7 +93,10 @@ var show_menu_marker = (function () {
 		$("gpxupload").update("GPX loaded.");
 		if (!/<gpx/.test(e.target.result))
 			$("gpxupload").update("Not a valid GPX file.");
-		alert(e.target.result);
+		var dom = (new DOMParser()).parseFromString(e.target.result,
+		    "text/xml");
+		var gjsn = toGeoJSON.gpx(dom);
+		alert(JSON.stringify(gjsn));
 	};
 
 	var handleZipExtraction = function (entry) {
