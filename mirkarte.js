@@ -80,10 +80,85 @@ var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
 
-	if (window.File && window.FileReader && window.Blob) {
+	if (window.File && window.FileList && window.FileReader && window.Blob) {
 		hasfile = true;
-		filestr = "…";
+		filestr = '<fieldset><legend>GPX upload</legend>' +
+		    '<div id="gpxupload"><table>' +
+		    '<tr><th>*.gpx:</th><td><input type="file" id="files" name="files[]" /></td></tr>' +
+		    '<tr><th>*.zip:</th><td><input type="file" id="filez" name="filez[]" /></td></tr>' +
+		    '</table></div></fieldset>';
 	}
+
+	var handleGpxFileLoaded = function (e) {
+		$("gpxupload").update("GPX loaded.");
+		if (!/<gpx/.test(e.target.result))
+			$("gpxupload").update("Not a valid GPX file.");
+		alert(e.target.result);
+	};
+
+	var handleZipExtraction = function (entry) {
+		$("gpxupload").update("Extracting");
+		entry.getData(new zip.BlobWriter(), function (asblob) {
+			$("gpxupload").update("Extracted");
+			var reader = new FileReader();
+			reader.onload = handleGpxFileLoaded;
+			reader.readAsText(asblob);
+		    }, function (current, total) {
+			$("gpxupload").update("Extracting... " +
+			    current + "/" + total);
+		    }, true);
+	};
+
+	var handleZipFileLoaded = function (entries) {
+		var ents = new Element("ul");
+		entries.forEach(function(entry) {
+			var a = new Element("a",
+			    {"href": "#"}).update(entry.filename);
+			a.addEventListener("click", function(event) {
+				handleZipExtraction(entry);
+				event.preventDefault();
+				return (false);
+			    }, false);
+			ents.appendChild(new Element("li").update(a));
+		    });
+		if (ents.empty())
+			ents = "Empty ZIP file.";
+		$("gpxupload").update(ents);
+	};
+
+	var handleFileSelect = function (e, filetype, cb) {
+		var reader, f = e.target.files[0];
+
+		if (!f) {
+			$("gpxupload").update("No file found.");
+			return;
+		}
+		$("gpxupload").update("Loading…");
+		if (filetype == 'zip') {
+			zip.createReader(new zip.BlobReader(f),
+			    function (zipReader) {
+				zipReader.getEntries(cb);
+			    }, function (message) {
+				$("gpxupload").update("ZIP error: " +
+				    ("" + message).escapeHTML());
+			    });
+		} else {
+			reader = new FileReader();
+			reader.onload = cb;
+			if (filetype == 'text')
+				reader.readAsText(f);
+			else
+				reader.readAsBinaryString(f);
+		}
+	};
+
+	var handleGpxFileSelect = function (e) {
+		handleFileSelect(e, 'text', handleGpxFileLoaded);
+	};
+
+	var handleZipFileSelect = function (e) {
+		handleFileSelect(e, 'zip', handleZipFileLoaded);
+	};
 
 	var res = function () {
 		var s, pos = map.getCenter(), f = llformat(pos.lat, pos.lng);
@@ -91,6 +166,12 @@ var show_menu_marker = (function () {
 		s = "Current centre: " + f[0] + " " + f[1] + "<hr />" +
 		    filestr;
 		L.popup().setLatLng(pos).setContent(s).openOn(map);
+		if (hasfile) {
+			document.getElementById("files").addEventListener("change",
+			    handleGpxFileSelect, false);
+			document.getElementById("filez").addEventListener("change",
+			    handleZipFileSelect, false);
+		}
 	};
 
 	return (res);
