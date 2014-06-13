@@ -66,6 +66,16 @@ function marker_popup(marker, text) {
 	    });
 }
 
+function nuke_marker() {
+	if (marker !== false) {
+		marker.closePopup();
+		map.removeLayer(marker);
+		marker = false;
+	}
+	delete params["m"];
+	update_hash();
+}
+
 if (typeof(window.onhashchange) !== "undefined" &&
     (document.documentMode === undefined || document.documentMode > 7)) {
 	(function () {
@@ -206,7 +216,7 @@ var fn_hashchange = function (event) {
 		if (!wantMarker) {
 			delete params["m"];
 			if (marker !== false) {
-				map.removeControl(marker);
+				map.removeLayer(marker);
 				marker = false;
 			}
 		} else {
@@ -221,7 +231,8 @@ var fn_hashchange = function (event) {
 					params["m"] = newloc.lat + "," + newloc.lng;
 					update_hash();
 				    });
-				marker_popup(marker, "Marker<br />°N<br />°E");
+				marker_popup(marker,
+				    'Marker | <a href="javascript:nuke_marker();">Hide</a><br />°N<br />°E');
 			} else
 				marker.setLatLng([mlat, mlon]);
 		}
