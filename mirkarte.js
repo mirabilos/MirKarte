@@ -21,7 +21,7 @@
 var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
-var map, marker = false, params, params_saved = "";
+var map, maplayers, marker = false, params, params_saved = "";
 
 function zeropad(n, len) {
 	n = "" + n;
@@ -405,7 +405,7 @@ $(document).observe("dom:loaded", function () {
 		"Geocommons": 'Tiles by Geocommons &copy; <a href="http://geocommons.com/overlays/acetate">Esri & Stamen</a>. &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		"TC": "&copy; 2004-2014, Terra Interactive, LLC &mdash; http://www.terracaching.com/"
 	    };
-	var baseMaps = function (map, layers) {
+	maplayers = function (map, layers) {
 		var baseMaps = {};
 		var n = layers.length;
 
@@ -426,9 +426,7 @@ $(document).observe("dom:loaded", function () {
 				layer.addTo(map);
 			baseMaps[name] = layer;
 		}
-		L.control.layers(baseMaps).addTo(map);
-
-		return (baseMaps);
+		return (L.control.layers(baseMaps).addTo(map));
 	    } (map, [
 		{
 			"_name": "OpenStreetMap (0..18)",
