@@ -98,7 +98,37 @@ var show_menu_marker = (function () {
 		var dom = (new DOMParser()).parseFromString(e.target.result,
 		    "text/xml");
 		var gjsn = toGeoJSON.gpx(dom);
-		alert(current_filename + " => " + JSON.stringify(gjsn));
+		var thelayer = L.geoJson(gjsn, {
+			pointToLayer: function (feature, latlng) {
+				var o = {}, res;
+
+				if (feature.properties["sym"] == "TerraCache")
+					o["icon"] = tc_icon;
+				feature["_isWP"] = latlng;
+				return (L.marker(latlng, o));
+			},
+			onEachFeature: function (feature, layer) {
+				if (!feature["_isWP"])
+					return;
+				var s, f, x, pos = feature["_isWP"];
+
+				f = llformat(pos.lat, pos.lng);
+				x = feature.properties["name"];
+				s = (x ? (x + " ") : "") + f[0] + " " + f[1];
+
+				x = feature.properties["desc"];
+				if (/TC/.test(feature.properties["name"]) &&
+				    feature.properties["sym"] == "TerraCache")
+					x = '<a href="http://www.terracaching.com/viewcache.cgi?ID=' +
+					    feature.properties.name + '">' +
+					    (x ? x : "(no description)") +
+					    '</a>';
+				if (x)
+					s = s + "<br />" + x;
+				layer.bindPopup(s);
+			}
+		    }).addTo(map);
+		maplayers.addOverlay(thelayer, current_filename);
 	};
 
 	var handleZipExtraction = function (entry) {
