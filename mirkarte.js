@@ -76,6 +76,26 @@ function nuke_marker() {
 	update_hash();
 }
 
+var show_menu_marker = (function () {
+	var hasfile = false;
+	var filestr = "Your browser does not support the File API";
+
+	if (window.File && window.FileReader && window.Blob) {
+		hasfile = true;
+		filestr = "…";
+	}
+
+	var res = function () {
+		var s, pos = map.getCenter(), f = llformat(pos.lat, pos.lng);
+
+		s = "Current centre: " + f[0] + " " + f[1] + "<hr />" +
+		    filestr;
+		L.popup().setLatLng(pos).setContent(s).openOn(map);
+	};
+
+	return (res);
+    })();
+
 if (typeof(window.onhashchange) !== "undefined" &&
     (document.documentMode === undefined || document.documentMode > 7)) {
 	(function () {
@@ -273,9 +293,9 @@ $(document).observe("dom:loaded", function () {
 		onAdd: function (map) {
 			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
 
-			myzoomcontrol_text = L.DomUtil.create("a",
-			    "myzoomcontrol-text", false);
-			myzoomcontrol_text.innerHTML = "-";
+			myzoomcontrol_text = this._createButton("-",
+			    "Menu", "myzoomcontrol-text", false,
+			    show_menu_marker, false);
 			container.insertBefore(myzoomcontrol_text,
 			    this._zoomOutButton);
 
