@@ -94,6 +94,16 @@ function nuke_marker() {
 	update_hash();
 }
 
+var MarkerWithAttribution = L.Marker.extend({
+	options: {
+		"attribution": ""
+	},
+
+	getAttribution: function () {
+		return (this.options.attribution);
+	}
+});
+
 var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
@@ -116,14 +126,16 @@ var show_menu_marker = (function () {
 		var dom = (new DOMParser()).parseFromString(e.target.result,
 		    "text/xml");
 		var gjsn = toGeoJSON.gpx(dom);
-		var thelayer = L.geoJson(gjsn, {
+		maplayers.addOverlay(L.geoJson(gjsn, {
 			pointToLayer: function (feature, latlng) {
 				var o = {}, res;
 
-				if (feature.properties["sym"] == "TerraCache")
+				if (feature.properties["sym"] == "TerraCache") {
 					o["icon"] = tc_icon;
+					o["attribution"] = attributions["TC"];
+				}
 				feature["_isWP"] = latlng;
-				return (L.marker(latlng, o));
+				return (new MarkerWithAttribution(latlng, o));
 			},
 			onEachFeature: function (feature, layer) {
 				if (!feature["_isWP"])
@@ -145,8 +157,7 @@ var show_menu_marker = (function () {
 					s = s + "<br />" + x;
 				layer.bindPopup(s);
 			}
-		    }).addTo(map);
-		maplayers.addOverlay(thelayer, current_filename);
+		    }).addTo(map), current_filename);
 	};
 
 	var handleZipExtraction = function (entry) {
