@@ -253,8 +253,11 @@ $(document).observe("dom:loaded", function () {
 	map = L.map("map", {
 /*		"worldCopyJump": true,*/
 		"maxBounds": [[-85, -180], [85, 180]],
+		"attributionControl": false,
 		"zoomControl": false
 	    });
+	L.control.attribution({"prefix": "MirKarte (Beta) | " +
+	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
 	var myzoomclass = L.Control.Zoom.extend({
 		onAdd: function (map) {
 			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
