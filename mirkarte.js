@@ -21,12 +21,12 @@
 var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
-var map, marker = false, params, params_saved = '';
+var map, marker = false, params, params_saved = "";
 
 function zeropad(n, len) {
-	n = '' + n;
+	n = "" + n;
 	while (n.length < len)
-		n = '0' + n;
+		n = "0" + n;
 	return (n);
 }
 
@@ -57,7 +57,7 @@ function llformat(lat, lon) {
 
 function marker_popup(marker, text) {
 	marker.bindPopup(text);
-	marker.on('popupopen', function () {
+	marker.on("popupopen", function () {
 		var xtext, f, pos = marker.getLatLng();
 
 		f = llformat(pos.lat, pos.lng);
@@ -137,7 +137,7 @@ var show_menu_marker = (function () {
 			return;
 		}
 		$("gpxupload").update("Loading…");
-		if (filetype == 'zip') {
+		if (filetype == "zip") {
 			zip.createReader(new zip.BlobReader(f),
 			    function (zipReader) {
 				zipReader.getEntries(cb);
@@ -148,7 +148,7 @@ var show_menu_marker = (function () {
 		} else {
 			reader = new FileReader();
 			reader.onload = cb;
-			if (filetype == 'text')
+			if (filetype == "text")
 				reader.readAsText(f);
 			else
 				reader.readAsBinaryString(f);
@@ -156,11 +156,11 @@ var show_menu_marker = (function () {
 	};
 
 	var handleGpxFileSelect = function (e) {
-		handleFileSelect(e, 'text', handleGpxFileLoaded);
+		handleFileSelect(e, "text", handleGpxFileLoaded);
 	};
 
 	var handleZipFileSelect = function (e) {
-		handleFileSelect(e, 'zip', handleZipFileLoaded);
+		handleFileSelect(e, "zip", handleZipFileLoaded);
 	};
 
 	var res = function () {
@@ -190,7 +190,7 @@ if (typeof(window.onhashchange) !== "undefined" &&
 				prevhash = newhash;
 				/*
 				 * Event.fire(document, "hashchange");
-				 * doesn't work here
+				 * doesn’t work here
 				 */
 				fn_hashchange(this);
 			}
@@ -237,13 +237,13 @@ var fn_hashchange = function (event) {
 		params = {};
 		$H(newhash.parseQuery()).each(function (pair) {
 			switch (pair.key) {
-			case 'center_lat':
-			case 'center_lon':
-			case 'll':
-			case 'zoom':
-			case 'mlat':
-			case 'mlon':
-			case 'm':
+			case "center_lat":
+			case "center_lon":
+			case "ll":
+			case "zoom":
+			case "mlat":
+			case "mlon":
+			case "m":
 				params[pair.key] = pair.value;
 				break;
 			}
@@ -329,7 +329,7 @@ var fn_hashchange = function (event) {
 				marker = L.marker([mlat, mlon], {
 					"icon": marker_icon,
 					"draggable": true
-				    }).addTo(map).on('dragend', function(e) {
+				    }).addTo(map).on("dragend", function(e) {
 					var newloc = marker.getLatLng();
 
 					params["m"] = newloc.lat + "," + newloc.lng;
@@ -619,18 +619,18 @@ too much */
 	    ]);
 	L.control.scale().addTo(map);
 	map_initialised = true;
-	map.on('moveend', function () {
+	map.on("moveend", function () {
 		var newloc = map.getCenter();
 
 		params["ll"] = newloc.lat + "," + newloc.lng;
 		update_hash();
 	    });
-	map.on('zoomend', function () {
+	map.on("zoomend", function () {
 		myzoomcontrol_text.innerHTML = map.getZoom();
 		params["zoom"] = map.getZoom();
 		update_hash();
 	    });
-	map.on('contextmenu', function (e) {
+	map.on("contextmenu", function (e) {
 		var f = llformat(e.latlng.lat, e.latlng.lng);
 
 		if (marker === false)
@@ -640,9 +640,9 @@ too much */
 		    e.latlng.lat + "," + e.latlng.lng + "<br />dm: " +
 		    f[0] + " " + f[1]).openOn(map);
 	    });
-	map.on('mousemove', fn_mousemove);
-	map.on('dragstart', function () { map.off('mousemove', fn_mousemove); });
-	map.on('dragend', function () { map.on('mousemove', fn_mousemove); });
+	map.on("mousemove", fn_mousemove);
+	map.on("dragstart", function () { map.off("mousemove", fn_mousemove); });
+	map.on("dragend", function () { map.on("mousemove", fn_mousemove); });
 	fn_hashchange(false);
 	$("map").focus();
 });
