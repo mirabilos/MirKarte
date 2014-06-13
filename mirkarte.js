@@ -515,6 +515,9 @@ too much */
 	map.on('contextmenu', function (e) {
 		var f = llformat(e.latlng.lat, e.latlng.lng);
 
+		if (marker === false)
+			window.location.hash = window.location.hash +
+			    "&m=" + e.latlng.lat + "," + e.latlng.lng;
 		L.popup().setLatLng(e.latlng).setContent("d: " +
 		    e.latlng.lat + "," + e.latlng.lng + "<br />dm: " +
 		    f[0] + " " + f[1]).openOn(map);
