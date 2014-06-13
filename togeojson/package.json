@@ -1,0 +1,62 @@
+{
+  "name": "togeojson",
+  "version": "0.7.0",
+  "description": "convert KML and GPX to GeoJSON",
+  "main": "togeojson.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tape test/*.js",
+    "browser": "browserify -t brfs test/index.js | testling"
+  },
+  "devDependencies": {
+    "tape": "~2.12.3",
+    "brfs": "~0.2.1"
+  },
+  "bin": {
+    "togeojson": "togeojson"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mapbox/togeojson.git"
+  },
+  "browser": {
+    "xmldom": false
+  },
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/8..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6..latest",
+      "ipad/6..latest",
+      "android-browser/latest"
+    ]
+  },
+  "license": "BSD",
+  "dependencies": {
+    "xmldom": "~0.1.19",
+    "concat-stream": "~1.4.5",
+    "minimist": "0.0.8"
+  },
+  "keywords": [
+    "kml",
+    "geojson",
+    "gpx",
+    "geo",
+    "parser",
+    "formatter",
+    "input",
+    "leaflet",
+    "maps"
+  ]
+}
