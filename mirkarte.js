@@ -373,21 +373,6 @@ $(document).observe("dom:loaded", function () {
 	    });
 	L.control.attribution({"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
 	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
-	var myzoomclass = L.Control.Zoom.extend({
-		onAdd: function (map) {
-			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
-
-			myzoomcontrol_text = this._createButton("-",
-			    "Menu", "myzoomcontrol-text", false,
-			    show_menu_marker, false);
-			container.insertBefore(myzoomcontrol_text,
-			    this._zoomOutButton);
-
-			return (container);
-		}
-	    });
-	var myzoomcontrol = new myzoomclass();
-	map.addControl(myzoomcontrol);
 	var attributions = {
 		"OSM": '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		"OCM": '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -615,6 +600,21 @@ too much */
 			"attribution": attributions["OCM"]
 		}
 	    ]);
+	var myzoomclass = L.Control.Zoom.extend({
+		onAdd: function (map) {
+			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
+
+			myzoomcontrol_text = this._createButton("-",
+			    "Menu", "myzoomcontrol-text", false,
+			    show_menu_marker, false);
+			container.insertBefore(myzoomcontrol_text,
+			    this._zoomOutButton);
+
+			return (container);
+		}
+	    });
+	var myzoomcontrol = new myzoomclass();
+	map.addControl(myzoomcontrol);
 	L.control.scale().addTo(map);
 	map_initialised = true;
 	map.on("moveend", function () {
