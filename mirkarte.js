@@ -371,7 +371,7 @@ $(document).observe("dom:loaded", function () {
 		"attributionControl": false,
 		"zoomControl": false
 	    });
-	L.control.attribution({"prefix": "MirKarte (Beta) | " +
+	L.control.attribution({"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
 	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
 	var myzoomclass = L.Control.Zoom.extend({
 		onAdd: function (map) {
