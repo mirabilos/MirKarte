@@ -1,0 +1,25 @@
+MirKarte
+────────
+
+This is the beta version of an experimental map application.
+It is designed to show maps from various tile sources (of which
+quite a number are already included), geocaches and similar
+waypoints, and have advanced abilities (display coordinates
+under the cursor, draw lines, draw circles around points with
+a given equidistance, etc).
+
+The current version can locally (fully client-side) import
+GPX files from TerraCaching (zipped or plain) and display
+the caches on the map. Support for other geocaching platforms,
+geodashing, etc. may be added later.
+
+Some advanced map functionality is not yet implemented.
+
+This is a beta. It may break horribly and I will not be held
+responsible.
+
+If you use this, you must check the terms of use of the
+various tile or WMS services yourself.
+
+VCS repository:
+https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
