@@ -8541,7 +8541,7 @@ L.Control.Layers = L.Control.extend({
 		L.DomEvent.on(input, 'click', this._onInputClick, this);
 
 		var name = document.createElement('span');
-		name.innerHTML = ' ' + obj.name;
+		name.appendChild(document.createTextNode(' ' + obj.name));
 
 		label.appendChild(input);
 		label.appendChild(name);
