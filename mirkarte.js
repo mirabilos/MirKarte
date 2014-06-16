@@ -266,9 +266,9 @@ if (typeof(window.onhashchange) !== "undefined" &&
 	    })();
 }
 var marker_icon = L.icon({
-	"iconUrl": "leaflet/marker-icon.png",
-	"iconRetinaUrl": "leaflet/marker-icon-2x.png",
-	"shadowUrl": "leaflet/marker-shadow.png",
+	"iconUrl": "img/marker-icon.png",
+	"iconRetinaUrl": "img/marker-icon-2x.png",
+	"shadowUrl": "img/marker-shadow.png",
 
 	/* copied from L.Icon.Default */
 	iconSize: [25, 41],
