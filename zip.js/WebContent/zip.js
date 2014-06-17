@@ -45,8 +45,8 @@
 	
 	var MESSAGE_EVENT = "message";
 
-	var appendABViewSupported;
-	try {
+	var appendABViewSupported = false;
+	if (window.Blob) try {
 		appendABViewSupported = new Blob([ new DataView(new ArrayBuffer(0)) ]).size === 0;
 	} catch (e) {
 	}
