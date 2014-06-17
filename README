@@ -23,3 +23,8 @@ various tile or WMS services yourself.
 
 VCS repository:
 https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
+
+MirKarte is developed “on the side” by a developer from
+The MirOS Project. Please feel invited to discuss it, send
+patches, etc. to: <miros-discuss@mirbsd.org>
+Web: http://news.gmane.org/gmane.os.miros.general
