@@ -79,7 +79,7 @@ function marker_popup(marker, text) {
 		var xtext, f, pos = marker.getLatLng();
 
 		f = llformat(pos.lat, pos.lng);
-		xtext = text.replace("°N", f[0], "g").replace("°E", f[1], "g");
+		xtext = text.replace(/°N/g, f[0]).replace(/°E/g, f[1]);
 		marker.setPopupContent(xtext);
 	    });
 }
@@ -302,7 +302,7 @@ var ign_hashchange = false;
 var update_hash = function () {
 	ign_hashchange = true;
 	window.location.hash =
-	    $H(params).toQueryString().replace("%2C", ",", "gi");
+	    $H(params).toQueryString().replace(/%2C/gi, ",");
 };
 var fn_hashchange = function (event) {
 	var newhash = "" + location.href.split("#")[1];
