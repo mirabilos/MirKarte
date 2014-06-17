@@ -7653,11 +7653,16 @@ L.Map.BoxZoom = L.Handler.extend({
 		    layerPoint = map.mouseEventToLayerPoint(e);
 
 		if (this._startLayerPoint.equals(layerPoint)) {
-			map.fire('contextmenu', {
-				latlng: map.mouseEventToLatLng(e),
-				layerPoint: layerPoint,
-				originalEvent: e
-			    });
+			e._map = map;
+			e._lp = layerPoint;
+			e._fn = function () {
+				this._map.fire('contextmenu', {
+					latlng: this._map.mouseEventToLatLng(e),
+					layerPoint: this._lp,
+					originalEvent: this
+				    });
+			    }.bind(e);
+			window.setTimeout(e._fn, 1);
 			return;
 		}
 
