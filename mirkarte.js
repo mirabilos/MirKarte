@@ -264,26 +264,27 @@ var show_menu_marker = (function () {
 	return (res);
     })();
 
-if (typeof(window.onhashchange) !== "undefined" &&
-    (document.documentMode === undefined || document.documentMode > 7)) {
-	$(document).observe("hashchange", fn_hashchange);
-} else {
-	(function () {
-		var prevhash = "" + location.href.split("#")[1];
-		this.checkHash = function () {
-			var newhash = "" + location.href.split("#")[1];
-			if (prevhash !== newhash) {
-				prevhash = newhash;
-				/*
-				 * Event.fire(document, "hashchange");
-				 * doesn’t work here
-				 */
-				fn_hashchange("callout");
-			}
-		    }.bind(this);
+/* $(document).observe("hashchange", fn_hashchange); does not work */
+(function () {
+	var prevhash = "" + location.href.split("#")[1];
+	this.checkHash = function () {
+		var newhash = "" + location.href.split("#")[1];
+		if (prevhash !== newhash) {
+			prevhash = newhash;
+			/*
+			 * Event.fire(document, "hashchange");
+			 * doesn’t work here
+			 */
+			fn_hashchange("callout");
+		}
+	    }.bind(this);
+	if (typeof(window.onhashchange) !== "undefined" &&
+	    (document.documentMode === undefined || document.documentMode > 7))
+		window.onhashchange = this.checkHash;
+	else
 		window.setInterval(this.checkHash, 100);
-	    })();
-}
+    })();
+
 var marker_icon = L.icon({
 	"iconUrl": "img/marker-icon.png",
 	"iconRetinaUrl": "img/marker-icon-2x.png",
