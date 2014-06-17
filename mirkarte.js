@@ -469,7 +469,7 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["OSM"]
 		},
 		{
-			"_name": "OSM Black&White (0..18)",
+			"_name": "OSM Black&amp;White (0..18)",
 			"_url": "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
