@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MirKarte</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAATqVs_YmgcurjzYllfKyGNhQ7KF90WKEZwTwywDPaon2Iw48axBSTmB-sZMxfkQUzkyAgQG87gvMxgA"></script>
+    <script type="text/javascript" src="dragzoom_packed.js"></script>
+    <script type="text/javascript" src="LatLonDisplayControl.js"></script>
+  </head>
+  <body onload="mapLoad();" onunload="GUnload();">
+    <div class="mapform">
+      <form onsubmit="javascript:mapsubmit_click(); return false;" id="cachemap">
+        <table class="mapsearch">
+          <tr>
+            <td class="mapsearch-a">
+              <input type="text" id="mapsearch" value="" onfocus="javascript:mapsearch_onfocus()" class="searchfield" size="50" />
+            </td>
+            <td class="mapsearch-b">
+              <input type="button" id="mapsubmit" value="Suchen" onclick="javascript:mapsubmit_click()" class="searchbutton" />
+            </td>
+            <td class="mapsearch-c">
+              <a href="#" onclick="javascript:showPermlinkBox_click()">Permalink</a>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div class="mapselectgeocode">
+      <select id="mapselectlist" name="mapselectlist" size="6" class="mapselectlist" onblur="mapselectlist_onblur()" onchange="mapselectlist_onchange()"></select>
+    </div>
+    <div id="permalink_box" class="mappermalink" style="display:none;">
+      <table>
+        <tr>
+          <td>
+            <a href="#" onclick="javascript:openPermalink_click()">Link &#xF6;ffnen</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input id="permalink_text" type="text" value="" size="50" />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="map" style="width:770px;height:600px;"></div>
+    <script type="text/javascript" src="mirkarte.js"></script>
+  </body>
+</html>
