@@ -181,8 +181,9 @@ var show_menu_marker = (function () {
 	var handleZipFileLoaded = function (entries) {
 		var ents = new Element("ul");
 		entries.forEach(function(entry) {
+			var fn = "" + entry.filename;
 			var a = new Element("a",
-			    {"href": "#"}).update(entry.filename);
+			    {"href": "#"}).update(fn.escapeHTML());
 			a.addEventListener("click", function(event) {
 				handleZipExtraction(entry);
 				event.preventDefault();
