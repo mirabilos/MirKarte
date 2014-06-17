@@ -354,7 +354,7 @@ var fn_hashchange = function (event) {
 			czoom = czoom | 0;
 		} else {
 			/* default value */
-			czoom = 14;
+			czoom = 12;
 		}
 		params["zoom"] = czoom;
 
