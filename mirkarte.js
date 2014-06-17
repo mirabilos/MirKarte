@@ -699,14 +699,16 @@ too much */
 		update_hash();
 	    });
 	map.on("contextmenu", function (e) {
-		var f = llformat(e.latlng.lat, e.latlng.lng, 0);
+		var l = e.latlng;
+		var f = llformat(l.lat, l.lng, 0);
+		var s = '<span class="nowrap">d: ' + l.lat + "," + l.lng +
+		    '</span><br /><span class="nowrap">dm: ' + f[0] +
+		    " " + f[1] + "</span>";
 
+		L.popup().setLatLng(l).setContent(s).openOn(map);
 		if (marker === false)
 			window.location.hash = window.location.hash +
-			    "&m=" + e.latlng.lat + "," + e.latlng.lng;
-		L.popup().setLatLng(e.latlng).setContent("d: " +
-		    e.latlng.lat + "," + e.latlng.lng + "<br />dm: " +
-		    f[0] + " " + f[1]).openOn(map);
+			    "&m=" + l.lat + "," + l.lng;
 	    });
 	map.on("mousemove", fn_mousemove);
 	map.on("dragstart", function () { map.off("mousemove", fn_mousemove); });
