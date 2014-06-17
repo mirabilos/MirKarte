@@ -36,12 +36,14 @@
 	vertical-align:center;
   }
  /*]]>*/--></style>
+ <script type="text/javascript" src="polyfill/typedarray.js"></script>
  <script type="text/javascript" src="leaflet/leaflet-src.js"></script>
  <script type="text/javascript" src="prototype/prototype.js"></script>
  <script type="text/javascript" src="togeojson/togeojson.js"></script>
  <script type="text/javascript" src="zip.js/WebContent/zip.js"></script>
+ <script type="text/javascript" src="zip.js/WebContent/inflate.js"></script>
  <script type="text/javascript"><!--//--><![CDATA[//><!--
-  zip.workerScriptsPath = "zip.js/WebContent/";
+  zip.useWebWorkers = false;
  //--><!]]></script>
  <script type="text/javascript" src="mirkarte.js"></script>
 </head><body>
