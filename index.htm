@@ -6,6 +6,12 @@
  <title>MirKarte (Beta)</title>
  <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
  <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  #nomap {
+	padding:12px;
+	margin:12px;
+	border:1px solid black;
+	width:24em;
+  }
   #map {
 	height:100%;
 	width:100%;
@@ -42,7 +48,14 @@
  <script type="text/javascript" src="mirkarte.js"></script>
 </head><body>
 <div id="map_wrapper">
- <div id="map"></div>
+ <div id="map">
+  <p id="nomap">
+   This is an interactive map application called “MirKarte”.
+   Unfortunately, it is implemented completely client-side
+   in JavaScript – so, you have to enable that, and use a
+   GUI webbrowser supported by Leaflet and Prototype.
+  </p>
+ </div>
  <div id="map_coors">
   <span id="map_coors_ns"></span><br />
   <span id="map_coors_we"></span>

@@ -445,6 +445,7 @@ $(document).observe("dom:loaded", function () {
 		"attributionControl": false,
 		"zoomControl": false
 	    });
+	$("nomap").hide();
 	L.control.attribution({"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
 	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
 	maplayers = function (map, layers) {
