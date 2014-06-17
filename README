@@ -33,7 +33,8 @@ Web: http://news.gmane.org/gmane.os.miros.general
 Browser notes
 ─────────────
 
-Opera 9 mostly works, except mouse things. No File API.
+Opera 9 mostly works, except right-clicks; subsequent
+double-clicks need mouse movement in between. No File API.
 
 Konqueror (KDE 4) with KHTML is pretty bad: right click is
 mildly broken, panning is very annoying. No File API.

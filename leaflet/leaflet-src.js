@@ -6533,7 +6533,20 @@ L.DomEvent = {
 			return new L.Point(e.clientX, e.clientY);
 		}
 
-		var rect = container.getBoundingClientRect();
+		if (container.getBoundingClientRect) {
+			var rect = container.getBoundingClientRect();
+		} else {
+			/* clumsy fallback for Opera 9 */
+			var rect = {}, top = 0, left = 0, elem = container;
+
+			while (elem) {
+				top = top + parseInt(elem.offsetTop);
+				left = left + parseInt(elem.offsetLeft);
+				elem = elem.offsetParent;
+			}
+			rect["top"] = top;
+			rect["left"] = left;
+		}
 
 		return new L.Point(
 			e.clientX - rect.left - container.clientLeft,
