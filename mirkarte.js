@@ -256,6 +256,8 @@ var show_menu_marker = (function () {
 
 if (typeof(window.onhashchange) !== "undefined" &&
     (document.documentMode === undefined || document.documentMode > 7)) {
+	$(document).observe("hashchange", fn_hashchange);
+} else {
 	(function () {
 		var prevhash = "" + location.href.split("#")[1];
 		this.checkHash = function () {
@@ -266,10 +268,10 @@ if (typeof(window.onhashchange) !== "undefined" &&
 				 * Event.fire(document, "hashchange");
 				 * doesn’t work here
 				 */
-				fn_hashchange(this);
+				fn_hashchange("callout");
 			}
 		    }.bind(this);
-		window.onhashchange = this.checkHash;
+		window.setInterval(this.checkHash, 100);
 	    })();
 }
 var marker_icon = L.icon({
@@ -435,7 +437,6 @@ var fn_hashchange = function (event) {
 		update_hash();
 	}
 };
-$(document).observe("hashchange", fn_hashchange);
 $(document).observe("dom:loaded", function () {
 	map_initialised = false;
 	fn_hashchange(false);
