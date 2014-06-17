@@ -48,7 +48,7 @@ function zeropad(n, len) {
 	return (n);
 }
 
-function llformat(lat, lon) {
+function llformat(lat, lon, ashtml) {
 	var ns, we, sns, swe, t;
 
 	ns = lat;
@@ -70,6 +70,15 @@ function llformat(lat, lon) {
 	we = (we - t) * 60;
 	swe = swe + zeropad(t, 3) + "° " + zeropad(we.toFixed(3), 6);
 
+	if (ashtml) {
+		var snw = '<span class="nowrap">';
+
+		if (ashtml == 2)
+			return (snw + sns + " " + swe + "</span>");
+		sns = snw + sns + "</span>";
+		swe = snw + swe + "</span>";
+	}
+
 	return ([sns, swe]);
 }
 
@@ -78,7 +87,7 @@ function marker_popup(marker, text) {
 	marker.on("popupopen", function () {
 		var xtext, f, pos = marker.getLatLng();
 
-		f = llformat(pos.lat, pos.lng);
+		f = llformat(pos.lat, pos.lng, 1);
 		xtext = text.replace(/°N/g, f[0]).replace(/°E/g, f[1]);
 		marker.setPopupContent(xtext);
 	    });
@@ -143,9 +152,9 @@ var show_menu_marker = (function () {
 					return;
 				var s, f, x, pos = feature["_isWP"];
 
-				f = llformat(pos.lat, pos.lng);
+				f = llformat(pos.lat, pos.lng, 2);
 				x = feature.properties["name"];
-				s = (x ? (x + " ") : "") + f[0] + " " + f[1];
+				s = (x ? (x + " ") : "") + f;
 
 				x = feature.properties["desc"];
 				if (/TC/.test(feature.properties["name"]) &&
@@ -238,10 +247,11 @@ var show_menu_marker = (function () {
 	};
 
 	var res = function () {
-		var s, pos = map.getCenter(), f = llformat(pos.lat, pos.lng);
+		var s, pos = map.getCenter();
+		var f = llformat(pos.lat, pos.lng, 0);
 
-		s = "Current centre: " + f[0] + " " + f[1] + "<hr />" +
-		    filestr;
+		s = '<span class="nowrap">Current centre: ' + f[0] + " " +
+		    f[1] + "</span><hr />" + filestr;
 		L.popup().setLatLng(pos).setContent(s).openOn(map);
 		if (hasfile) {
 			document.getElementById("files").addEventListener("change",
@@ -295,7 +305,7 @@ var tc_icon = L.icon({
 	"shadowSize": [37, 34]
 });
 var fn_mousemove = function (e) {
-	var f = llformat(e.latlng.lat, e.latlng.lng);
+	var f = llformat(e.latlng.lat, e.latlng.lng, 1);
 
 	$("map_coors_ns").update(f[0]);
 	$("map_coors_we").update(f[1]);
@@ -688,7 +698,7 @@ too much */
 		update_hash();
 	    });
 	map.on("contextmenu", function (e) {
-		var f = llformat(e.latlng.lat, e.latlng.lng);
+		var f = llformat(e.latlng.lat, e.latlng.lng, 0);
 
 		if (marker === false)
 			window.location.hash = window.location.hash +
