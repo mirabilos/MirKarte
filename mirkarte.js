@@ -341,112 +341,115 @@ var fn_hashchange = function (event) {
 		return;
 	}
 	if (map_initialised) {
-		var clat = NaN, clon = NaN;
-		if (isTwoNum.test(params["ll"])) {
-			clat = parseFloat(params["ll"].split(",")[0]);
-			clon = parseFloat(params["ll"].split(",")[1]);
-			if (isNaN(clat) || isNaN(clon) ||
-			    clat < -85 || clat > 85 ||
-			    clon < -180 || clon > 180) {
-				clat = NaN;
-				clon = NaN;
-			}
-		}
-		if ((isNaN(clat) || isNaN(clon)) &&
-		    isNum.test(params["center_lat"]) &&
-		    isNum.test(params["center_lon"])) {
-			clat = parseFloat(params["center_lat"]);
-			clon = parseFloat(params["center_lon"]);
-		}
-		/* defer until we know marker pos */
-
-		var czoom;
-		if (/^\d+$/.test(params["zoom"]) &&
-		    !isNaN((czoom = parseFloat(params["zoom"]))) &&
-		    czoom >= 0 && czoom < 32) {
-			/* convert to int */
-			czoom = czoom | 0;
-		} else {
-			/* default value */
-			czoom = 12;
-		}
-		params["zoom"] = czoom;
-
-		var wantMarker = false, mlat, mlon;
-		if (isTwoNum.test(params["m"])) {
-			wantMarker = true;
-			mlat = parseFloat(params["m"].split(",")[0]);
-			mlon = parseFloat(params["m"].split(",")[1]);
-			if (isNaN(mlat) || isNaN(mlon) ||
-			    mlat < -85 || mlat > 85 ||
-			    mlon < -180 || mlon > 180)
-				wantMarker = false;
-		}
-		if (!wantMarker &&
-		    isNum.test(params["mlat"]) &&
-		    isNum.test(params["mlon"])) {
-			wantMarker = true;
-			mlat = parseFloat(params["mlat"]);
-			mlon = parseFloat(params["mlon"]);
-			if (isNaN(mlat) || isNaN(mlon) ||
-			    mlat < -85 || mlat > 85 ||
-			    mlon < -180 || mlon > 180)
-				wantMarker = false;
-		}
-		if (!wantMarker && /1/.test(params["m"])) {
-			wantMarker = true;
-			mlat = clat;
-			mlon = clon;
-			if (isNaN(mlat) || isNaN(mlon) ||
-			    mlat < -85 || mlat > 85 ||
-			    mlon < -180 || mlon > 180)
-				wantMarker = false;
-		}
-		delete params["mlat"];
-		delete params["mlon"];
-		if (!wantMarker) {
-			delete params["m"];
-			if (marker !== false) {
-				map.removeLayer(marker);
-				marker = false;
-			}
-		} else {
-			params["m"] = mlat + "," + mlon;
-			if (marker === false) {
-				marker = L.marker([mlat, mlon], {
-					"icon": marker_icon,
-					"draggable": true
-				    }).addTo(map).on("dragend", function(e) {
-					var newloc = marker.getLatLng();
-
-					params["m"] = newloc.lat + "," + newloc.lng;
-					update_hash();
-				    });
-				marker_popup(marker,
-				    'Marker | <a href="javascript:nuke_marker();">Hide</a><br />°N<br />°E');
-			} else
-				marker.setLatLng([mlat, mlon]);
-		}
-
+		fn_hashchanged();
+	}
+};
+var fn_hashchanged = function () {
+	var clat = NaN, clon = NaN;
+	if (isTwoNum.test(params["ll"])) {
+		clat = parseFloat(params["ll"].split(",")[0]);
+		clon = parseFloat(params["ll"].split(",")[1]);
 		if (isNaN(clat) || isNaN(clon) ||
 		    clat < -85 || clat > 85 ||
 		    clon < -180 || clon > 180) {
-			/* default value */
-			clat = 50.7;
-			clon = 7.11;
-			/* jump to marker position */
-			if (wantMarker) {
-				clat = mlat;
-				clon = mlon;
-			}
+			clat = NaN;
+			clon = NaN;
 		}
-		delete params["center_lat"];
-		delete params["center_lon"]
-		params["ll"] = clat + "," + clon;
-
-		map.setView([clat, clon], czoom);
-		update_hash();
 	}
+	if ((isNaN(clat) || isNaN(clon)) &&
+	    isNum.test(params["center_lat"]) &&
+	    isNum.test(params["center_lon"])) {
+		clat = parseFloat(params["center_lat"]);
+		clon = parseFloat(params["center_lon"]);
+	}
+	/* defer until we know marker pos */
+
+	var czoom;
+	if (/^\d+$/.test(params["zoom"]) &&
+	    !isNaN((czoom = parseFloat(params["zoom"]))) &&
+	    czoom >= 0 && czoom < 32) {
+		/* convert to int */
+		czoom = czoom | 0;
+	} else {
+		/* default value */
+		czoom = 12;
+	}
+	params["zoom"] = czoom;
+
+	var wantMarker = false, mlat, mlon;
+	if (isTwoNum.test(params["m"])) {
+		wantMarker = true;
+		mlat = parseFloat(params["m"].split(",")[0]);
+		mlon = parseFloat(params["m"].split(",")[1]);
+		if (isNaN(mlat) || isNaN(mlon) ||
+		    mlat < -85 || mlat > 85 ||
+		    mlon < -180 || mlon > 180)
+			wantMarker = false;
+	}
+	if (!wantMarker &&
+	    isNum.test(params["mlat"]) &&
+	    isNum.test(params["mlon"])) {
+		wantMarker = true;
+		mlat = parseFloat(params["mlat"]);
+		mlon = parseFloat(params["mlon"]);
+		if (isNaN(mlat) || isNaN(mlon) ||
+		    mlat < -85 || mlat > 85 ||
+		    mlon < -180 || mlon > 180)
+			wantMarker = false;
+	}
+	if (!wantMarker && /1/.test(params["m"])) {
+		wantMarker = true;
+		mlat = clat;
+		mlon = clon;
+		if (isNaN(mlat) || isNaN(mlon) ||
+		    mlat < -85 || mlat > 85 ||
+		    mlon < -180 || mlon > 180)
+			wantMarker = false;
+	}
+	delete params["mlat"];
+	delete params["mlon"];
+	if (!wantMarker) {
+		delete params["m"];
+		if (marker !== false) {
+			map.removeLayer(marker);
+			marker = false;
+		}
+	} else {
+		params["m"] = mlat + "," + mlon;
+		if (marker === false) {
+			marker = L.marker([mlat, mlon], {
+				"icon": marker_icon,
+				"draggable": true
+			    }).addTo(map).on("dragend", function(e) {
+				var newloc = marker.getLatLng();
+
+				params["m"] = newloc.lat + "," + newloc.lng;
+				update_hash();
+			    });
+			marker_popup(marker,
+			    'Marker | <a href="javascript:nuke_marker();">Hide</a><br />°N<br />°E');
+		} else
+			marker.setLatLng([mlat, mlon]);
+	}
+
+	if (isNaN(clat) || isNaN(clon) ||
+	    clat < -85 || clat > 85 ||
+	    clon < -180 || clon > 180) {
+		/* default value */
+		clat = 50.7;
+		clon = 7.11;
+		/* jump to marker position */
+		if (wantMarker) {
+			clat = mlat;
+			clon = mlon;
+		}
+	}
+	delete params["center_lat"];
+	delete params["center_lon"]
+	params["ll"] = clat + "," + clon;
+
+	map.setView([clat, clon], czoom);
+	update_hash();
 };
 $(document).observe("dom:loaded", function () {
 	map_initialised = false;
@@ -699,16 +702,18 @@ too much */
 		update_hash();
 	    });
 	map.on("contextmenu", function (e) {
-		var l = e.latlng;
-		var f = llformat(l.lat, l.lng, 0);
-		var s = '<span class="nowrap">d: ' + l.lat + "," + l.lng +
+		var l = e.latlng, llat = l.lat, llon = l.lng;
+		var f = llformat(llat, llon, 0);
+		var s = '<span class="nowrap">d: ' + llat + "," + llon +
 		    '</span><br /><span class="nowrap">dm: ' + f[0] +
 		    " " + f[1] + "</span>";
 
 		L.popup().setLatLng(l).setContent(s).openOn(map);
-		if (marker === false)
-			window.location.hash = window.location.hash +
-			    "&m=" + l.lat + "," + l.lng;
+		if (marker === false) {
+			params["mlat"] = llat;
+			params["mlon"] = llon;
+			fn_hashchanged();
+		}
 	    });
 	map.on("mousemove", fn_mousemove);
 	map.on("dragstart", function () { map.off("mousemove", fn_mousemove); });
