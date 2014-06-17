@@ -7652,7 +7652,14 @@ L.Map.BoxZoom = L.Handler.extend({
 		var map = this._map,
 		    layerPoint = map.mouseEventToLayerPoint(e);
 
-		if (this._startLayerPoint.equals(layerPoint)) { return; }
+		if (this._startLayerPoint.equals(layerPoint)) {
+			map.fire('contextmenu', {
+				latlng: map.mouseEventToLatLng(e),
+				layerPoint: layerPoint,
+				originalEvent: e
+			    });
+			return;
+		}
 
 		var bounds = new L.LatLngBounds(
 		        map.layerPointToLatLng(this._startLayerPoint),

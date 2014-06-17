@@ -44,3 +44,11 @@ misses getting the progress and end events, but regular
 GPX import works.
 
 This was mostly tested with Firefox 24 ESR on Debian.
+
+
+Documentation
+─────────────
+
+TODO: create user docs, based on Leaflet docs.
+
+Shift-Click (w/o dragging) is now the same as right-click.
