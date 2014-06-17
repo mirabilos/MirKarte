@@ -162,7 +162,7 @@ var show_menu_marker = (function () {
 	};
 
 	var handleZipExtraction = function (entry) {
-		current_filename = "" + entry.filename;
+		current_filename += "/" + entry.filename;
 		$("gpxupload").update("Extracting " +
 		    current_filename.escapeHTML());
 		entry.getData(new zip.BlobWriter(), function (asblob) {
