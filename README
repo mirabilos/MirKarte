@@ -28,3 +28,18 @@ MirKarte is developed “on the side” by a developer from
 The MirOS Project. Please feel invited to discuss it, send
 patches, etc. to: <miros-discuss@mirbsd.org>
 Web: http://news.gmane.org/gmane.os.miros.general
+
+
+Browser notes
+─────────────
+
+Opera 9 mostly works, except mouse things. No File API.
+
+Konqueror (KDE 4) with KHTML is pretty bad: right click is
+mildly broken, panning is very annoying. No File API.
+
+Konqueror (KDE 4) with Webkit works better. ZIP decoding
+misses getting the progress and end events, but regular
+GPX import works.
+
+This was mostly tested with Firefox 24 ESR on Debian.
