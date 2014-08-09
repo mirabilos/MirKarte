@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+ <meta name="copyright" content="see mirkarte.js" />
+ <title>MirKarte (Beta)</title>
+ <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+ <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  #nomap {
+	padding:12px;
+	margin:12px;
+	border:1px solid black;
+	width:24em;
+  }
+  #map {
+	height:100%;
+	width:100%;
+	position:relative;
+  }
+  #map_coors {
+	position:fixed;
+	right:0; bottom:16px;
+	padding:6px;
+	font:12px monospace, sans-serif;
+	text-align:right;
+	z-index:3;
+  }
+  #map_coors span {
+	background:rgba(255, 255, 255, 0.33);
+  }
+  #map_wrapper {
+	position:absolute;
+	top:0; left:0;
+	bottom:0; right:0;
+  }
+  .myzoomcontrol-text {
+	font:bold 14px 'Lucida Console', Monaco, monospace;
+	text-align:center;
+	vertical-align:middle;
+  }
+  .nowrap {
+	white-space:nowrap;
+  }
+ /*]]>*/--></style>
+ <script type="text/javascript" src="leaflet/leaflet-src.js"></script>
+ <script type="text/javascript" src="prototype/prototype.js"></script>
+ <script type="text/javascript" src="togeojson/togeojson.js"></script>
+ <script type="text/javascript" src="zip.js/WebContent/zip.js"></script>
+ <script type="text/javascript"><!--//--><![CDATA[//><!--
+  zip.workerScriptsPath = "zip.js/WebContent/";
+ //--><!]]></script>
+ <script type="text/javascript" src="marker.js"></script>
+</head><body>
+<div id="map_wrapper">
+ <div id="map">
+  <p id="nomap">
+   This is an interactive map application called “MirKarte”.
+   Unfortunately, it is implemented completely client-side
+   in JavaScript – so, you have to enable that, and use a
+   GUI webbrowser supported by Leaflet and Prototype.
+  </p>
+ </div>
+ <div id="map_coors">
+  <span id="map_coors_ns"></span><br />
+  <span id="map_coors_we"></span>
+ </div>
+</div>
+</body></html>
