@@ -572,6 +572,7 @@ cat <<'EOF'
 	var ghlat = parseFloat(geohashing_offset[0]) * 180 - 90;
 	var ghlon = parseFloat(geohashing_offset[1]) * 360 - 180;
 	var ghmarker = L.marker([ghlat, ghlon], {
+		"icon": marker_icon,
 		"draggable": false
 	    }).addTo(map);
 	marker_popup(ghmarker,
