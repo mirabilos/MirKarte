@@ -261,7 +261,7 @@ cat <<'EOF'
   function mirkarte_hookfn(map) {
 	var i = 0;
 
-	while (geohashing_points[i][0] && geohashing_points[i][1]) {
+	while (geohashing_points[i][0] || geohashing_points[i][1]) {
 		var ghmarker = L.marker(geohashing_points[i], {
 			"draggable": false
 		    }).addTo(map);
