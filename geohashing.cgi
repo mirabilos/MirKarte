@@ -200,7 +200,7 @@ Content-type: text/html; charset=utf-8
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
  <meta name="copyright" content="see mirkarte.js" />
- <title>MirKarte (Beta)</title>
+ <title>MirKarte for xkcd Geo Hashing (Beta)</title>
  <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
  <style type="text/css"><!--/*--><![CDATA[/*><!--*/
   #nomap {
@@ -248,8 +248,8 @@ Content-type: text/html; charset=utf-8
   var geohashing_points = [
 EOF
 
-for lat in 49 50 51 52; do
-	for lon in -2 -1 -0 1 2 3 4 5 6 7 8 9 10 11 12; do
+for lat in 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56; do
+	for lon in -6 -5 -4 -3 -2 -1 -0 1 2 3 4 5 6 7 8 9 10 11 12; do
 		print "	[${lat}${latlon[0]}, ${lon}${latlon[1]}],"
 	done
 done
