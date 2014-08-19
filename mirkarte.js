@@ -720,4 +720,6 @@ too much */
 	map.on("dragend", function () { map.on("mousemove", fn_mousemove); });
 	fn_hashchange(false);
 	$("map").focus();
+	if (typeof mirkarte_hookfn == 'function')
+		mirkarte_hookfn(map);
 });
