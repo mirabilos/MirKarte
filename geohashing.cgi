@@ -575,7 +575,7 @@ cat <<'EOF'
 		"draggable": false
 	    }).addTo(map);
 	marker_popup(ghmarker,
-	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash<br />°N<br />°E');
+	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash</a><br />°N<br />°E');
   }
 
  //--><!]]></script>
