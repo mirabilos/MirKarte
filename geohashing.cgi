@@ -249,7 +249,7 @@ Content-type: text/html; charset=utf-8
 EOF
 
 for lat in 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56; do
-	for lon in -6 -5 -4 -3 -2 -1 -0 1 2 3 4 5 6 7 8 9 10 11 12; do
+	for lon in -6 -5 -4 -3 -2 -1 -0 0 1 2 3 4 5 6 7 8 9 10 11 12; do
 		print "	[${lat}${latlon[0]}, ${lon}${latlon[1]}],"
 	done
 done
