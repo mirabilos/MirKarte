@@ -569,6 +569,13 @@ cat <<'EOF'
 		    'Geo Hashing Point<br />' + graticules[i][2] + '<br />°N<br />°E');
 		i++;
 	}
+	var ghlat = parseFloat(geohashing_offset[0]) * 180 - 90;
+	var ghlon = parseFloat(geohashing_offset[1]) * 360 - 180;
+	var ghmarker = L.marker([ghlat, ghlon], {
+		"draggable": false
+	    }).addTo(map);
+	marker_popup(ghmarker,
+	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash<br />°N<br />°E');
   }
 
  //--><!]]></script>
