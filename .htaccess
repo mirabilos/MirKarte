@@ -1,1 +1,4 @@
 DirectoryIndex index.htm
+
+Options +ExecCGI
+AddHandler cgi-script .cgi
