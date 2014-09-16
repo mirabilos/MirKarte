@@ -26,6 +26,7 @@ Variants:
 – marker.htm (marker.js): allows multiple markers, quick hack,
   largely untested, markers cannot be removed, scrap
 – geohashing.cgi (mirkarte.js): displays xkcd Geo Hashing waypoints
+– ghtomorrow.cgi (mirkarte.js): same, but for the next day
 
 VCS repository:
 https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
@@ -59,3 +60,9 @@ TODO: create user docs, based on Leaflet docs.
 
 Shift-Click (w/o dragging) is now the same as right-click.
 But Shift-Doubleclick is broken now. Meh.
+
+
+Other notes
+───────────
+
+GeoHashing is always calculated east of 30°W only.
