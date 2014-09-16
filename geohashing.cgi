@@ -592,6 +592,13 @@ cat <<'EOF'
   </p>
  </div>
  <div id="map_coors">
+EOF
+set -A t -- $(mjd_implode "${t[@]}")
+set -A t -- $(mjd_explode $((t[0] + 1)) 0)
+typeset -i10 -Z4 'y=t[tm_year] + 1900'
+typeset -i10 -Z2 'm=t[tm_mon] + 1' 'd=t[tm_mday]'
+echo "  <span>Geo Hashing on $y-$m-$d</span><br />"
+cat <<'EOF'
   <span id="map_coors_ns"></span><br />
   <span id="map_coors_we"></span>
  </div>
