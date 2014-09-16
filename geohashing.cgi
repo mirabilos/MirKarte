@@ -190,6 +190,23 @@ typeset -i10 -Z2 dM dD
 (( dD = t[tm_mday] ))
 
 i=$(ftp -o - http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD 2>/dev/null)
+if [[ -z $i ]]; then
+	cat <<'EOF'
+Content-type: text/html; charset=utf-8
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+ <meta name="copyright" content="see mirkarte.js" />
+ <title>MirKarte for xkcd Geo Hashing in Central Europe (Beta)</title>
+</head><body>
+<h1>Error!</h1>
+<p>No data yet for today!</p>
+</body></html>
+EOF
+	exit 0
+fi
 set -A latlon -- $(print -nr -- "${d[3]}-$i" | md5 | \
     sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
     dc -e 16i -)
