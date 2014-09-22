@@ -189,7 +189,15 @@ typeset -i10 -Z2 dM dD
 (( dM = t[tm_mon] + 1 ))
 (( dD = t[tm_mday] ))
 
-i=$(ftp -o - http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD 2>/dev/null)
+fetch='ftp -o -'
+whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
+function gnumd5 {
+	md5sum | sed 's/ .*$//'
+}
+md=gnumd5
+whence -p md5 >/dev/null 2>&1 && md=md5
+
+i=$($fetch http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD 2>/dev/null)
 if [[ -z $i ]]; then
 	cat <<'EOF'
 Content-type: text/html; charset=utf-8
@@ -207,7 +215,7 @@ Content-type: text/html; charset=utf-8
 EOF
 	exit 0
 fi
-set -A latlon -- $(print -nr -- "${d[3]}-$i" | md5 | \
+set -A latlon -- $(print -nr -- "${d[3]}-$i" | $md | \
     sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
     dc -e 16i -)
 
