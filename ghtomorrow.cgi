@@ -176,15 +176,14 @@ function mjd_implode {
 
 # end magic from mirtime.c
 
-# force hash to use Central European Time (possibly with DST)
-# for calculation, and always apply the 30W rule
-set -A d -- $(TZ=Europe/Berlin date +'%Y %m %d %F')
-set -A t -- $(mjd_implode 0 0 0 ${d[2]} $((d[1] - 1)) $((d[0] - 1900)))
-set -A t -- $(mjd_explode $((t[0] + 1 - 1)) 0)
-
 typeset -i10 -Z4 dY
 typeset -i10 -Z2 dM dD
 
+# force hash to use Central European Time (possibly with DST)
+# for calculation, and always apply the 30W rule
+set -A d -- $(TZ=Europe/Berlin date +'%Y %m %d')
+set -A t -- $(mjd_implode 0 0 0 ${d[2]} $((d[1] - 1)) $((d[0] - 1900)))
+set -A t -- $(mjd_explode $((t[0] + 1 - 1)) 0)
 (( dY = t[tm_year] + 1900 ))
 (( dM = t[tm_mon] + 1 ))
 (( dD = t[tm_mday] ))
@@ -215,7 +214,12 @@ Content-type: text/html; charset=utf-8
 EOF
 	exit 0
 fi
-set -A latlon -- $(print -nr -- "${d[3]}-$i" | $md | \
+set -A t -- $(mjd_implode 0 0 0 ${d[2]} $((d[1] - 1)) $((d[0] - 1900)))
+set -A t -- $(mjd_explode $((t[0] + 1)) 0)
+(( dY = t[tm_year] + 1900 ))
+(( dM = t[tm_mon] + 1 ))
+(( dD = t[tm_mday] ))
+set -A latlon -- $(print -nr -- "$dY-$dM-$dD-$i" | $md | \
     sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
     dc -e 16i -)
 
