@@ -27,6 +27,7 @@ Variants:
   largely untested, markers cannot be removed, scrap
 – geohashing.cgi (mirkarte.js): displays xkcd Geo Hashing waypoints
 – ghtomorrow.cgi (mirkarte.js): same, but for the next day
+– geovexilla.cgi (mirkarte.js): displays GeoVexilla.gpsgames.org flags
 
 VCS repository:
 https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
@@ -66,3 +67,8 @@ Other notes
 ───────────
 
 GeoHashing is always calculated east of 30°W only.
+The area is limited to a hard-coded value, currently
+in between 42°N 6°W and 56°N 12°E. Run xkcd2js.sh
+and change the CGIs to change this range.
+
+Centre coordinates for GeoVexilla are currently hardcoded.
