@@ -28,6 +28,9 @@ defmon=${defyear[1]}
 fetch='ftp -o -'
 whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
 
+# for xmlstarlet on MirPorts
+PATH=$PATH:/usr/mpkg/bin
+
 cat <<'EOF'
 Content-type: text/html; charset=utf-8
 
