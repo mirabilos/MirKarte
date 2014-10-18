@@ -31,6 +31,10 @@ whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
 # for xmlstarlet on MirPorts
 PATH=$PATH:/usr/mpkg/bin
 
+set -A mirtime_months -- Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+set -A mirtime_wdays -- Sun Mon Tue Wed Thu Fri Sat
+readonly mirtime_months[*] mirtime_wdays[*]
+
 cat <<'EOF'
 Content-type: text/html; charset=utf-8
 
@@ -128,6 +132,9 @@ cat <<'EOF'
   </p>
  </div>
  <div id="map_coors">
+EOF
+echo "  <span>GeoDashing ${mirtime_months[defmon - 1]} 20$defyear</span><br />"
+cat <<'EOF'
   <span id="map_coors_ns"></span><br />
   <span id="map_coors_we"></span>
  </div>
