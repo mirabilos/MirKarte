@@ -361,8 +361,7 @@ var fn_hashchanged = function () {
 		/* convert to int */
 		czoom = czoom | 0;
 	} else {
-		/* default value */
-		czoom = 12;
+		czoom = mirkarte_default_loc[2];
 	}
 	params["zoom"] = czoom;
 
@@ -371,9 +370,8 @@ var fn_hashchanged = function () {
 	if (isNaN(clat) || isNaN(clon) ||
 	    clat < -85 || clat > 85 ||
 	    clon < -180 || clon > 180) {
-		/* default value */
-		clat = 50.7;
-		clon = 7.11;
+		clat = mirkarte_default_loc[0];
+		clon = mirkarte_default_loc[1];
 	}
 	delete params["center_lat"];
 	delete params["center_lon"]

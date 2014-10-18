@@ -276,6 +276,7 @@ Content-type: text/html; charset=utf-8
  <script type="text/javascript" src="zip.js/WebContent/zip.js"></script>
  <script type="text/javascript"><!--//--><![CDATA[//><!--
   zip.workerScriptsPath = "zip.js/WebContent/";
+  mirkarte_default_loc = [50.7, 7.11, 8];
   var graticules = [
 	/* BEGIN generated file from xkcd2js.sh */
 	["42", "-6", "<a href=\"http://wiki.xkcd.com/geohashing/Ponferrada,_Spain\">Ponferrada, Spain</a>"],
