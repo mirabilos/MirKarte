@@ -27,6 +27,7 @@ Variants:
   largely untested, markers cannot be removed, scrap
 – geohashing.cgi (mirkarte.js): displays xkcd Geo Hashing waypoints
 – ghtomorrow.cgi (mirkarte.js): same, but for the next day
+– ghybermorgen.cgi (mirkarte.js): same, but for the day after the next
 – geovexilla.cgi (mirkarte.js): displays GeoVexilla.gpsgames.org flags
 - geodashing.cgi (mirkarte.js): displays GeoDashing.gpsgames.org dashpoints
 
