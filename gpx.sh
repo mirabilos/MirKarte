@@ -214,8 +214,7 @@ case $wptype {
 	set -A t -- $(mjd_implode 0 0 0 $((dD)) $((dM - 1)) $((dY - 1900)))
 	mjd=${t[0]}
 	# 30W rule
-	#XXX http://wiki.xkcd.com/geohashing/30W
-	(( --t[0] ))	# always apply, for now
+	(( t[0] -= ((lon > -30 && mjd >= 54613) ? 1 : 0) ))
 	# get DJIA day
 	set -A t -- $(mjd_explode ${t[0]} 0)
 	(( dY = t[tm_year] + 1900 ))
