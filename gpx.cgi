@@ -1,5 +1,5 @@
 #!/usr/bin/perl -T
-# From MirOS: www/files/wp.cgi,v 1.14 2014/11/10 16:18:07 tg Exp $
+# From MirOS: www/files/wp.cgi,v 1.15 2014/11/10 22:11:14 tg Exp $
 #-
 # Copyright © 2013, 2014
 #	Thorsten Glaser <tg@mirbsd.org>
