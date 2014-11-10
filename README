@@ -31,6 +31,9 @@ Variants:
 – geovexilla.cgi (mirkarte.js): displays GeoVexilla.gpsgames.org flags
 - geodashing.cgi (mirkarte.js): displays GeoDashing.gpsgames.org dashpoints
 
+Helpers:
+- gpx.cgi (q=waypoint): download GPX for waypoints (work in progress)
+
 VCS repository:
 https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
 
