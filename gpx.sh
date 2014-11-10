@@ -240,6 +240,8 @@ case $wptype {
 	# fill out metadata
 	wptime=$dY-$dM-${dD}T00:00:00Z
 	wpname=$dY-$dM-${dD}_${lat%.*}_${lon%.*}
+	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
+	wpcode=${hex#16#}
 	wpdesc="GeoHash ${wpname//_/ }"
 	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"
 	wpurln="Meetup ${wpname//_/ }"
@@ -271,7 +273,7 @@ cat <<EOF
   <bounds minlat="$lat" minlon="$lon" maxlat="$lat" maxlon="$lon" />
   <wpt lat="$lat" lon="$lon">
     <time>$wptime</time>
-    <name>$wpname</name>
+    <name>$wpcode</name>
     <desc>$wpdesc</desc>
     <url>$wpurlt</url>
     <urlname>$wpurln</urlname>
@@ -301,6 +303,5 @@ cat <<EOF
 </gpx>
 EOF
 #XXX TODO: re-read http://www.groundspeak.com/cache/1/0/cache.xsd and fix the above
-#XXX Cachebox: <name> max. 8 Zeichen, Tabellen-ID; wpname an id dran
 #XXX wpshtm, wplhtm sollten immer True sein; wpsdsc/wpldsc encoded beim Schreiben (andere auch)
 exit 0
