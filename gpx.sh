@@ -176,6 +176,20 @@ function mjd_implode {
 
 # end magic from mirtime.c
 
+# escape XHTML characters (three mandatory XML ones plus double quotes,
+# the latter in an XML safe fashion numerically though)
+function xhtml_escape {
+	if (( $# )); then
+		print -nr -- "$@"
+	else
+		cat
+	fi | sed \
+	    -e 's&\&amp;g' \
+	    -e 's<\&lt;g' \
+	    -e 's>\&gt;g' \
+	    -e 's"\&#34;g'
+}
+
 typeset -i10 -Z4 dY
 typeset -i10 -Z2 dM dD
 
@@ -236,20 +250,20 @@ case $wptype {
 	# get that graticule’s coordinates
 	lat+=${latlon[0]}
 	lon+=${latlon[1]}
-	# fill out metadata
-	wptime=$dY-$dM-${dD}T00:00:00Z
-	wpname=$dY-$dM-${dD}_${lat%.*}_${lon%.*}
+	# fill out data and metadata
+	wptime=$dY-$dM-${dD}T00:00:00Z				# date placed
+	wpname=$dY-$dM-${dD}_${lat%.*}_${lon%.*}		# WP code full
 	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
-	wpcode=${hex#16#}
-	wpdesc="GeoHash ${wpname//_/ }"
-	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"
-	wpurln="Meetup ${wpname//_/ }"
-	wpownr="The Internet"
-	wp_dif=2
-	wp_ter=2
-	wpshtm=False wpsdsc=''
-	wplhtm=False wpldsc=''
-	wphint=''
+	wpcode=${hex#16#}					# WP code 8byte
+	wpdesc="GeoHash ${wpname//_/ }"				# title text
+	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
+	wpurln="Meetup ${wpname//_/ }"				# link text
+	wpownr="The Internet"					# owner text
+	wp_dif=2						# D rating
+	wp_ter=2						# T rating
+	wpsdsc=''						# short html
+	wpldsc=''						# long html
+	wphint=''						# hint text
 	;;
 (*)
 	exit 1
@@ -273,15 +287,15 @@ cat <<EOF
   <wpt lat="$lat" lon="$lon">
     <time>$wptime</time>
     <name>$wpcode</name>
-    <desc>$wpdesc</desc>
-    <url>$wpurlt</url>
-    <urlname>$wpurln</urlname>
+    <desc>$(xhtml_escape "$wpdesc")</desc>
+    <url>$(xhtml_escape "$wpurlt")</url>
+    <urlname>$(xhtml_escape "$wpurln")</urlname>
     <sym>Geocache</sym>
     <type>Geocache|Virtual Cache</type>
-    <groundspeak:cache id="notfromgswp" available="False" archived="False" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
+    <groundspeak:cache id="notfromgs_$wpname" available="False" archived="False" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
       <groundspeak:name>$wpname</groundspeak:name>
-      <groundspeak:placed_by>$wpownr</groundspeak:placed_by>
-      <groundspeak:owner id="notfromgspr">$wpownr</groundspeak:owner>
+      <groundspeak:placed_by>$(xhtml_escape "$wpownr")</groundspeak:placed_by>
+      <groundspeak:owner id="notfromgspr">$(xhtml_escape "$wpownr")</groundspeak:owner>
       <groundspeak:type>Virtual Cache</groundspeak:type>
       <groundspeak:container>Virtual</groundspeak:container>
       <groundspeak:attributes>
@@ -291,9 +305,9 @@ cat <<EOF
       <groundspeak:terrain>$wp_ter</groundspeak:terrain>
       <groundspeak:country>Terra</groundspeak:country>
       <groundspeak:state>unknown</groundspeak:state>
-      <groundspeak:short_description html="$wpshtm">$wpsdsc</groundspeak:short_description>
-      <groundspeak:long_description html="$wplhtm">$wpldsc</groundspeak:long_description>
-      <groundspeak:encoded_hints>$wphint</groundspeak:encoded_hints>
+      <groundspeak:short_description html="True">$(xhtml_escape "$wpsdsc")</groundspeak:short_description>
+      <groundspeak:long_description html="True">$(xhtml_escape "$wpldsc")</groundspeak:long_description>
+      <groundspeak:encoded_hints>$(xhtml_escape "$wphint")</groundspeak:encoded_hints>
       <groundspeak:logs>
       </groundspeak:logs>
       <groundspeak:travelbugs />
@@ -301,6 +315,4 @@ cat <<EOF
   </wpt>
 </gpx>
 EOF
-#XXX TODO: re-read http://www.groundspeak.com/cache/1/0/cache.xsd and fix the above
-#XXX wpshtm, wplhtm sollten immer True sein; wpsdsc/wpldsc encoded beim Schreiben (andere auch)
 exit 0
