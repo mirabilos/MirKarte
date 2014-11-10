@@ -241,6 +241,8 @@ wptype=
 case $wp {
 (2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_?(-)+([0-9])_?(-)+([0-9]))
 	wptype=geohash ;;
+(2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_global)
+	wptype=globalhash ;;
 }
 
 [[ -n $wptype ]] || exit 1
@@ -301,6 +303,63 @@ case $wptype {
 	wp_ter=2						# T rating
 	wpsdsc="GeoHash ${wpname//_/ }"				# short html
 	wpldsc="Regular Geo Hash on $lattxt $lontxt"		# long html
+	wphint=''						# hint text
+	;;
+(globalhash)
+	# split into day and graticule
+	IFS=$' \t\n_'
+	set -A w -- $wp
+	IFS=$' \t\n-'
+	set -A d -- ${w[0]}
+	IFS=$' \t\n'
+	dY=${d[0]}
+	dM=${d[1]}
+	dD=${d[2]}
+
+	# get MJD for that day
+	set -A t -- $(mjd_implode 0 0 0 $((dD)) $((dM - 1)) $((dY - 1900)))
+	mjd=${t[0]}
+	# 30W rule
+	(( --t[0] ))
+	# get DJIA day
+	set -A t -- $(mjd_explode ${t[0]} 0)
+	(( dY = t[tm_year] + 1900 ))
+	(( dM = t[tm_mon] + 1 ))
+	(( dD = t[tm_mday] ))
+	# get DJIA
+	i=$($fetch http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD \
+	    2>/dev/null)
+	[[ -n $i ]] || exit 1
+	# get hash day
+	set -A t -- $(mjd_explode $mjd 0)
+	(( dY = t[tm_year] + 1900 ))
+	(( dM = t[tm_mon] + 1 ))
+	(( dD = t[tm_mday] ))
+	# get that day’s hash
+	set -A latlon -- $(print -nr -- "$dY-$dM-$dD-$i" | $md | \
+	    sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
+	    dc -e 16i -)
+	x=$(dc -e "${latlon[0]} 180* 90-ps."); lat=${x%.*}; latlon[0]=.${x#*.}
+	x=$(dc -e "${latlon[1]} 360* 180-ps."); lon=${x%.*}; latlon[1]=.${x#*.}
+	# format the common notation
+	lattxt=${|decmin2txt $lat ${latlon[0]} N S 2;}
+	lontxt=${|decmin2txt $lon ${latlon[1]} E W 3;}
+	# get that graticule’s coordinates
+	lat+=${latlon[0]}
+	lon+=${latlon[1]}
+	# fill out data and metadata
+	wptime=$dY-$dM-${dD}T00:00:00Z				# date placed
+	wpname=$dY-$dM-${dD}_global				# WP code full
+	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
+	wpcode=${hex#16#}					# WP code 8byte
+	wpdesc="GeoHash ${wpname//_/ }"				# title text
+	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
+	wpurln="Meetup ${wpname//_/ }"				# link text
+	wpownr="The Internet"					# owner text
+	wp_dif=2						# D rating
+	wp_ter=2						# T rating
+	wpsdsc="GeoHash ${wpname//_/ }"				# short html
+	wpldsc="Global Geo Hash on $lattxt $lontxt"		# long html
 	wphint=''						# hint text
 	;;
 (*)
