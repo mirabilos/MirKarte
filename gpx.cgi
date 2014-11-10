@@ -116,6 +116,9 @@ if ($found == 2) {
 	$query =~ s/^=//;
 
 	# generate our own GPX and exit
+	#XXX call gpx.sh, capture output
+	#XXX if errorlevel 0, then emit HTTP headers, content (w/o trailing LF), exit 0
+	#XXX otherwise:
 
 	# fall through
 	$found = 0;
