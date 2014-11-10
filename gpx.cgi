@@ -84,7 +84,7 @@ $query = "" unless $query =~ /^[0-9A-Za-z_-]*$/;
 $query =~ y/a-z/A-Z/;
 
 if ($query ne "") {
-	$query =~		s@\b(N[0-9][0-9A-F]{4}|(EC|G[ACEGL]|O[BCKPSUXZ]|PR|SH|[TLC]C|WM)[0-9A-Z]{1,6}|(GD|VX)[0-9A-Z]{2}-[A-Z]{4}|2[0-9]{3}-(0[1-9]|1[0-2])-[0-3][0-9]_-?[0-9]{1,2}_-?[0-9]{1,3})\b@
+	$query =~		s@\b(N[0-9][0-9A-F]{4}|(EC|G[ACEGL]|O[BCKPSUXZ]|PR|SH|[TLC]C|WM)[0-9A-Z]{1,6}|(GD|VX)[0-9A-Z]{2}-[A-Z]{4}|2[0-9]{3}-(0[1-9]|1[0-2])-[0-3][0-9]_(-?[0-9]{1,2}_-?[0-9]{1,3}|global))\b@
 					($query = $1) =~ /^GC/ ? "http://www.geocaching.com/seek/cache_details.aspx?wp=$query" :
 					$query =~ /^EC/ ? sprintf("http://extremcaching.com/index.php/output-2/%s", substr($query, 2)) :
 					$query =~ /^GA/ ? "http://geocaching.com.au/cache/$query" :
