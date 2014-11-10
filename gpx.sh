@@ -284,7 +284,7 @@ case $wptype {
 	    dc -e 16i -)
 	# format the common notation
 	lattxt=${|decmin2txt $lat ${latlon[0]} N S 2;}
-	lontxt=${|decmin2txt $lon ${latlon[1]} W E 3;}
+	lontxt=${|decmin2txt $lon ${latlon[1]} E W 3;}
 	# get that graticule’s coordinates
 	lat+=${latlon[0]}
 	lon+=${latlon[1]}
