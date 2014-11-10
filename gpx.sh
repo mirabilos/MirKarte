@@ -190,6 +190,41 @@ function xhtml_escape {
 	    -e 's"\&#34;g'
 }
 
+function decmin2min {
+	local x=${1#.}
+	typeset -i10 -Z9 y
+
+	x=${x::7}
+	(( y = x * 60 ))
+
+	REPLY=${y::2}.${y:2}
+}
+
+function decmin2txt {
+	local graticule=$1 decimal=$2 plus=$3 minus=$4 places=$5 x
+	typeset -i10 -Z$places n
+
+	if [[ $graticule = -* ]]; then
+		REPLY=$minus
+	else
+		REPLY=$plus
+	fi
+	n=${graticule#-}
+	REPLY+=" ${n}° "
+
+	x=${|decmin2min $decimal;}
+	typeset -i10 -Z2 n=${x%.*}
+	x=${x#*.}
+	typeset -i10 -Z4 m=${x::4}
+	if (( ${x:4:1} >= 5 )); then
+		if (( ++m > 9999 )); then
+			(( ++n ))
+			m=0
+		fi
+	fi
+	REPLY+=$n.$m
+}
+
 typeset -i10 -Z4 dY
 typeset -i10 -Z2 dM dD
 
@@ -247,6 +282,9 @@ case $wptype {
 	set -A latlon -- $(print -nr -- "$dY-$dM-$dD-$i" | $md | \
 	    sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
 	    dc -e 16i -)
+	# format the common notation
+	lattxt=${|decmin2txt $lat ${latlon[0]} N S 2;}
+	lontxt=${|decmin2txt $lon ${latlon[1]} W E 3;}
 	# get that graticule’s coordinates
 	lat+=${latlon[0]}
 	lon+=${latlon[1]}
@@ -261,8 +299,8 @@ case $wptype {
 	wpownr="The Internet"					# owner text
 	wp_dif=2						# D rating
 	wp_ter=2						# T rating
-	wpsdsc=''						# short html
-	wpldsc=''						# long html
+	wpsdsc="GeoHash ${wpname//_/ }"				# short html
+	wpldsc="Regular Geo Hash on $lattxt $lontxt"		# long html
 	wphint=''						# hint text
 	;;
 (*)
