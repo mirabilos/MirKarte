@@ -98,17 +98,19 @@ cat <<'EOF'
 
   function mirkarte_hookfn(map) {
 	var i = 0;
-	var xre = /&lat=([0-9.-]*)&lon=([0-9.-]*)'/;
+	var xre = /wp=(VX[0-9A-Z][0-9A-Z]-[0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z])&lat=([0-9.-]*)&lon=([0-9.-]*)\'/;
 
 	while (geovexilla_arr[i][0] != 0) {
 		var xs = xre.exec(geovexilla_arr[i][1]);
-		var ghlat = parseFloat(xs[1]);
-		var ghlon = parseFloat(xs[2]);
+		var ghlat = parseFloat(xs[2]);
+		var ghlon = parseFloat(xs[3]);
 		var ghmarker = L.marker([ghlat, ghlon], {
 			"draggable": false
 		    }).addTo(map);
 		var f = llformat(ghlat, ghlon, 1);
-		ghmarker.bindPopup(f[0] + ' ' + f[1] + '<br />' + geovexilla_arr[i][1]);
+		ghmarker.bindPopup(f[0] + ' ' + f[1] +
+		    '</a> | <a href="gpx.cgi?' + xs[1] + '">GPX</a><br />' +
+		    geovexilla_arr[i][1]);
 		i++;
 	}
   }

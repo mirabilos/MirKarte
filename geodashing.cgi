@@ -114,7 +114,8 @@ cat <<'EOF'
 		var f = llformat(ghlat, ghlon, 1);
 		ghmarker.bindPopup(f[0] + ' ' + f[1] +
 		    '<br /><a href="http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=' +
-		    geodashing_arr[i][3] + '">' + geodashing_arr[i][3] + '</a>');
+		    geodashing_arr[i][3] + '">' + geodashing_arr[i][3] +
+		    '</a> | <a href="gpx.cgi?' + geodashing_arr[i][3] + '">GPX</a>');
 		i++;
 	}
   }

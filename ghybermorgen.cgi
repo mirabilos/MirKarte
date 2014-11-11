@@ -584,6 +584,7 @@ Content-type: text/html; charset=utf-8
   ];
 EOF
 print "  var geohashing_offset = [\"${latlon[0]}\", \"${latlon[1]}\"];"
+print "  var geohashing_day = \"$dY-$dM-$dD\";"
 cat <<'EOF'
 
   function mirkarte_hookfn(map) {
@@ -595,8 +596,13 @@ cat <<'EOF'
 		var ghmarker = L.marker([ghlat, ghlon], {
 			"draggable": false
 		    }).addTo(map);
+		var ghwp = geohashing_day + '_' + graticules[i][0] +
+		    '_' + graticules[i][1];
 		marker_popup(ghmarker,
-		    'Geo Hashing Point<br />' + graticules[i][2] + '<br />°N<br />°E');
+		    'Geo Hashing Point<br />' + graticules[i][2] +
+		    '<br /><a href="http://wiki.xkcd.com/geohashing/' +
+		    ghwp + '">Meetup</a> | <a href="gpx.cgi?' + ghwp +
+		    '">GPX</a><br />°N<br />°E');
 		i++;
 	}
 	var ghlat = parseFloat(geohashing_offset[0]) * 180 - 90;
@@ -605,8 +611,12 @@ cat <<'EOF'
 		"icon": marker_icon,
 		"draggable": false
 	    }).addTo(map);
+	var ghwp = geohashing_day + '_global';
 	marker_popup(ghmarker,
-	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash</a><br />°N<br />°E');
+	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash</a>' +
+	    '<br /><a href="http://wiki.xkcd.com/geohashing/' + ghwp +
+	    '">Meetup</a> | <a href="gpx.cgi?' + ghwp +
+	    '">GPX</a><br />°N<br />°E');
   }
 
  //--><!]]></script>
