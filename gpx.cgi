@@ -117,12 +117,18 @@ if ($query ne "") {
 }
 
 if ($found == 2) {
-	$query =~ s/^=//;
+	$query =~ /^=(.*)$/;
+	$query = $1;
 
-	# generate our own GPX and exit
-	#XXX call gpx.sh, capture output
-	#XXX if errorlevel 0, then emit HTTP headers, content (w/o trailing LF), exit 0
-	#XXX otherwise:
+	delete $ENV{'PATH'};
+	my $gpx = qx(./gpx.sh $query);
+
+	if ($? == 0) {
+		print("Content-type: application/octet-stream\r\n");
+		printf("Content-Length: %d\r\n", length $gpx);
+		print("\r\n$gpx");
+		exit(0);
+	}
 
 	# fall through
 	$found = 0;
