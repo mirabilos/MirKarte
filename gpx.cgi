@@ -22,6 +22,10 @@
 use strict;
 use warnings;
 
+use File::Basename qw(dirname);
+my ($mydir) = (dirname($0) =~ /(.*)/);	# untaint
+chdir($mydir) or die;
+
 sub htmlencode($) {
 	local ($_) = @_;
 
