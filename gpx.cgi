@@ -92,7 +92,7 @@ if ($query ne "") {
 					($query = $1) =~ /^GC/ ? "http://www.geocaching.com/seek/cache_details.aspx?wp=$query" :
 					$query =~ /^EC/ ? sprintf("http://extremcaching.com/index.php/output-2/%s", substr($query, 2)) :
 					$query =~ /^GA/ ? "http://geocaching.com.au/cache/$query" :
-					$query =~ /^GD/ ? "http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$query" :
+					$query =~ /^GD/ ? "=$query" :
 					$query =~ /^GE/ ? "http://geocaching.gpsgames.org/cgi-bin/ge.pl?wp=$query" :
 					$query =~ /^GG/ ? "http://golf.gpsgames.org/cgi-bin/golf.pl?course=$query&coursedetails=Go" :
 					$query =~ /^(GL|PR)/ ? "http://coord.info/$query" :

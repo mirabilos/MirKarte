@@ -239,6 +239,8 @@ whence -p md5 >/dev/null 2>&1 && md=md5
 wp=$1
 wptype=
 case $wp {
+(GD*)
+	wptype=gd ;;
 (2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_?(-)+([0-9])_?(-)+([0-9]))
 	wptype=geohash ;;
 (2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_global)
@@ -250,6 +252,27 @@ case $wp {
 now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')				# current time
 
 case $wptype {
+(gd)
+	set -eo pipefail
+	ftp -o - "http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$wp" | \
+	    sed -n '/^.*maps.pl?wp=.*&lat=\([0-9.-]*\)&lon=\([0-9.-]*\)".*$/s//\1 \2/p' |&
+	read -p lat lon						# position
+	set +e
+	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
+	lontxt=${|decmin2txt ${lon%.*} .${lon#*.} E W 3;}
+	wptime=${now%%+([0-9])T*}01T00:00:00Z			# date placed
+	wpname=$wp						# WP code full
+	wpcode=${wp//-}						# WP code 8byte
+	wpdesc="$wp Dashpoint"					# title text
+	wpurlt="http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$wp"	# link target
+	wpurln="$wp"						# link text
+	wpownr="gpsgames.org"					# owner text
+	wp_dif=2						# D rating
+	wp_ter=2						# T rating
+	wpsdsc="Dashpoint ${wpname//_/ }"			# short html
+	wpldsc="GeoDashing at $lattxt $lontxt"			# long html
+	wphint=''						# hint text
+	;;
 (geohash)
 	# split into day and graticule
 	IFS=$' \t\n_'
