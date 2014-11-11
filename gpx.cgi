@@ -109,7 +109,7 @@ if ($query ne "") {
 					$query =~ /^[TLC]C/ ? "http://www.terracaching.com/Cache/$query" :
 					$query =~ /^VX/ ? "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$query" :
 					$query =~ /^WM/ ? "http://www.waymarking.com/waymarks/$query" :
-					$query =~ /^2/ ? "http://wiki.xkcd.com/geohashing/$query" :
+					$query =~ /^2/ ? "=$query" :
 					"";
 				@eg;
 	$found = 1 if $query =~ /^http/;
