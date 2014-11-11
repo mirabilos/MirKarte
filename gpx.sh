@@ -191,7 +191,7 @@ function xhtml_escape {
 }
 
 function decmin2min {
-	local x=${1#.}
+	local x=${1#.}0000000
 	typeset -i10 -Z9 y
 
 	x=${x::7}
@@ -255,7 +255,7 @@ case $wptype {
 (gd)
 	set -eo pipefail
 	ftp -o - "http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$wp" | \
-	    sed -n '/^.*maps.pl?wp=.*&lat=\([0-9.-]*\)&lon=\([0-9.-]*\)".*$/s//\1 \2/p' |&
+	    sed -n '/^.*maps\.pl.*[&;?]lat=\([0-9.-]*\)&a*m*p*;*lon=\([0-9.-]*\)".*$/s//\1 \2/p' |&
 	read -p lat lon						# position
 	set +e
 	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
