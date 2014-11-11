@@ -127,6 +127,7 @@ if ($found == 2) {
 		print("Content-type: application/octet-stream\r\n");
 		printf("Content-Length: %d\r\n", length $gpx);
 		print("Content-Disposition: attachment; filename=\"$query.gpx\"\r\n");
+		print("X-Content-Type-Options: nosniff\r\n");
 		print("\r\n$gpx");
 		exit(0);
 	}
