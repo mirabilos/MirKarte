@@ -241,6 +241,8 @@ wptype=
 case $wp {
 (GD*)
 	wptype=gd ;;
+(VX*)
+	wptype=vx ;;
 (2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_?(-)+([0-9])_?(-)+([0-9]))
 	wptype=geohash ;;
 (2[0-9][0-9][0-9]-@(0[1-9]|1[0-2])-[0-3][0-9]_global)
@@ -272,6 +274,32 @@ case $wptype {
 	wpsdsc="Dashpoint ${wpname//_/ }"			# short html
 	wpldsc="GeoDashing at $lattxt $lontxt"			# long html
 	wphint=''						# hint text
+	;;
+(vx)
+	T=$(mktemp /tmp/gpx.XXXXXXXXXX) || exit 1
+	ftp -o "$T" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$wp" || (rm -f "$T"; exit 1)
+	sed -n '/^.*maps\.pl.*[&;?]lat=\([0-9.-]*\)&a*m*p*;*lon=\([0-9.-]*\)".*$/s//\1 \2/p' <"$T" |&
+	read -p lat lon || lat=					# position
+	[[ -n $lat && -n $lon ]] || (rm -f "$T"; exit 1)
+	flag=$(sed -n '/^.*src=".images.flags.*title="\([^"]*\)".*$/s//\1/p' <"$T")
+	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
+	lontxt=${|decmin2txt ${lon%.*} .${lon#*.} E W 3;}
+	wptime=$now						# date placed
+	wpname=$wp						# WP code full
+	wpcode=${wp//-}						# WP code 8byte
+	wpdesc="$wp${flag:+ $flag} flag"			# title text
+	wpurlt="http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$wp"	# link target
+	wpurln="$wp"						# link text
+	wpownr="gpsgames.org"					# owner text
+	wp_dif=2						# D rating
+	wp_ter=2						# T rating
+	wpsdsc="Flag ${wpname//_/ }"				# short html
+	wpldsc="GeoVexilla at $lattxt $lontxt$(fgrep \
+	    -e Near: -e Expires: -e Flag: "$T" | sed \
+	    -e 's!src="/images!src="http://geovexilla.gpsgames.org/images!g' \
+	    -e 's!</TD>!!g')"					# long html
+	wphint=''						# hint text
+	rm -f "$T"
 	;;
 (geohash)
 	# split into day and graticule

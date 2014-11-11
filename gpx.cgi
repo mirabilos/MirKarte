@@ -107,7 +107,7 @@ if ($query ne "") {
 					$query =~ /^OX/ ? "http://www.opencaching.com/#!geocache/$query" :
 					$query =~ /^SH/ ? "http://shutterspot.gpsgames.org/cgi-bin/sh.pl?wp=$query" :
 					$query =~ /^[TLC]C/ ? "http://www.terracaching.com/Cache/$query" :
-					$query =~ /^VX/ ? "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$query" :
+					$query =~ /^VX/ ? "=$query" :
 					$query =~ /^WM/ ? "http://www.waymarking.com/waymarks/$query" :
 					$query =~ /^2/ ? "=$query" :
 					"";
