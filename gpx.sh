@@ -247,6 +247,8 @@ case $wp {
 
 [[ -n $wptype ]] || exit 1
 
+now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')				# current time
+
 case $wptype {
 (geohash)
 	# split into day and graticule
@@ -288,14 +290,14 @@ case $wptype {
 	lattxt=${|decmin2txt $lat ${latlon[0]} N S 2;}
 	lontxt=${|decmin2txt $lon ${latlon[1]} E W 3;}
 	# get that graticule’s coordinates
-	lat+=${latlon[0]}
-	lon+=${latlon[1]}
+	lat+=${latlon[0]}					# position N/S
+	lon+=${latlon[1]}					# position E/W
 	# fill out data and metadata
 	wptime=$dY-$dM-${dD}T00:00:00Z				# date placed
 	wpname=$dY-$dM-${dD}_${lat%.*}_${lon%.*}		# WP code full
 	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
 	wpcode=${hex#16#}					# WP code 8byte
-	wpdesc="GeoHash ${wpname//_/ }"				# title text
+	wpdesc="${wpname//_/ } GeoHash"				# title text
 	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
 	wpurln="Meetup ${wpname//_/ }"				# link text
 	wpownr="The Internet"					# owner text
@@ -345,14 +347,14 @@ case $wptype {
 	lattxt=${|decmin2txt $lat ${latlon[0]} N S 2;}
 	lontxt=${|decmin2txt $lon ${latlon[1]} E W 3;}
 	# get that graticule’s coordinates
-	lat+=${latlon[0]}
-	lon+=${latlon[1]}
+	lat+=${latlon[0]}					# position N/S
+	lon+=${latlon[1]}					# position E/W
 	# fill out data and metadata
 	wptime=$dY-$dM-${dD}T00:00:00Z				# date placed
 	wpname=$dY-$dM-${dD}_global				# WP code full
 	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
 	wpcode=${hex#16#}					# WP code 8byte
-	wpdesc="GeoHash ${wpname//_/ }"				# title text
+	wpdesc="${wpname//_/ } GeoHash"				# title text
 	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
 	wpurln="Meetup ${wpname//_/ }"				# link text
 	wpownr="The Internet"					# owner text
@@ -366,8 +368,6 @@ case $wptype {
 	exit 1
 	;;
 }
-
-now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
 rv=<<EOF
 <?xml version="1.0" encoding="utf-8"?>

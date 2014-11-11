@@ -135,5 +135,5 @@ if ($found == 2) {
 	$found = 0;
 }
 
-$query = "https://www.mirbsd.org/wp.htm" unless $found;
+$query = "http://www.mirbsd.org/wp.htm" unless $found;
 &redirect($query);
