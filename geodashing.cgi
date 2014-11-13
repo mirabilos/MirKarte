@@ -25,8 +25,10 @@ defzoom=9
 set -A defyear -- $(date +'%y %m')
 defmon=${defyear[1]}
 
-fetch='ftp -o -'
-whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
+xff="${HTTP_X_FORWARDED_FOR:+$HTTP_X_FORWARDED_FOR, }$REMOTE_ADDR"
+set -A fetch -- ftp -H "X-Forwarded-For: $xff" -o -
+whence -p wget >/dev/null 2>&1 && \
+    set -A fetch -- wget --header "X-Forwarded-For: $xff" -qO- -T3
 
 # for xmlstarlet on MirPorts
 PATH=$PATH:/usr/mpkg/bin
@@ -91,7 +93,7 @@ Content-type: text/html; charset=utf-8
 EOF
 print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
 
-$fetch "http://geodashing.gpsgames.org/cgi-bin/stats.pl?startmonth=$defmon&startyear=$defyear&endmonth=$defmon&endyear=$defyear&radius=200&lat_1=$deflat&lon_1=$deflon&statstype=circle&download=Download&downloadformat=LOC" | \
+"${fetch[@]}" "http://geodashing.gpsgames.org/cgi-bin/stats.pl?startmonth=$defmon&startyear=$defyear&endmonth=$defmon&endyear=$defyear&radius=200&lat_1=$deflat&lon_1=$deflon&statstype=circle&download=Download&downloadformat=LOC" | \
     xmlstarlet sel -t -m //waypoint -v name/@id -o ' ' -v coord/@lat -o ' ' -v coord/@lon -n |&
 n=0; print "  var geodashing_arr = ["
 while read -pr id lat lon; do

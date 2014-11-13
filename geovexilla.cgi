@@ -23,8 +23,10 @@ deflat=50.7
 deflon=7.11
 defzoom=9
 
-fetch='ftp -o -'
-whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
+xff="${HTTP_X_FORWARDED_FOR:+$HTTP_X_FORWARDED_FOR, }$REMOTE_ADDR"
+set -A fetch -- ftp -H "X-Forwarded-For: $xff" -o -
+whence -p wget >/dev/null 2>&1 && \
+    set -A fetch -- wget --header "X-Forwarded-For: $xff" -qO- -T3
 
 cat <<'EOF'
 Content-type: text/html; charset=utf-8
@@ -82,7 +84,7 @@ Content-type: text/html; charset=utf-8
 EOF
 print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
 
-$fetch "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?zoom=$defzoom&lat=$deflat&lon=$deflon" | \
+"${fetch[@]}" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?zoom=$defzoom&lat=$deflat&lon=$deflon" | \
     fgrep google.maps.InfoWindow | sed \
     -e 's/^.*content: "[	 '\'']*//' \
     -e 's/[	 '\'']*".*$//' \

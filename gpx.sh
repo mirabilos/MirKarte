@@ -228,8 +228,10 @@ function decmin2txt {
 typeset -i10 -Z4 dY
 typeset -i10 -Z2 dM dD
 
-fetch='ftp -o -'
-whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
+xff="${HTTP_X_FORWARDED_FOR:+$HTTP_X_FORWARDED_FOR, }$REMOTE_ADDR"
+set -A fetch -- ftp -H "X-Forwarded-For: $xff" -o -
+whence -p wget >/dev/null 2>&1 && \
+    set -A fetch -- wget --header "X-Forwarded-For: $xff" -qO- -T3
 function gnumd5 {
 	md5sum | sed 's/ .*$//'
 }
@@ -325,7 +327,7 @@ case $wptype {
 	(( dM = t[tm_mon] + 1 ))
 	(( dD = t[tm_mday] ))
 	# get DJIA
-	i=$($fetch http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD \
+	i=$("${fetch[@]}" http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD \
 	    2>/dev/null)
 	[[ -n $i ]] || exit 1
 	# get hash day
@@ -380,7 +382,7 @@ case $wptype {
 	(( dM = t[tm_mon] + 1 ))
 	(( dD = t[tm_mday] ))
 	# get DJIA
-	i=$($fetch http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD \
+	i=$("${fetch[@]}" http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD \
 	    2>/dev/null)
 	[[ -n $i ]] || exit 1
 	# get hash day

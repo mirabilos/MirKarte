@@ -188,15 +188,17 @@ set -A t -- $(mjd_explode $((t[0] - 1)) 0)
 (( dM = t[tm_mon] + 1 ))
 (( dD = t[tm_mday] ))
 
-fetch='ftp -o -'
-whence -p wget >/dev/null 2>&1 && fetch='wget -qO- -T3'
+xff="${HTTP_X_FORWARDED_FOR:+$HTTP_X_FORWARDED_FOR, }$REMOTE_ADDR"
+set -A fetch -- ftp -H "X-Forwarded-For: $xff" -o -
+whence -p wget >/dev/null 2>&1 && \
+    set -A fetch -- wget --header "X-Forwarded-For: $xff" -qO- -T3
 function gnumd5 {
 	md5sum | sed 's/ .*$//'
 }
 md=gnumd5
 whence -p md5 >/dev/null 2>&1 && md=md5
 
-i=$($fetch http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD 2>/dev/null)
+i=$("${fetch[@]}" http://carabiner.peeron.com/xkcd/map/data/$dY/$dM/$dD 2>/dev/null)
 if [[ -z $i ]]; then
 	cat <<'EOF'
 Content-type: text/html; charset=utf-8
