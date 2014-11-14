@@ -286,7 +286,8 @@ case $wptype {
 	flag=$(sed -n '/^.*src=".images.flags.*title="\([^"]*\)".*$/s//\1/p' <"$T")
 	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
 	lontxt=${|decmin2txt ${lon%.*} .${lon#*.} E W 3;}
-	wptime=$now						# date placed
+	wptime=$(sed -n '/Expires:/s/^.* \(2[0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]\) \([0-2][0-9]:[0-5][0-9]:[0-6][0-9]\) UTC\( .*\)\{0,1\}$/\1T\2Z/p' "$T")
+	[[ -n $wptime ]] || wptime=$now				# date placed
 	wpname=$wp						# WP code full
 	wpcode=${wp//-}						# WP code 8byte
 	wpdesc="$wp${flag:+ $flag} flag"			# title text
