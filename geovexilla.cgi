@@ -18,6 +18,10 @@
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
 
+#XXX add attribution (either to #map_coors or by moving CGI content
+#XXX into a layer; maybe even make an AJAX version of the CGIs that
+#XXX merge all the CGIs into layers)
+
 #XXX make these CGI parameters
 deflat=50.7
 deflon=7.11
@@ -130,6 +134,7 @@ cat <<'EOF'
   </p>
  </div>
  <div id="map_coors">
+  <span><a href="http://geovexilla.gpsgames.org/cgi-bin/vx.pl">GeoVexilla</a></span><br />
   <span id="map_coors_ns"></span><br />
   <span id="map_coors_we"></span>
  </div>

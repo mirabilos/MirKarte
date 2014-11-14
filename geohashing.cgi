@@ -18,6 +18,10 @@
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
 
+#XXX add attribution (either to #map_coors or by moving CGI content
+#XXX into a layer; maybe even make an AJAX version of the CGIs that
+#XXX merge all the CGIs into layers)
+
 # magic from MirOS: src/kern/c/mirtime.c,v 1.3 2011/11/20 23:40:10 tg Exp $
 
 # struct tm members and (POSIX) time functions
@@ -635,7 +639,7 @@ cat <<'EOF'
  </div>
  <div id="map_coors">
 EOF
-echo "  <span>Geo Hashing on $dY-$dM-$dD</span><br />"
+echo "  <span><a href=\"http://wiki.xkcd.com/geohashing/Main_Page\">Geo Hashing</a> on $dY-$dM-$dD</span><br />"
 cat <<'EOF'
   <span id="map_coors_ns"></span><br />
   <span id="map_coors_we"></span>
