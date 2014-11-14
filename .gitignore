@@ -1,0 +1,8 @@
+#
+# Remotes used:
+# - origin git+ssh://mirabilos@evolvis.org/scmrepos/git/useful-scripts/mirkarte.git
+# - togeojson git@github.com:mapbox/togeojson.git
+# - zipjs git://github.com/gildas-lormeau/zip.js
+# Remotes not used:
+# - polyfill git@github.com:inexorabletash/polyfill.git
+#
