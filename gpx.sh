@@ -17,6 +17,12 @@
 # of dealing in the work, even if advised of the possibility of such
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
+#-
+# Provide our own GPX, or filter or regenerate those we get from the
+# waypoint listing site. Does not support all sites yet…
+#
+# TODO:
+# – CacheBox unknown types “waypoint|virtual stage”, “waypoint|physical stage”
 
 # magic from MirOS: src/kern/c/mirtime.c,v 1.3 2011/11/20 23:40:10 tg Exp $
 
