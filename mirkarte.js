@@ -159,7 +159,7 @@ var show_menu_marker = (function () {
 				x = feature.properties["desc"];
 				if (/TC/.test(feature.properties["name"]) &&
 				    feature.properties["sym"] == "TerraCache")
-					x = '<a href="http://www.terracaching.com/viewcache.cgi?ID=' +
+					x = '<a href="http://www.terracaching.com/Cache/' +
 					    feature.properties.name + '">' +
 					    (x ? x : "(no description)") +
 					    '</a>';
