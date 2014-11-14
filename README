@@ -19,7 +19,8 @@ This is a beta. It may break horribly and I will not be held
 responsible.
 
 If you use this, you must check the terms of use of the
-various tile or WMS services yourself.
+various tile or WMS services yourself. (Support for more
+tile/WMS services welcome; send me patches please!)
 
 Variants:
 – index.htm (mirkarte.js): standard/basic map
@@ -74,7 +75,9 @@ Other notes
 GeoHashing is always calculated east of 30°W only.
 The area is limited to a hard-coded value, currently
 in between 42°N 6°W and 56°N 12°E. Run xkcd2js.sh
-and change the CGIs to change this range.
+and change the CGIs to change this range. (The GPX
+export works for all hashes and correctly honours
+the 30W rule, including globalhashes.)
 
 Centre coordinates for GeoDashing and GeoVexilla and
 month/year for GeoDashing are currently hardcoded.

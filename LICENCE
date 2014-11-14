@@ -18,7 +18,8 @@ MirKarte itself is covered by The MirOS Licence:
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
 
-MirKarte makes use of the Prototype JavaScript framework,
+MirKarte makes use of the Prototype JavaScript framework (bundled
+content from the libjs-prototype_1.7.1-3_all.deb Debian package),
 which comes under an MIT licence:
 
 # Copyright (C) 2005-2008 Sam Stephenson <sam@conio.net>
@@ -38,7 +39,8 @@ which comes under an MIT licence:
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-MirKarte makes use of the Leaflet mapping framework
+MirKarte makes use of the Leaflet mapping framework (bundled
+content from the libjs-leaflet_0.7.2-1_all.deb Debian package)
 under a 2-clause BSD-style licence:
 
 # Copyright (c) 2010-2013, Vladimir Agafonkin
@@ -98,9 +100,10 @@ MirKarte uses zip.js under a 3-clause BSD-style licence:
 MirKarte currently uses togeojson for GPX import, whose licence tells us,
 in no uncertain terms, to do whatever we want to.
 
-The img/ subdirectory contains three marker icons that are derived
-from those provided with Leaflet and only have the colour changed
-programmatically, using The GIMP.
+The img/ subdirectory contains three marker icons (marker-icon-2x.png,
+marker-icon.png, and marker-shadow.png) that are derived from those
+provided with Leaflet (under a 2-clause BSD-style licence) and only
+have the colour changed programmatically, using The GIMP.
 
 The tc/ subdirectory contains icons that are part of the TerraCaching
 website and are © Terra Interactive, LLC. These icons are proprietary
