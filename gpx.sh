@@ -268,6 +268,7 @@ case $wptype {
 	ftp -o - "http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$wp" | \
 	    sed -n '/^.*maps\.pl.*[&;?]lat=\([0-9.-]*\)&a*m*p*;*lon=\([0-9.-]*\)".*$/s//\1 \2/p' |&
 	read -p lat lon						# position
+	[[ -n $lat && -n $lon ]]
 	set +e
 	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
 	lontxt=${|decmin2txt ${lon%.*} .${lon#*.} E W 3;}
@@ -287,10 +288,10 @@ case $wptype {
 (vx)
 	wp_src='from geovexilla.gpsgames.org data'		# data source
 	T=$(mktemp /tmp/gpx.XXXXXXXXXX) || exit 1
-	ftp -o "$T" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$wp" || (rm -f "$T"; exit 1)
+	ftp -o "$T" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$wp" || { rm -f "$T"; exit 1; }
 	sed -n '/^.*maps\.pl.*[&;?]lat=\([0-9.-]*\)&a*m*p*;*lon=\([0-9.-]*\)".*$/s//\1 \2/p' <"$T" |&
 	read -p lat lon || lat=					# position
-	[[ -n $lat && -n $lon ]] || (rm -f "$T"; exit 1)
+	[[ -n $lat && -n $lon ]] || { rm -f "$T"; exit 1; }
 	flag=$(sed -n '/^.*src=".images.flags.*title="\([^"]*\)".*$/s//\1/p' <"$T")
 	lattxt=${|decmin2txt ${lat%.*} .${lat#*.} N S 2;}
 	lontxt=${|decmin2txt ${lon%.*} .${lon#*.} E W 3;}
