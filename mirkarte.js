@@ -113,12 +113,20 @@ var MarkerWithAttribution = L.Marker.extend({
 	}
 });
 
+var nextpos = false;
+function jumptonextpos() {
+	map.closePopup();
+	if (nextpos !== false)
+		map.fitBounds(nextpos[0], nextpos[1]);
+}
+
 function add_gpx_to_map(gpx_string, layer_name) {
+	if (!/<gpx/.test(gpx_string))
+		return false;
 	var dom = (new DOMParser()).parseFromString(gpx_string,
 	    "text/xml");
 	var gjsn = toGeoJSON.gpx(dom);
-	var cur = map.getCenter();
-	var xn = cur.lat, xe = cur.lng, xs = cur.lat, xw = cur.lng;
+	var xn = -1000, xe = -1000, xs = 1000, xw = 1000;
 	maplayers.addOverlay(L.geoJson(gjsn, {
 		coordsToLatLng: function (coords) {
 			if (coords[1] > xn)
@@ -162,10 +170,12 @@ function add_gpx_to_map(gpx_string, layer_name) {
 			layer.bindPopup(s);
 		}
 	    }).addTo(map), layer_name);
-	map.fitBounds([[xs, xw], [xn, xe]], {
-		"padding": [48, 48],
-		"maxZoom": 14
-	    });
+	if (xn != -1000 && xe != -1000 && xs != 1000 && xw != 1000)
+		return ([[[xs, xw], [xn, xe]], {
+			"padding": [48, 48],
+			"maxZoom": 14
+		    }]);
+	return false;
 }
 
 var show_menu_marker = (function () {
@@ -183,12 +193,18 @@ var show_menu_marker = (function () {
 	}
 
 	var handleGpxFileLoaded = function (e) {
-		$("gpxupload").update("GPX " + current_filename.escapeHTML() +
-		    " loaded.");
+		var s = "GPX " + current_filename.escapeHTML() + " loaded.";
+		$("gpxupload").update(s);
 		if (!/<gpx/.test(e.target.result))
 			$("gpxupload").update(current_filename.escapeHTML() +
 			    " is not a valid GPX file.");
-		add_gpx_to_map(e.target.result, current_filename.escapeHTML());
+		var res = add_gpx_to_map(e.target.result,
+		    current_filename.escapeHTML());
+		if (res !== false) {
+			nextpos = res;
+			s += " <a href=\"javascript:jumptonextpos();\">Show</a>";
+			$("gpxupload").update(s);
+		}
 	};
 
 	var handleZipExtraction = function (entry) {
