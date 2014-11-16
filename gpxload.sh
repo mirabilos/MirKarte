@@ -18,15 +18,13 @@
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
 
+set -o pipefail
+
 if [[ ! -s $1 ]]; then
 	print -ru2 "E: GPX '$1' not found"
 	exit 1
 fi
-gpx=$(<"$1")
-if [[ $gpx != *'<gpx'* ]]; then
-	print -ru2 "E: GPX '$1' not a GPX file"
-	exit 1
-fi
+gpxf=$(realpath "$1")
 cd "$(realpath "$0/..")"
 
 # escape XHTML characters (three mandatory XML ones plus double quotes,
@@ -83,12 +81,20 @@ function json_escape {
 	print -nr -- "$o\""
 }
 
+# output is probably JSON (without the quotes!)… input MUST be UTF-8
+function fast_json_export {
+	set -e
+	# GNU hexdump cannot output backslashes
+	iconv -f utf-8 -t ucs-2be | hexdump -ve '"_u" 2/1 "%02X"' | tr _ \\
+	set +e
+}
+
 rm -f gpxload.htm
 while IFS= read -r line; do
 	print -r -- "$line"
 	[[ $line = *mirkarte_default_loc* ]] || continue
 	print -r "  function mirkarte_hookfn(map) {"
-	print -r "	nextpos = add_gpx_to_map($(json_escape "$gpx"), $(json_escape "$(xhtml_escape "$1")"));"
+	print -r "	nextpos = add_gpx_to_map(\"$(fast_json_export <"$gpxf")\", $(json_escape "$(xhtml_escape "$1")"));"
 	print -r "	jumptonextpos();"
 	print -r "  }"
 done <index.htm >gpxload.htm
