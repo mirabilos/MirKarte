@@ -117,7 +117,19 @@ function add_gpx_to_map(gpx_string, layer_name) {
 	var dom = (new DOMParser()).parseFromString(gpx_string,
 	    "text/xml");
 	var gjsn = toGeoJSON.gpx(dom);
+	var xn = -1000, xe = -1000, xs = 1000, xw = 1000;
 	maplayers.addOverlay(L.geoJson(gjsn, {
+		coordsToLatLng: function (coords) {
+			if (coords[1] > xn)
+				xn = coords[1];
+			if (coords[1] < xs)
+				xs = coords[1];
+			if (coords[0] > xe)
+				xe = coords[0];
+			if (coords[0] < xw)
+				xw = coords[0];
+			return new L.LatLng(coords[1], coords[0], coords[2]);
+		},
 		pointToLayer: function (feature, latlng) {
 			var o = {}, res;
 
@@ -149,12 +161,18 @@ function add_gpx_to_map(gpx_string, layer_name) {
 			layer.bindPopup(s);
 		}
 	    }).addTo(map), layer_name);
+	if (xn != -1000 && xe != -1000 && xs != 1000 && xw != 1000)
+		map.fitBounds([[xs, xw], [xn, xe]], {
+			"padding": [48, 48],
+			"maxZoom": 14
+		    });
 }
 
 var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
 	var current_filename = "";
+	var themarker;
 
 	if (window.File && window.FileList && window.FileReader && window.Blob) {
 		hasfile = true;
@@ -172,6 +190,7 @@ var show_menu_marker = (function () {
 			$("gpxupload").update(current_filename.escapeHTML() +
 			    " is not a valid GPX file.");
 		add_gpx_to_map(e.target.result, current_filename.escapeHTML());
+		themarker.setLatLng(map.getCenter());
 	};
 
 	var handleZipExtraction = function (entry) {
@@ -256,7 +275,7 @@ var show_menu_marker = (function () {
 
 		s = '<span class="nowrap">Current centre: ' + f[0] + " " +
 		    f[1] + "</span><hr />" + filestr;
-		L.popup().setLatLng(pos).setContent(s).openOn(map);
+		themarker = L.popup().setLatLng(pos).setContent(s).openOn(map);
 		if (hasfile) {
 			document.getElementById("files").addEventListener("change",
 			    handleGpxFileSelect, false);
