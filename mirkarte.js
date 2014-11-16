@@ -113,6 +113,44 @@ var MarkerWithAttribution = L.Marker.extend({
 	}
 });
 
+function add_gpx_to_map(gpx_string, layer_name) {
+	var dom = (new DOMParser()).parseFromString(gpx_string,
+	    "text/xml");
+	var gjsn = toGeoJSON.gpx(dom);
+	maplayers.addOverlay(L.geoJson(gjsn, {
+		pointToLayer: function (feature, latlng) {
+			var o = {}, res;
+
+			if (feature.properties["sym"] == "TerraCache") {
+				o["icon"] = tc_icon;
+				o["attribution"] = attributions["TC"];
+			}
+			feature["_isWP"] = latlng;
+			return (new MarkerWithAttribution(latlng, o));
+		},
+		onEachFeature: function (feature, layer) {
+			if (!feature["_isWP"])
+				return;
+			var s, f, x, pos = feature["_isWP"];
+
+			f = llformat(pos.lat, pos.lng, 2);
+			x = feature.properties["name"];
+			s = (x ? (x + " ") : "") + f;
+
+			x = feature.properties["desc"];
+			if (/TC/.test(feature.properties["name"]) &&
+			    feature.properties["sym"] == "TerraCache")
+				x = '<a href="http://www.terracaching.com/Cache/' +
+				    feature.properties.name + '">' +
+				    (x ? x : "(no description)") +
+				    '</a>';
+			if (x)
+				s = s + "<br />" + x;
+			layer.bindPopup(s);
+		}
+	    }).addTo(map), layer_name);
+}
+
 var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
@@ -133,41 +171,7 @@ var show_menu_marker = (function () {
 		if (!/<gpx/.test(e.target.result))
 			$("gpxupload").update(current_filename.escapeHTML() +
 			    " is not a valid GPX file.");
-		var dom = (new DOMParser()).parseFromString(e.target.result,
-		    "text/xml");
-		var gjsn = toGeoJSON.gpx(dom);
-		maplayers.addOverlay(L.geoJson(gjsn, {
-			pointToLayer: function (feature, latlng) {
-				var o = {}, res;
-
-				if (feature.properties["sym"] == "TerraCache") {
-					o["icon"] = tc_icon;
-					o["attribution"] = attributions["TC"];
-				}
-				feature["_isWP"] = latlng;
-				return (new MarkerWithAttribution(latlng, o));
-			},
-			onEachFeature: function (feature, layer) {
-				if (!feature["_isWP"])
-					return;
-				var s, f, x, pos = feature["_isWP"];
-
-				f = llformat(pos.lat, pos.lng, 2);
-				x = feature.properties["name"];
-				s = (x ? (x + " ") : "") + f;
-
-				x = feature.properties["desc"];
-				if (/TC/.test(feature.properties["name"]) &&
-				    feature.properties["sym"] == "TerraCache")
-					x = '<a href="http://www.terracaching.com/Cache/' +
-					    feature.properties.name + '">' +
-					    (x ? x : "(no description)") +
-					    '</a>';
-				if (x)
-					s = s + "<br />" + x;
-				layer.bindPopup(s);
-			}
-		    }).addTo(map), current_filename.escapeHTML());
+		add_gpx_to_map(e.target.result, current_filename.escapeHTML());
 	};
 
 	var handleZipExtraction = function (entry) {
