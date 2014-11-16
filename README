@@ -25,7 +25,7 @@ tile/WMS services welcome; send me patches please!)
 Variants:
 – index.htm (mirkarte.js): standard/basic map
 – marker.htm (marker.js): allows multiple markers, quick hack,
-  largely untested, markers cannot be removed, scrap
+  largely untested, markers cannot be removed, scrap, not updated
 – geohashing.cgi (mirkarte.js): displays xkcd Geo Hashing waypoints
 – ghtomorrow.cgi (mirkarte.js): same, but for the next day
 – ghybermorgen.cgi (mirkarte.js): same, but for the day after the next
@@ -34,6 +34,9 @@ Variants:
 
 Helpers:
 - gpx.cgi (q=waypoint): download GPX for waypoints (work in progress)
+- gpx.sh: called internally by gpx.cgi
+- gpxload.sh ($1=x.gpx): copy index.htm to gpxload.htm bundling the argument
+- xkcd2js.sh: generate parts of gh*.cgi, geohashing.cgi (downloading)
 
 VCS repository:
 https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git
