@@ -1,0 +1,10 @@
+TODO (not in this order):
+
+• support more listing platforms
+• replace GeoJSON stuff by direct GPX-reading layer
+• rewrite in a more structured manner (now that I know what I’m doing);
+  this is a rapid prototype to prove doability and that it works in Opera 9
+• merge CGIs, possibly using AJAX (if it works in Opera 9) to make them
+  into layers
+• make CGIs dynamic wrt. current map boundaries (if zoom > minzoom)
+• maybe CGI-using GPX import, for Opera/Konqueror who can’t do it client-side
