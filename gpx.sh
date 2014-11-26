@@ -454,7 +454,7 @@ rv=<<EOF
     <urlname>$(xhtml_escape "$wpurln")</urlname>
     <sym>Geocache</sym>
     <type>Geocache|Virtual Cache</type>
-    <groundspeak:cache id="notfromgs_$wpname" available="False" archived="False" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
+    <groundspeak:cache id="notfromgs_${wpname@#}" available="False" archived="False" xmlns:groundspeak="http://www.groundspeak.com/cache/1/0/1">
       <groundspeak:name>$wpname</groundspeak:name>
       <groundspeak:placed_by>$(xhtml_escape "$wpownr")</groundspeak:placed_by>
       <groundspeak:owner id="notfromgspr">$(xhtml_escape "$wpownr")</groundspeak:owner>
