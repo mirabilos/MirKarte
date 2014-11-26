@@ -256,7 +256,8 @@ function chklatlon {
 		vmax=180
 		;;
 	(*)
-		arbusage 'internal error'
+		print internal error
+		return 1
 		;;
 	}
 	if [[ $arg = ${minus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
@@ -310,7 +311,8 @@ function chklatlon {
 		elif (( val == vmax )) && [[ -z $mins ]]; then
 			:
 		else
-			arbusage "value $arg out of range"
+			print -r "value $arg out of range"
+			return 1
 		fi
 		arg=$val.${mins:-0}
 		;;
@@ -324,12 +326,14 @@ function chklatlon {
 		elif (( val == vmax )) && [[ -z $mins ]]; then
 			:
 		else
-			arbusage "value $arg out of range"
+			print -r "value $arg out of range"
+			return 1
 		fi
 		arg=-$val.${mins:-0}
 		;;
 	(*)
-		arbusage "value $arg unrecognised"
+		print -r "value $arg unrecognised"
+		return 1
 		;;
 	}
 	print -r -- $arg
@@ -371,8 +375,8 @@ case $wptype {
 (arbitrary)
 	[[ -n $4 && -n $5 && -n $6 && -n $7 ]] || arbusage 'syntax error'
 	wp_src='for an arbitrary waypoint'			# data source
-	lat=$(chklatlon lat "$2")				# position N/S
-	lon=$(chklatlon lon "$3")				# position E/W
+	lat=$(chklatlon lat "$2") || arbusage "$lat"		# position N/S
+	lon=$(chklatlon lon "$3") || arbusage "$lon"		# position E/W
 	wptime=$now						# date placed
 	wpname=${wp#-}						# WP code full
 	if (( ${#wpname} > 8 )); then
