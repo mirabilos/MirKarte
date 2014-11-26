@@ -231,6 +231,110 @@ function decmin2txt {
 	REPLY+=$n.$m
 }
 
+function arbusage {
+	print -ru2 "E: arbitrary waypoint $1"
+	print -ru2 "I: gpx.sh -WP1234 lat lon owner url title description"
+	exit 1
+}
+
+function chklatlon {
+	local minus plus vmax mins
+	local -i10 val
+	local -u arg=${2//+([\'\"]|’|′|°|�)}
+	arg=${arg##+([	 ])}
+	arg=${arg%%+([	 ])}
+
+	case $1 {
+	(lat)
+		minus=S
+		plus=N
+		vmax=90
+		;;
+	(lon)
+		minus=W
+		plus=E
+		vmax=180
+		;;
+	(*)
+		arbusage 'internal error'
+		;;
+	}
+	if [[ $arg = ${minus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
+		arg=-${arg##$minus*([	 ])}
+	elif [[ $arg = ${plus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
+		arg=${arg##$plus*([	 ])}
+	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$minus ]]; then
+		arg=-${arg%%*([	 ])$minus}
+	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$plus ]]; then
+		arg=${arg%%*([	 ])$plus}
+	elif [[ $arg = ${minus}*([	 ]).+([0-9]) ]]; then
+		arg=-0${arg##$minus*([	 ])}
+	elif [[ $arg = ${plus}*([	 ]).+([0-9]) ]]; then
+		arg=0${arg##$plus*([	 ])}
+	elif [[ $arg = .+([0-9])*([	 ])$minus ]]; then
+		arg=-0${arg%%*([	 ])$minus}
+	elif [[ $arg = .+([0-9])*([	 ])$plus ]]; then
+		arg=0${arg%%*([	 ])$plus}
+	elif [[ $arg = ${minus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$minus*([	 ])}
+		val=10#${arg%%[	 ]*}
+		arg=${arg##*+([	 ])}
+		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
+	elif [[ $arg = ${plus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$plus*([	 ])}
+		val=10#${arg%%[	 ]*}
+		arg=${arg##*+([	 ])}
+		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
+	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$minus ]]; then
+		arg=${arg%%*([	 ])$minus}
+		val=10#${arg%%[	 ]*}
+		arg=${arg##*+([	 ])}
+		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
+	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$plus ]]; then
+		arg=${arg%%*([	 ])$plus}
+		val=10#${arg%%[	 ]*}
+		arg=${arg##*+([	 ])}
+		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
+	fi
+	[[ $arg = '+'* ]] && arg=${arg#+}
+	[[ $arg = ?(-)+([0-9]) ]] && arg+=.
+	[[ $arg = ?(-).+([0-9]) ]] && arg=${arg/./0.}
+	case $arg {
+	(+([0-9]).*([0-9]))
+		arg=${arg#+}
+		val=10#${arg%.*}
+		mins=${arg#*.}
+		mins=${mins%%*(0)}
+		if (( val < vmax )); then
+			:
+		elif (( val == vmax )) && [[ -z $mins ]]; then
+			:
+		else
+			arbusage "value $arg out of range"
+		fi
+		arg=$val.${mins:-0}
+		;;
+	(-+([0-9]).*([0-9]))
+		arg=${arg#-}
+		val=10#${arg%.*}
+		mins=${arg#*.}
+		mins=${mins%%*(0)}
+		if (( val < vmax )); then
+			:
+		elif (( val == vmax )) && [[ -z $mins ]]; then
+			:
+		else
+			arbusage "value $arg out of range"
+		fi
+		arg=-$val.${mins:-0}
+		;;
+	(*)
+		arbusage "value $arg unrecognised"
+		;;
+	}
+	print -r -- $arg
+}
+
 typeset -i10 -Z4 dY
 typeset -i10 -Z2 dM dD
 
@@ -247,6 +351,8 @@ whence -p md5 >/dev/null 2>&1 && md=md5
 wp=$1
 wptype=
 case $wp {
+(-*)
+	wptype=arbitrary ;;
 (GD*)
 	wptype=gd ;;
 (VX*)
@@ -262,6 +368,29 @@ case $wp {
 now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')				# current time
 
 case $wptype {
+(arbitrary)
+	[[ -n $4 && -n $5 && -n $6 && -n $7 ]] || arbusage 'syntax error'
+	wp_src='for an arbitrary waypoint'			# data source
+	lat=$(chklatlon lat "$2")				# position N/S
+	lon=$(chklatlon lon "$3")				# position E/W
+	wptime=$now						# date placed
+	wpname=${wp#-}						# WP code full
+	if (( ${#wpname} > 8 )); then
+		typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
+		wpcode=${hex#16#}				# WP code 8byte
+	else
+		wpcode=$wpname					# WP code 8byte
+	fi
+	wpdesc=$6						# title text
+	wpurlt=$5						# link target
+	wpurln=$6						# link text
+	wpownr=$4						# owner text
+	wp_dif=2						# D rating
+	wp_ter=2						# T rating
+	wpsdsc="Arbitrary waypoint $(xhtml_escape "$wpname")"	# short html
+	wpldsc=$7						# long html
+	wphint=''						# hint text
+	;;
 (gd)
 	wp_src='from geodashing.gpsgames.org data'		# data source
 	set -eo pipefail
