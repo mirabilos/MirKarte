@@ -24,6 +24,8 @@
 # TODO:
 # – CacheBox unknown types “waypoint|virtual stage”, “waypoint|physical stage”
 
+unset LANGUAGE; export LC_ALL=C
+
 # magic from MirOS: src/kern/c/mirtime.c,v 1.3 2011/11/20 23:40:10 tg Exp $
 
 # struct tm members and (POSIX) time functions

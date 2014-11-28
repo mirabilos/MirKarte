@@ -20,6 +20,8 @@
 #-
 # Helper script to download and convert data
 
+unset LANGUAGE; export LC_ALL=C
+
 # escape XHTML characters (three mandatory XML ones plus double quotes,
 # the latter in an XML safe fashion numerically though)
 function xhtml_escape {

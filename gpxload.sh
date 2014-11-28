@@ -18,6 +18,8 @@
 # damage or existence of a defect, except proven that it results out
 # of said person’s immediate fault when using the work as intended.
 
+unset LANGUAGE; export LC_ALL=C
+
 set -o pipefail
 
 if [[ ! -s $1 ]]; then
