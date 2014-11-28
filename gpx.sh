@@ -375,7 +375,7 @@ case $wp {
 
 # redirections
 if [[ $wptype = oc ]]; then
-	i=$("${fetch[@]}" "http://www.opencaching.de/search1.php?searchbywp=1&showresult=1&output=GPX&wp=$wp" \
+	i=$("${fetch[@]}" "http://www.opencaching.de/search1.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$wp" \
 	    2>/dev/null)
 	[[ $i = *'<wpt'* ]] || exit 1
 	print -nr -- "$i"
