@@ -357,6 +357,8 @@ wptype=
 case $wp {
 (-*)
 	wptype=arbitrary ;;
+(OC*)
+	wptype=oc ;;
 (GD*)
 	wptype=gd ;;
 (VX*)
@@ -368,6 +370,15 @@ case $wp {
 }
 
 [[ -n $wptype ]] || exit 1
+
+# redirections
+if [[ $wptype = oc ]]; then
+	i=$("${fetch[@]}" "http://www.opencaching.de/search1.php?searchbywp=1&showresult=1&output=GPX&wp=$wp" \
+	    2>/dev/null)
+	[[ $i = *'<wpt'* ]] || exit 1
+	print -nr -- "$i"
+	exit 0
+fi
 
 now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')				# current time
 
