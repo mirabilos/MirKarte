@@ -31,6 +31,7 @@ Variants:
 – ghybermorgen.cgi (mirkarte.js): same, but for the day after the next
 – geovexilla.cgi (mirkarte.js): displays GeoVexilla.gpsgames.org flags
 - geodashing.cgi (mirkarte.js): displays GeoDashing.gpsgames.org dashpoints
+- gdnext.cgi (mirkarte.js): same, but for the next month
 
 Helpers:
 - gpx.cgi (q=waypoint): download GPX for waypoints (work in progress)
