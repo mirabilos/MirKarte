@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014
+ * Copyright © 2014, 2015
  *	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -522,8 +522,9 @@ $(document).observe("dom:loaded", function () {
 		return (L.control.layers(baseMaps).addTo(map));
 	    } (map, [
 		{
-			"_name": "OpenStreetMap (0..18)",
+			"_name": "OpenStreetMap (0..19)",
 			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			"maxZoom": 19,
 			"attribution": attributions["OSM"]
 		},
 		{
