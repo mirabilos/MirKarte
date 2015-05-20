@@ -120,6 +120,12 @@ function jumptonextpos() {
 		map.fitBounds(nextpos[0], nextpos[1]);
 }
 
+mirkarte_gpx_links = [
+	[ /^GC/, 'Geocache', 'http://coord.info/$&' ],
+	[ /^TC/, 'TerraCache', 'http://www.terracaching.com/Cache/$&' ],
+	[ /^OC/, 'Geocache', 'http://www.opencaching.de/viewcache.php?wp=$&' ],
+];
+
 function add_gpx_to_map(gpx_string, layer_name) {
 	if (!/<gpx/.test(gpx_string))
 		return false;
@@ -159,12 +165,18 @@ function add_gpx_to_map(gpx_string, layer_name) {
 			s = (x ? (x + " ") : "") + f;
 
 			x = feature.properties["desc"];
-			if (/TC/.test(feature.properties["name"]) &&
-			    feature.properties["sym"] == "TerraCache")
-				x = '<a href="http://www.terracaching.com/Cache/' +
-				    feature.properties.name + '">' +
+			var n = mirkarte_gpx_links.length;
+			for (var i = 0; i < n; ++i) {
+				if (!mirkarte_gpx_links[i][0].test(feature.properties["name"]) ||
+				    (mirkarte_gpx_links[i][1] && mirkarte_gpx_links[i][1] != feature.properties["sym"]))
+					continue;
+				x = '<a href="' +
+				    feature.properties.name.replace(mirkarte_gpx_links[i][0],
+				    mirkarte_gpx_links[i][2]) + '">' +
 				    (x ? x : "(no description)") +
 				    '</a>';
+				break;
+			}
 			if (x)
 				s = s + "<br />" + x;
 			layer.bindPopup(s);
