@@ -692,9 +692,10 @@ too much */
 			"attribution": attributions["Google"]
 		},
 		{
-			"_name": "Google Satellite (0..18)",
+			"_name": "Google Satellite (0..20)",
 			"_url": "http://khm{s}.googleapis.com/kh?v=142&x={x}&y={y}&z={z}",
 			"subdomains": "0123",
+			"maxZoom": 20,
 			"attribution": attributions["Google"]
 		},
 		{
