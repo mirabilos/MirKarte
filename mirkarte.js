@@ -121,9 +121,9 @@ function jumptonextpos() {
 }
 
 mirkarte_gpx_links = [
-	[ /^GC/, 'Geocache', 'http://coord.info/$&' ],
-	[ /^TC/, 'TerraCache', 'http://www.terracaching.com/Cache/$&' ],
-	[ /^OC/, 'Geocache', 'http://www.opencaching.de/viewcache.php?wp=$&' ],
+	[ /^GC/, /\bGeocache\b/, 'http://coord.info/$&' ],
+	[ /^TC/, /\bTerraCache\b/, 'http://www.terracaching.com/Cache/$&' ],
+	[ /^OC/, /\bGeocache\b/, 'http://www.opencaching.de/viewcache.php?wp=$&' ],
 ];
 
 function add_gpx_to_map(gpx_string, layer_name) {
@@ -168,7 +168,7 @@ function add_gpx_to_map(gpx_string, layer_name) {
 			var n = mirkarte_gpx_links.length;
 			for (var i = 0; i < n; ++i) {
 				if (!mirkarte_gpx_links[i][0].test(feature.properties["name"]) ||
-				    (mirkarte_gpx_links[i][1] && mirkarte_gpx_links[i][1] != feature.properties["sym"]))
+				    !mirkarte_gpx_links[i][1].test(feature.properties["sym"]))
 					continue;
 				x = '<a href="' +
 				    feature.properties.name.replace(mirkarte_gpx_links[i][0],
