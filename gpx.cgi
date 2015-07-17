@@ -98,7 +98,7 @@ if ($query ne "") {
 					$query =~ /^(GL|PR)/ ? "http://coord.info/$query" :
 					$query =~ /^N[0-9]/ ? sprintf("http://www.navicache.com/cgi-bin/db/displaycache2.pl?CacheID=%d", hex(substr($query, 1))) :
 					$query =~ /^OB/ ? "http://www.opencaching.nl/viewcache.php?wp=$query" :
-					$query =~ /^OC/ ? "http://www.opencaching.de/search1.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$query" :
+					$query =~ /^OC/ ? "http://www.opencaching.de/search.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$query" :
 					$query =~ /^OK/ ? "http://www.opencaching.org.uk/viewcache.php?wp=$query" :
 					$query =~ /^OP/ ? "http://www.opencaching.pl/viewcache.php?wp=$query" :
 					$query =~ /^OS/ ? "http://www.opencaching.se/viewcache.php?wp=$query" :
