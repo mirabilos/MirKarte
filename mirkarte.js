@@ -1,6 +1,6 @@
 /*-
  * Copyright © 2014, 2015
- *	mirabilos <tg@mirbsd.org>
+ *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -761,11 +761,6 @@ too much */
 			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
 			"subdomains": "0123456",
 			"attribution": attributions["Geocommons"]
-		},
-		{
-			"_name": "OpenCycleMap (0..18)",
-			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "CartoDB Positron",
