@@ -1,6 +1,6 @@
 /*-
  * Copyright © 2014, 2015
- *	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
+ *	mirabilos <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -38,6 +38,9 @@ var attributions = {
 	"EsriNatGeoWorldMap": "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
 	"Google": 'Map data © <a href="http://googlemaps.com">Google</a>',
 	"Geocommons": 'Tiles by Geocommons © <a href="http://geocommons.com/overlays/acetate">Esri &amp; Stamen</a>. © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="http://cartodb.com/attributions">CartoDB</a>',
+	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
+	"OpenMapSurfer": 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
     };
 
@@ -690,6 +693,42 @@ too much */
 		},
 */
 		{
+			"_name": "MapSurfer.NET OSM Roads",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+/* not so good for a map
+		{
+			"_name": "MapSurfer.NET OSM Semitransparent",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+*/
+/* overlays, not full layers
+		{
+			"_name": "MapSurfer.NET ASTER GDEM & SRTM Hillshade",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterh/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+		{
+			"_name": "MapSurfer.NET ASTER GDEM contour lines",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterc/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+*/
+		{
+			"_name": "MapSurfer.NET OSM Administrative Boundaries",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+/* not so good for a map
+		{
+			"_name": "MapSurfer.NET OSM Roads Grayscale",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}",
+			"attribution": "OpenMapSurfer"
+		},
+*/
+		{
 			"_name": "de Topo (WMS)",
 			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
 			"_wms": true,
@@ -710,6 +749,13 @@ too much */
 			"maxZoom": 20,
 			"attribution": attributions["Google"]
 		},
+/* 401
+		{
+			"_name": "Lyrk (nōn-commercial, ..18)",
+			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
+			"attribution": attributions["Lyrk"]
+		},
+*/
 		{
 			"_name": "Geocommons Acetate (2..18)",
 			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
@@ -720,6 +766,16 @@ too much */
 			"_name": "OpenCycleMap (0..18)",
 			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "CartoDB Positron",
+			"_url": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
+		},
+		{
+			"_name": "CartoDB Dark Matter",
+			"_url": "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
 		}
 	    ]);
 	var myzoomclass = L.Control.Zoom.extend({
