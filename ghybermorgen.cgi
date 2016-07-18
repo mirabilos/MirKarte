@@ -19,6 +19,7 @@
 # of said person’s immediate fault when using the work as intended.
 
 unset LANGUAGE; export LC_ALL=C
+unset HTTP_PROXY
 
 #XXX add attribution (either to #map_coors or by moving CGI content
 #XXX into a layer; maybe even make an AJAX version of the CGIs that
