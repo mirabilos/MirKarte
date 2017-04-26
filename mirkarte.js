@@ -38,7 +38,7 @@ var attributions = {
 	"EsriNatGeoWorldMap": "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
 	"Google": 'Map data © <a href="http://googlemaps.com">Google</a>',
 	"Geocommons": 'Tiles by Geocommons © <a href="http://geocommons.com/overlays/acetate">Esri &amp; Stamen</a>. © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © <a href="http://cartodb.com/attributions">CartoDB</a>',
+	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attribution">CARTO</a>',
 	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
 	"OpenMapSurfer": 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
@@ -764,12 +764,12 @@ too much */
 		},
 		{
 			"_name": "CartoDB Positron",
-			"_url": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
 			"attribution": attributions["CartoDB"]
 		},
 		{
 			"_name": "CartoDB Dark Matter",
-			"_url": "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
 			"attribution": attributions["CartoDB"]
 		}
 	    ]);
