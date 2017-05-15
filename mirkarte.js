@@ -40,7 +40,8 @@ var attributions = {
 	"Geocommons": 'Tiles by Geocommons © <a href="http://geocommons.com/overlays/acetate">Esri &amp; Stamen</a>. © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attribution">CARTO</a>',
 	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
-	"OpenMapSurfer": 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+	"OpenMapSurfer": 'Imagery from <a href="http://www.geog.uni-heidelberg.de/gis/index.html">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+	"CloudMade": 'CloudMade (403, tbd)',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
     };
 
@@ -689,43 +690,43 @@ too much */
 			"_url": "http://{s}.tile.cloudmade.com/31913eba82dc43a998d52a5804668c11/997/256/{z}/{x}/{y}.png",
 			"subdomains": "ab",
 			"tileSize": 256,
-			"attribution": "CloudMade"
+			"attribution": attributions["CloudMade"]
 		},
 */
 		{
 			"_name": "MapSurfer.NET OSM Roads",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 /* not so good for a map
 		{
 			"_name": "MapSurfer.NET OSM Semitransparent",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 */
 /* overlays, not full layers
 		{
 			"_name": "MapSurfer.NET ASTER GDEM & SRTM Hillshade",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterh/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 		{
 			"_name": "MapSurfer.NET ASTER GDEM contour lines",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterc/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 */
 		{
 			"_name": "MapSurfer.NET OSM Administrative Boundaries",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 /* not so good for a map
 		{
 			"_name": "MapSurfer.NET OSM Roads Grayscale",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}",
-			"attribution": "OpenMapSurfer"
+			"attribution": attributions["OpenMapSurfer"]
 		},
 */
 		{
