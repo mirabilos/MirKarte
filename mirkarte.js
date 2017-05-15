@@ -545,7 +545,7 @@ $(document).observe("dom:loaded", function () {
 		},
 		{
 			"_name": "OSM Black&amp;White (0..18)",
-			"_url": "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
 		{
@@ -553,6 +553,7 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
+/* 503
 		{
 			"_name": "MapQuestOpen OSM (0..18) 🅒",
 			"_url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
@@ -565,6 +566,7 @@ $(document).observe("dom:loaded", function () {
 			"subdomains": "1234",
 			"attribution": attributions["MapQuestAerial"]
 		},
+ */
 		{
 			"_name": "Thunderforest OpenCycleMap (0..18)",
 			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
@@ -580,12 +582,14 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
+/* to be replaced: https://www.mapbox.com/maps/
 		{
 			"_name": "MapBox Warden (0..18)",
 			"_url": "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-warden/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"attribution": attributions["MapBox"]
 		},
+ */
 		{
 			"_name": "Stamen Toner (0..20)",
 			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
@@ -646,7 +650,7 @@ too much */
 		},
 		{
 			"_name": "Stamen Watercolor (3..16)",
-			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
 			"subdomains": "abcd",
 			"minZoom": 3,
 			"maxZoom": 16,
@@ -738,14 +742,22 @@ too much */
 			"layers": "webatlasde"
 		},
 		{
-			"_name": "Google Maps (0..18)",
+			"_name": "Google Maps (0..20)",
 			"_url": "http://mt{s}.googleapis.com/vt?x={x}&y={y}&z={z}",
 			"subdomains": "0123",
+			"maxZoom": 20,
 			"attribution": attributions["Google"]
 		},
 		{
 			"_name": "Google Satellite (0..20)",
-			"_url": "http://khm{s}.googleapis.com/kh?v=142&x={x}&y={y}&z={z}",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=s&x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"maxZoom": 20,
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Google Terrain (0..20)",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=p&x={x}&y={y}&z={z}",
 			"subdomains": "0123",
 			"maxZoom": 20,
 			"attribution": attributions["Google"]
@@ -757,12 +769,14 @@ too much */
 			"attribution": attributions["Lyrk"]
 		},
 */
+/* Aborted
 		{
 			"_name": "Geocommons Acetate (2..18)",
 			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
 			"subdomains": "0123456",
 			"attribution": attributions["Geocommons"]
 		},
+ */
 		{
 			"_name": "CartoDB Positron",
 			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
