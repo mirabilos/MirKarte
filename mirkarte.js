@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2015
+ * Copyright © 2014, 2015, 2017
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -554,7 +554,7 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["OSM"]
 		},
 		{
-			"_name": "MapQuestOpen OSM (0..18)",
+			"_name": "MapQuestOpen OSM (0..18) 🅒",
 			"_url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
 			"subdomains": "1234",
 			"attribution": attributions["MapQuestOpen"]
@@ -730,7 +730,7 @@ too much */
 		},
 */
 		{
-			"_name": "de Topo (WMS)",
+			"_name": "de Topo (WMS) 🅒",
 			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
 			"_wms": true,
 			"attribution": "Bundesamt für Kartographie und Geodäsie",
@@ -752,7 +752,7 @@ too much */
 		},
 /* 401
 		{
-			"_name": "Lyrk (nōn-commercial, ..18)",
+			"_name": "Lyrk (nōn-commercial, ..18) 🅒",
 			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
 			"attribution": attributions["Lyrk"]
 		},
