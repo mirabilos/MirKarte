@@ -1,6 +1,6 @@
 #!/bin/mksh
 #-
-# Copyright © 2014
+# Copyright © 2014, 2017
 #	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -101,8 +101,9 @@ Content-type: text/html; charset=utf-8
 EOF
 print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
 
-"${fetch[@]}" "http://geodashing.gpsgames.org/cgi-bin/stats.pl?startmonth=$defmon&startyear=$defyear&endmonth=$defmon&endyear=$defyear&radius=200&lat_1=$deflat&lon_1=$deflon&statstype=circle&download=Download&downloadformat=LOC" | \
-    xmlstarlet sel -t -m //waypoint -v name/@id -o ' ' -v coord/@lat -o ' ' -v coord/@lon -n |&
+"${fetch[@]}" "http://geodashing.gpsgames.org/cgi-bin/stats.pl?startmonth=$defmon&startyear=$defyear&endmonth=$defmon&endyear=$defyear&radius=200&lat_1=$deflat&lon_1=$deflon&statstype=circle&download=Download&downloadformat=GPX" | \
+    sed '1s/ xmlns="[^"]*"//' | \
+    xmlstarlet sel -t -m //*/wpt -v name -o ' ' -v @lat -o ' ' -v @lon -n |&
 n=0; print "  var geodashing_arr = ["
 while read -pr id lat lon; do
 	[[ $id = [0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z] ]] || continue
