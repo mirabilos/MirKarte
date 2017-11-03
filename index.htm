@@ -60,6 +60,7 @@
 	compass.activate();
 
 	var gpsctl = new L.Control.Gps({
+		"setView": true,
 		"title": "Centre map on your location"
 	});
 	map.addControl(gpsctl);
