@@ -1,6 +1,6 @@
 /*-
- * Copyright © 2014
- *	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
+ * Copyright © 2014, 2015, 2017
+ *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -38,6 +38,10 @@ var attributions = {
 	"EsriNatGeoWorldMap": "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
 	"Google": 'Map data © <a href="http://googlemaps.com">Google</a>',
 	"Geocommons": 'Tiles by Geocommons © <a href="http://geocommons.com/overlays/acetate">Esri &amp; Stamen</a>. © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attribution">CARTO</a>',
+	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
+	"OpenMapSurfer": 'Imagery from <a href="http://www.geog.uni-heidelberg.de/gis/index.html">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+	"CloudMade": 'CloudMade (403, tbd)',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
     };
 
@@ -103,6 +107,83 @@ var MarkerWithAttribution = L.Marker.extend({
 	}
 });
 
+var nextpos = false;
+function jumptonextpos() {
+	map.closePopup();
+	if (nextpos !== false)
+		map.fitBounds(nextpos[0], nextpos[1]);
+}
+
+mirkarte_gpx_links = [
+	[ /^GC/, /\bGeocache\b/, 'http://coord.info/$&' ],
+	[ /^TC/, /\bTerraCache\b/, 'http://www.terracaching.com/Cache/$&' ],
+	[ /^OC/, /\bGeocache\b/, 'http://www.opencaching.de/viewcache.php?wp=$&' ],
+];
+
+function add_gpx_to_map(gpx_string, layer_name) {
+	if (!/<gpx/.test(gpx_string))
+		return false;
+	var dom = (new DOMParser()).parseFromString(gpx_string,
+	    "text/xml");
+	var gjsn = toGeoJSON.gpx(dom);
+	var xn = -1000, xe = -1000, xs = 1000, xw = 1000;
+	maplayers.addOverlay(L.geoJson(gjsn, {
+		coordsToLatLng: function (coords) {
+			if (coords[1] > xn)
+				xn = coords[1];
+			if (coords[1] < xs)
+				xs = coords[1];
+			if (coords[0] > xe)
+				xe = coords[0];
+			if (coords[0] < xw)
+				xw = coords[0];
+			return new L.LatLng(coords[1], coords[0], coords[2]);
+		},
+		pointToLayer: function (feature, latlng) {
+			var o = {}, res;
+
+			if (feature.properties["sym"] == "TerraCache") {
+				o["icon"] = tc_icon;
+				o["attribution"] = attributions["TC"];
+			}
+			feature["_isWP"] = latlng;
+			return (new MarkerWithAttribution(latlng, o));
+		},
+		onEachFeature: function (feature, layer) {
+			if (!feature["_isWP"])
+				return;
+			var s, f, x, pos = feature["_isWP"];
+
+			f = llformat(pos.lat, pos.lng, 2);
+			x = feature.properties["name"];
+			s = (x ? (x + " ") : "") + f;
+
+			x = feature.properties["desc"];
+			var n = mirkarte_gpx_links.length;
+			for (var i = 0; i < n; ++i) {
+				if (!mirkarte_gpx_links[i][0].test(feature.properties["name"]) ||
+				    !mirkarte_gpx_links[i][1].test(feature.properties["sym"]))
+					continue;
+				x = '<a href="' +
+				    feature.properties.name.replace(mirkarte_gpx_links[i][0],
+				    mirkarte_gpx_links[i][2]) + '">' +
+				    (x ? x : "(no description)") +
+				    '</a>';
+				break;
+			}
+			if (x)
+				s = s + "<br />" + x;
+			layer.bindPopup(s);
+		}
+	    }).addTo(map), layer_name);
+	if (xn != -1000 && xe != -1000 && xs != 1000 && xw != 1000)
+		return ([[[xs, xw], [xn, xe]], {
+			"padding": [48, 48],
+			"maxZoom": 14
+		    }]);
+	return false;
+}
+
 var show_menu_marker = (function () {
 	var hasfile = false;
 	var filestr = "Your browser does not support the File API";
@@ -118,46 +199,18 @@ var show_menu_marker = (function () {
 	}
 
 	var handleGpxFileLoaded = function (e) {
-		$("gpxupload").update("GPX " + current_filename.escapeHTML() +
-		    " loaded.");
+		var s = "GPX " + current_filename.escapeHTML() + " loaded.";
+		$("gpxupload").update(s);
 		if (!/<gpx/.test(e.target.result))
 			$("gpxupload").update(current_filename.escapeHTML() +
 			    " is not a valid GPX file.");
-		var dom = (new DOMParser()).parseFromString(e.target.result,
-		    "text/xml");
-		var gjsn = toGeoJSON.gpx(dom);
-		maplayers.addOverlay(L.geoJson(gjsn, {
-			pointToLayer: function (feature, latlng) {
-				var o = {}, res;
-
-				if (feature.properties["sym"] == "TerraCache") {
-					o["icon"] = tc_icon;
-					o["attribution"] = attributions["TC"];
-				}
-				feature["_isWP"] = latlng;
-				return (new MarkerWithAttribution(latlng, o));
-			},
-			onEachFeature: function (feature, layer) {
-				if (!feature["_isWP"])
-					return;
-				var s, f, x, pos = feature["_isWP"];
-
-				f = llformat(pos.lat, pos.lng, 2);
-				x = feature.properties["name"];
-				s = (x ? (x + " ") : "") + f;
-
-				x = feature.properties["desc"];
-				if (/TC/.test(feature.properties["name"]) &&
-				    feature.properties["sym"] == "TerraCache")
-					x = '<a href="http://www.terracaching.com/viewcache.cgi?ID=' +
-					    feature.properties.name + '">' +
-					    (x ? x : "(no description)") +
-					    '</a>';
-				if (x)
-					s = s + "<br />" + x;
-				layer.bindPopup(s);
-			}
-		    }).addTo(map), current_filename.escapeHTML());
+		var res = add_gpx_to_map(e.target.result,
+		    current_filename.escapeHTML());
+		if (res !== false) {
+			nextpos = res;
+			s += " <a href=\"javascript:jumptonextpos();\">Show</a>";
+			$("gpxupload").update(s);
+		}
 	};
 
 	var handleZipExtraction = function (entry) {
@@ -416,13 +469,14 @@ $(document).observe("dom:loaded", function () {
 		return (L.control.layers(baseMaps).addTo(map));
 	    } (map, [
 		{
-			"_name": "OpenStreetMap (0..18)",
+			"_name": "OpenStreetMap (0..19)",
 			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			"maxZoom": 19,
 			"attribution": attributions["OSM"]
 		},
 		{
 			"_name": "OSM Black&amp;White (0..18)",
-			"_url": "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
 		{
@@ -430,8 +484,9 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
+/* 503
 		{
-			"_name": "MapQuestOpen OSM (0..18)",
+			"_name": "MapQuestOpen OSM (0..18) 🅒",
 			"_url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
 			"subdomains": "1234",
 			"attribution": attributions["MapQuestOpen"]
@@ -442,6 +497,7 @@ $(document).observe("dom:loaded", function () {
 			"subdomains": "1234",
 			"attribution": attributions["MapQuestAerial"]
 		},
+ */
 		{
 			"_name": "Thunderforest OpenCycleMap (0..18)",
 			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
@@ -457,12 +513,14 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
+/* to be replaced: https://www.mapbox.com/maps/
 		{
 			"_name": "MapBox Warden (0..18)",
 			"_url": "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-warden/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"attribution": attributions["MapBox"]
 		},
+ */
 		{
 			"_name": "Stamen Toner (0..20)",
 			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
@@ -523,7 +581,7 @@ too much */
 		},
 		{
 			"_name": "Stamen Watercolor (3..16)",
-			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
 			"subdomains": "abcd",
 			"minZoom": 3,
 			"maxZoom": 16,
@@ -567,11 +625,47 @@ too much */
 			"_url": "http://{s}.tile.cloudmade.com/31913eba82dc43a998d52a5804668c11/997/256/{z}/{x}/{y}.png",
 			"subdomains": "ab",
 			"tileSize": 256,
-			"attribution": "CloudMade"
+			"attribution": attributions["CloudMade"]
 		},
 */
 		{
-			"_name": "de Topo (WMS)",
+			"_name": "MapSurfer.NET OSM Roads",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+/* not so good for a map
+		{
+			"_name": "MapSurfer.NET OSM Semitransparent",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+*/
+/* overlays, not full layers
+		{
+			"_name": "MapSurfer.NET ASTER GDEM & SRTM Hillshade",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterh/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+		{
+			"_name": "MapSurfer.NET ASTER GDEM contour lines",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterc/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+*/
+		{
+			"_name": "MapSurfer.NET OSM Administrative Boundaries",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+/* not so good for a map
+		{
+			"_name": "MapSurfer.NET OSM Roads Grayscale",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+*/
+		{
+			"_name": "de Topo (WMS) 🅒",
 			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
 			"_wms": true,
 			"attribution": "Bundesamt für Kartographie und Geodäsie",
@@ -579,27 +673,50 @@ too much */
 			"layers": "webatlasde"
 		},
 		{
-			"_name": "Google Maps (0..18)",
+			"_name": "Google Maps (0..20)",
 			"_url": "http://mt{s}.googleapis.com/vt?x={x}&y={y}&z={z}",
 			"subdomains": "0123",
+			"maxZoom": 20,
 			"attribution": attributions["Google"]
 		},
 		{
-			"_name": "Google Satellite (0..18)",
-			"_url": "http://khm{s}.googleapis.com/kh?v=142&x={x}&y={y}&z={z}",
+			"_name": "Google Satellite (0..20)",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=s&x={x}&y={y}&z={z}",
 			"subdomains": "0123",
+			"maxZoom": 20,
 			"attribution": attributions["Google"]
 		},
+		{
+			"_name": "Google Terrain (0..20)",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=p&x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"maxZoom": 20,
+			"attribution": attributions["Google"]
+		},
+/* 401
+		{
+			"_name": "Lyrk (nōn-commercial, ..18) 🅒",
+			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
+			"attribution": attributions["Lyrk"]
+		},
+*/
+/* Aborted
 		{
 			"_name": "Geocommons Acetate (2..18)",
 			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
 			"subdomains": "0123456",
 			"attribution": attributions["Geocommons"]
 		},
+ */
 		{
-			"_name": "OpenCycleMap (0..18)",
-			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-			"attribution": attributions["OCM"]
+			"_name": "CartoDB Positron",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
+		},
+		{
+			"_name": "CartoDB Dark Matter",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
 		}
 	    ]);
 	var myzoomclass = L.Control.Zoom.extend({
@@ -650,4 +767,6 @@ too much */
 	map.on("dragend", function () { map.on("mousemove", fn_mousemove); });
 	fn_hashchange(false);
 	$("map").focus();
+	if (typeof mirkarte_hookfn == 'function')
+		mirkarte_hookfn(map);
 });
