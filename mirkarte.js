@@ -21,6 +21,7 @@
 var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNumSlashd = /^-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
+var isThreeNumSlashd = /^[1-9][0-9]*\/-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
 var map, maplayers, marker = false, params, params_saved = "";
 
@@ -386,6 +387,12 @@ var fn_hashchange = function (event) {
 			case "mlon":
 			case "m":
 				params[pair.key] = pair.value;
+				break;
+			case "map":
+				if (isThreeNumSlashd.test(pair.value)) {
+					var t = pair.value.split("/");
+					params["m"] = t[1] + "," + t[2];
+				}
 				break;
 			}
 		    });
