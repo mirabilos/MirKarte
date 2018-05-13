@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2015, 2017
+ * Copyright © 2014, 2015, 2017, 2018
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -20,6 +20,7 @@
 
 var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
+var isTwoNumSlashd = /^-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
 var map, maplayers, marker = false, params, params_saved = "";
 
@@ -429,6 +430,8 @@ var fn_hashchanged = function () {
 	params["zoom"] = czoom;
 
 	var wantMarker = false, mlat, mlon;
+	if (isTwoNumSlashd.test(params["m"]))
+		params["m"] = params["m"].replace("/", ",");
 	if (isTwoNum.test(params["m"])) {
 		wantMarker = true;
 		mlat = parseFloat(params["m"].split(",")[0]);
