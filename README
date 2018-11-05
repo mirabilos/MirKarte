@@ -37,6 +37,7 @@ Helpers:
 - gpx.cgi (q=waypoint): download GPX for waypoints (work in progress)
 - gpx.sh: called internally by gpx.cgi
 - gpxload.sh ($1=x.gpx): copy index.htm to gpxload.htm bundling the argument
+- loc.htm: Fennec get location and forward to Nextbike map
 - xkcd2js.sh: generate parts of gh*.cgi, geohashing.cgi (downloading)
 
 VCS repository:

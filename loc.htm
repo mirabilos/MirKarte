@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+ <meta name="copyright" content="© 2018 mirabilos Ⓕ The MirOS Licence" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>MirKarte Location and Forward</title>
+ <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  button {
+	display:block;
+	width:80%;
+	font-size:150%;
+	padding:.5ex;
+	margin:1.2ex 0;
+  };
+ /*]]>*/--></style>
+ <script type="text/javascript"><!--//--><![CDATA[//><!--
+  function elts() {
+	lat = document.getElementById('lat');
+	lon = document.getElementById('lon');
+	alt = document.getElementById('alt');
+	acc = document.getElementById('acc');
+	zoom = document.getElementById('zoom');
+	show = document.getElementById('show');
+  }
+
+  function go() {
+	elts();
+	var dst = 'https://iframe.nextbike.net/reservation/?maponly=1&city_ids=547&zoom=' +
+	    zoom.value + '&lat=' + lat.value + '&lng=' + lon.value;
+	if (show.checked)
+		dst += '&show_location=1';
+//	alert(dst);
+	window.location = dst;
+	return (false);
+  }
+
+  function rst() {
+	elts();
+	lat.value = '50.72';
+	lon.value = '7.09';
+	alt.innerText = '-';
+	acc.innerText = '-';
+	zoom.value = '14';
+	show.checked = false;
+	return (false);
+  }
+
+  function lcl(maxAge) {
+	elts();
+	var succ = function (pos) {
+		lat.value = '' + pos.coords.latitude;
+		lon.value = '' + pos.coords.longitude;
+		alt.innerText = pos.coords.altitude + ' (± ' +
+		    pos.coords.altitudeAccuracy + ' m)';
+		acc.innerText = '± ' + pos.coords.accuracy + ' m (' +
+		    (pos.coords.speed * 3.6) + ' km/h)';
+		show.checked = true;
+	    };
+	var errf = function (err) {
+		/* btw, geolocation fails when page not served via HTTPS */
+		acc.innerText = 'ERROR';
+		alert('geolocation error ' + err.code + ': ' + err.message);
+	    };
+	var opts = {
+		"enableHighAccuracy": (maxAge == 0),
+		"timeout": 30000,
+		"maximumAge": maxAge
+	    };
+
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(succ, errf, opts);
+	} else {
+		alert("no geolocation available");
+	}
+	return (false);
+  }
+ //--><!]]></script>
+</head><body><form>
+<table style="width:100%;">
+ <tr>
+  <td><label for="lat">Latitude:</label></td>
+  <td><input id="lat" type="text" value="50.72" /></td>
+ </tr><tr>
+  <td><label for="lon">Longitude:</label></td>
+  <td><input id="lon" type="text" value="7.09" /></td>
+ </tr><tr>
+  <td>Altitude:</td>
+  <td id="alt">-</td>
+ </tr><tr>
+  <td>Accuracy:</td>
+  <td id="acc">-</td>
+ </tr><tr>
+  <td><label for="zoom">Zoom:</label></td>
+  <td><input id="zoom" type="text" value="14" /></td>
+ </tr><tr>
+  <td colspan="2"><input id="show" type="checkbox" value="1" /><label
+   for="show"> show and zoom to location</label></td>
+ </tr><tr>
+  <td colspan="2"><button type="button" onclick="lcl(300000);">localise (cache)</button></td>
+ </tr><tr>
+  <td colspan="2"><button type="button" onclick="lcl(0);">localise (force)</button></td>
+ </tr><tr>
+  <td colspan="2"><button type="button" onclick="go();">Go!</button></td>
+ </tr><tr>
+  <td colspan="2"><button type="button" onclick="rst();">reset</button></td>
+ </tr>
+</table>
+</form></body></html>
