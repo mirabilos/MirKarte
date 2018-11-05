@@ -31,7 +31,9 @@
 	if (show.checked)
 		dst += '&show_location=1';
 //	alert(dst);
-	window.location = dst;
+//	window.location = dst;
+	var win = window.open(dst, '_blank');
+	win.focus();
 	return (false);
   }
 
