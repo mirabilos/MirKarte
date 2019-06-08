@@ -1,8 +1,8 @@
 #!/usr/bin/perl -T
-# From MirOS: www/files/wp.cgi,v 1.16 2014/11/11 01:46:51 tg Exp $
+# From MirOS: www/files/wp.cgi,v 1.28 2018/08/29 02:13:26 tg Exp $
 #-
-# Copyright © 2013, 2014
-#	Thorsten Glaser <tg@mirbsd.org>
+# Copyright © 2013, 2014, 2019
+#	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
 # are retained or reproduced in an accompanying document, permission
@@ -22,33 +22,21 @@
 use strict;
 use warnings;
 
-use File::Basename qw(dirname);
-my ($mydir) = (dirname($0) =~ /(.*)/);	# untaint
-chdir($mydir) or die;
-
-sub htmlencode($) {
-	local ($_) = @_;
-
-	s/&/&amp;/g;
-	s/</&lt;/g;
-	s/>/&gt;/g;
-	s/\"/&#34;/g;
-
-	return $_;
+# magic to allow including relative to dirname($0)
+use FindBin qw/$Bin/;
+BEGIN {
+	if ($Bin =~ m!([\w\./]+)!) {
+		$Bin = $1;
+	} else {
+		die "Bad directory $Bin\n";
+	}
 }
+use lib $Bin;
+# include wp.pm, hopefully from dirname($0)
+use wp;
 
-sub redirect($) {
-	my ($dst) = @_;
-	my $enc = htmlencode($dst);
-
-	print("Status: 301\r\nLocation: $dst\r\n");
-	print("Content-type: text/html\r\n\r\n");
-	print("<html><head><title>Redirection</title></head><body>\n");
-	print("<h1>Redirection</h1>\n");
-	print("<p>Please visit <a href=\"$enc\">$enc</a> instead!</p>\n");
-	print("</body></html>\n");
-	exit(0);
-}
+# for gpx.sh calls
+chdir($Bin) or die;
 
 my $output = "";
 my $query = "";
@@ -80,53 +68,71 @@ if (defined($ENV{QUERY_STRING})) {
 $query =~ s/^\s+//;
 $query =~ s/\s+$//;
 
-if ($query =~ m!^(m/[0-9A-Za-z_-]*/[0-9]+)/?$!) {
-	&redirect("http://www.munzee.com/$1/");
+# handle early, before uppercasing
+my ($code, $label, $url) = explwp($query);
+if ($code eq 'm/') {
+	&redirect($url);
+}
+if ($code =~ m!^(gh|Gh)$!) {
+	$output = $label;
+	$found = 2;
+	$query = "";
 }
 
+# early drop invalid requests
 $query = "" unless $query =~ /^[0-9A-Za-z_-]*$/;
+# uppercase, nice to the user
 $query =~ y/a-z/A-Z/;
 
+# local substitution helper
+sub chkwp($) {
+	my ($q) = @_;
+	my ($code, $label, $url) = explwp($q);
+
+	# once only
+	$found = -1 unless $found == 0;
+
+	# not implemented yet
+	if ($code ne "") {
+		$output = $url;
+		$found = 1 if $found == 0;
+	}
+
+	# via ./gpx.sh
+	if ($code =~ m!^(GD|VX|gh|Gh)$!) {
+		$output = $label;
+		$found = 2 if $found == 1;
+	}
+
+	# via redirect
+	if ($code =~ m!^(OC)$!) {
+		$output = $label;
+		$found = 3 if $found == 1;
+	}
+
+	return ($url);
+}
+
 if ($query ne "") {
-	$query =~		s@\b(N[0-9][0-9A-F]{4}|(EC|G[ACEGL]|O[BCKPSUXZ]|PR|SH|[TLC]C|WM)[0-9A-Z]{1,6}|(GD|VX)[0-9A-Z]{2}-[A-Z]{4}|2[0-9]{3}-(0[1-9]|1[0-2])-[0-3][0-9]_(-?[0-9]{1,2}_-?[0-9]{1,3}|GLOBAL))\b@
-					($query = $1) =~ /^GC/ ? "http://www.geocaching.com/seek/cache_details.aspx?wp=$query" :
-					$query =~ /^EC/ ? sprintf("http://extremcaching.com/index.php/output-2/%s", substr($query, 2)) :
-					$query =~ /^GA/ ? "http://geocaching.com.au/cache/$query" :
-					$query =~ /^GD/ ? "=$query" :
-					$query =~ /^GE/ ? "http://geocaching.gpsgames.org/cgi-bin/ge.pl?wp=$query" :
-					$query =~ /^GG/ ? "http://golf.gpsgames.org/cgi-bin/golf.pl?course=$query&coursedetails=Go" :
-					$query =~ /^(GL|PR)/ ? "http://coord.info/$query" :
-					$query =~ /^N[0-9]/ ? sprintf("http://www.navicache.com/cgi-bin/db/displaycache2.pl?CacheID=%d", hex(substr($query, 1))) :
-					$query =~ /^OB/ ? "http://www.opencaching.nl/viewcache.php?wp=$query" :
-					$query =~ /^OC/ ? "http://www.opencaching.de/search.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$query" :
-					$query =~ /^OK/ ? "http://www.opencaching.org.uk/viewcache.php?wp=$query" :
-					$query =~ /^OP/ ? "http://www.opencaching.pl/viewcache.php?wp=$query" :
-					$query =~ /^OS/ ? "http://www.opencaching.se/viewcache.php?wp=$query" :
-					$query =~ /^OU/ ? "http://www.opencaching.us/viewcache.php?wp=$query" :
-					$query =~ /^OZ/ ? "http://www.opencaching.cz/viewcache.php?wp=$query" :
-					$query =~ /^OX/ ? "http://www.opencaching.com/#!geocache/$query" :
-					$query =~ /^SH/ ? "http://shutterspot.gpsgames.org/cgi-bin/sh.pl?wp=$query" :
-					$query =~ /^[TLC]C/ ? "http://www.terracaching.com/Cache/$query" :
-					$query =~ /^VX/ ? "=$query" :
-					$query =~ /^WM/ ? "http://www.waymarking.com/waymarks/$query" :
-					$query =~ /^2/ ? "=$query" :
-					"";
-				@eg;
-	$found = 1 if $query =~ /^http/;
-	$found = 2 if $query =~ /^=/;
+	substwps($query);
+}
+
+if ($found == 3) {
+	&redirect("http://www.opencaching.de/search.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$output") if
+	    ($output =~ m!^OC!);
+
+	# fall through
+	$found = 0;
 }
 
 if ($found == 2) {
-	$query =~ /^=(.*)$/;
-	$query = $1;
-
 	delete $ENV{'PATH'};
-	my $gpx = qx(./gpx.sh $query);
+	my $gpx = qx(./gpx.sh $output);
 
 	if ($? == 0) {
 		print("Content-type: application/force-download\r\n");
 		printf("Content-Length: %d\r\n", length $gpx);
-		print("Content-Disposition: attachment; filename=\"$query.gpx\"\r\n");
+		print("Content-Disposition: attachment; filename=\"$output.gpx\"\r\n");
 		print("X-Content-Type-Options: nosniff\r\n");
 		print("\r\n$gpx");
 		exit(0);
@@ -136,5 +142,5 @@ if ($found == 2) {
 	$found = 0;
 }
 
-$query = "http://www.mirbsd.org/wp.htm" unless $found;
-&redirect($query);
+$output = "http://www.mirbsd.org/wp.htm" unless ($found > 0);
+&redirect($output);
