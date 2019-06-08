@@ -118,7 +118,7 @@ if ($query ne "") {
 }
 
 if ($found == 3) {
-	&redirect("http://www.opencaching.de/search.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$output") if
+	&redirect("https://www.opencaching.de/search.php?searchbywp=1&showresult=1&output=GPX&f_inactive=0&f_ignored=0&wp=$output") if
 	    ($output =~ m!^OC!);
 
 	# fall through
