@@ -129,7 +129,7 @@ if ($found == 2) {
 	delete $ENV{'PATH'};
 	my $gpx = qx(./gpx.sh $output);
 
-	if ($? == 0) {
+	if ($? == 0 && $gpx =~ m!<wpt!) {
 		print("Content-type: application/force-download\r\n");
 		printf("Content-Length: %d\r\n", length $gpx);
 		print("Content-Disposition: attachment; filename=\"$output.gpx\"\r\n");
