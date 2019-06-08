@@ -69,12 +69,12 @@ $query =~ s/^\s+//;
 $query =~ s/\s+$//;
 
 # handle early, before uppercasing
-my ($code, $label, $url) = explwp($query);
+my ($code, $wp, $label, $url) = explwp($query);
 if ($code eq 'm/') {
 	&redirect($url);
 }
 if ($code =~ m!^(gh|Gh)$!) {
-	$output = $label;
+	$output = $wp;
 	$found = 2;
 	$query = "";
 }
@@ -87,7 +87,7 @@ $query =~ y/a-z/A-Z/;
 # local substitution helper
 sub chkwp($) {
 	my ($q) = @_;
-	my ($code, $label, $url) = explwp($q);
+	my ($code, $wp, $label, $url) = explwp($q);
 
 	# once only
 	$found = -1 unless $found == 0;
@@ -100,13 +100,13 @@ sub chkwp($) {
 
 	# via ./gpx.sh
 	if ($code =~ m!^(GD|VX|gh|Gh)$!) {
-		$output = $label;
+		$output = $wp;
 		$found = 2 if $found == 1;
 	}
 
 	# via redirect
 	if ($code =~ m!^(OC)$!) {
-		$output = $label;
+		$output = $wp;
 		$found = 3 if $found == 1;
 	}
 
