@@ -8,3 +8,6 @@ TODO (not in this order):
   into layers
 • make CGIs dynamic wrt. current map boundaries (if zoom > minzoom)
 • maybe CGI-using GPX import, for Opera/Konqueror who can’t do it client-side
+• create user docs
+
+Note also that this is a rapid-prototype PoC…
