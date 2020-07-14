@@ -11,3 +11,7 @@ TODO (not in this order):
 • create user docs
 
 Note also that this is a rapid-prototype PoC…
+
+https://github.com/tmcw/togeojson is more maintained than
+the toGeoJSON stuff we currently have in the repo. Though
+it might not work on all browsers (any more)… see above.
