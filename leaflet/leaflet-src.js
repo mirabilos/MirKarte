@@ -8453,11 +8453,10 @@ L.Control.Layers = L.Control.extend({
 			link.href = '#';
 			link.title = 'Layers';
 
-			this._restore_drag = false;
 			if (L.Browser.touch) {
 				L.DomEvent
 				    .on(link, 'click', L.DomEvent.stop)
-				    .on(link, 'click', this._expandClk, this);
+				    .on(link, 'click', this._expand, this);
 			}
 			else {
 				L.DomEvent.on(link, 'focus', this._expand, this);
@@ -8608,19 +8607,7 @@ L.Control.Layers = L.Control.extend({
 		L.DomUtil.addClass(this._container, 'leaflet-control-layers-expanded');
 	},
 
-	_expandClk: function () {
-		if (L.Draggable && !L.Draggable._disabled) {
-			this._restore_drag = true;
-			L.Draggable._disabled = true;
-		}
-		return this._expand();
-	},
-
 	_collapse: function () {
-		if (this._restore_drag) {
-			L.Draggable._disabled = false;
-			this._restore_drag = false;
-		}
 		this._container.className = this._container.className.replace(' leaflet-control-layers-expanded', '');
 	}
 });
