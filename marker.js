@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2015, 2017
+ * Copyright © 2014, 2015, 2017, 2018
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -20,6 +20,8 @@
 
 var isNum = /^-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
+var isTwoNumSlashd = /^-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
+var isThreeNumSlashd = /^[1-9][0-9]*\/-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
 var map, maplayers, params, params_saved = "";
 
@@ -376,6 +378,12 @@ var fn_hashchange = function (event) {
 			case "m":
 				params[pair.key] = pair.value;
 				break;
+			case "map":
+				if (isThreeNumSlashd.test(pair.value)) {
+					var t = pair.value.split("/");
+					params["ll"] = t[1] + "," + t[2];
+				}
+				break;
 			}
 		    });
 	}
@@ -389,6 +397,8 @@ var fn_hashchange = function (event) {
 };
 var fn_hashchanged = function () {
 	var clat = NaN, clon = NaN;
+	if (!isTwoNum.test(params["ll"]) && isTwoNumSlashd.test(params["m"]))
+		params["ll"] = params["m"].replace("/", ",");
 	if (isTwoNum.test(params["ll"])) {
 		clat = parseFloat(params["ll"].split(",")[0]);
 		clon = parseFloat(params["ll"].split(",")[1]);
@@ -754,7 +764,6 @@ too much */
 		    '</span><br /><span class="nowrap">dm: ' + f[0] +
 		    " " + f[1] + "</span>";
 
-//		L.popup().setLatLng(l).setContent(s).openOn(map);
 		var marker = L.marker([llat, llon], {
 			"icon": marker_icon,
 			"draggable": true
