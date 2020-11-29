@@ -9,6 +9,13 @@
  <link rel="stylesheet" type="text/css" href="leaflet-compass/leaflet-compass.css" />
  <link rel="stylesheet" type="text/css" href="leaflet-gps/leaflet-gps.css" />
  <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  html, body {
+	position:fixed;
+	overflow:hidden;
+	width:100%;
+	height:100%;
+	margin:0px;
+  }
   #nomap {
 	padding:12px;
 	margin:12px;
@@ -35,6 +42,7 @@
 	position:absolute;
 	top:0; left:0;
 	bottom:0; right:0;
+	-webkit-overflow-scrolling:touch;
   }
   .leaflet-top.leaflet-right {
 	max-width:90%;
