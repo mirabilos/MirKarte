@@ -53,9 +53,19 @@ Content-type: text/html; charset=utf-8
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
  <meta name="copyright" content="see mirkarte.js" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
  <title>MirKarte for GeoDashing (Beta)</title>
  <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+ <link rel="stylesheet" type="text/css" href="leaflet-compass/leaflet-compass.css" />
+ <link rel="stylesheet" type="text/css" href="leaflet-gps/leaflet-gps.css" />
  <style type="text/css"><!--/*--><![CDATA[/*><!--*/
+  html, body {
+	position:fixed;
+	overflow:hidden;
+	width:100%;
+	height:100%;
+	margin:0px;
+  }
   #nomap {
 	padding:12px;
 	margin:12px;
@@ -82,6 +92,18 @@ Content-type: text/html; charset=utf-8
 	position:absolute;
 	top:0; left:0;
 	bottom:0; right:0;
+	-webkit-overflow-scrolling:touch;
+  }
+  .leaflet-top.leaflet-right {
+	max-width:90%;
+	bottom:54px;
+  }
+  .leaflet-control-layers-expanded {
+	max-height:100%;
+	overflow-y:scroll;
+  }
+  .leaflet-control-layers-list, .leaflet-control-layers-base {
+	max-height:100%;
   }
   .myzoomcontrol-text {
 	font:bold 14px 'Lucida Console', Monaco, monospace;
@@ -93,6 +115,8 @@ Content-type: text/html; charset=utf-8
   }
  /*]]>*/--></style>
  <script type="text/javascript" src="leaflet/leaflet-src.js"></script>
+ <script type="text/javascript" src="leaflet-compass/leaflet-compass.js"></script>
+ <script type="text/javascript" src="leaflet-gps/leaflet-gps.js"></script>
  <script type="text/javascript" src="prototype/prototype.js"></script>
  <script type="text/javascript" src="togeojson/togeojson.js"></script>
  <script type="text/javascript" src="zip.js/WebContent/zip.js"></script>
@@ -129,9 +153,21 @@ cat <<'EOF'
 		    '</a> | <a href="gpx.cgi?' + geodashing_arr[i][3] + '">GPX</a>');
 		i++;
 	}
+
+	var compass = new L.Control.Compass();
+	map.addControl(compass);
+	compass.activate();
+
+	var gpsctl = new L.Control.Gps({
+		"setView": true,
+		"title": "Centre map on your location"
+	});
+	map.addControl(gpsctl);
   }
 
  //--><!]]></script>
+ <!-- see mapbox.js.example about this -->
+ <script type="text/javascript" src=".mapbox.js"></script>
  <script type="text/javascript" src="mirkarte.js"></script>
 </head><body>
 <div id="map_wrapper">
