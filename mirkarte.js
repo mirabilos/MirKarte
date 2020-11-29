@@ -546,7 +546,29 @@ $(document).observe("dom:loaded", function () {
 	if (typeof mirkarte_mapbox_token !== 'undefined') maplayerlist = maplayerlist.concat([
 		{
 			"_name": "Mapbox Satellite (0..22)",
-			"_url": "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=" + mirkarte_mapbox_token,
+			"_url": "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg90?access_token={accessToken}",
+			"id": "mapbox.satellite",
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Hybrid (0..22)",
+			"_url": "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={accessToken}",
+			"id": "mapbox.satellite,mapbox.country-boundaries-v1,mapbox.mapbox-streets-v8,mapbox.mapbox-incidents-v1,mapbox.mapbox-traffic-v1",
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Draußen (0..22)",
+			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+			"id": "mirabilos/cki3kecpw2sm619mye2622h5l",
+			"tileSize": 512,
+			"zoomOffset": -1,
+			"accessToken": mirkarte_mapbox_token,
 			"minZoom": 0,
 			"maxZoom": 22,
 			"attribution": attributions["MapboxAPI"]
