@@ -38,78 +38,10 @@ whence -p wget >/dev/null 2>&1 && \
 cat <<'EOF'
 Content-type: text/html; charset=utf-8
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
- "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
- <meta http-equiv="content-type" content="text/html; charset=utf-8" />
- <meta name="copyright" content="see mirkarte.js" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
- <title>MirKarte for GeoVexilla (Beta)</title>
- <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
- <link rel="stylesheet" type="text/css" href="leaflet-compass/leaflet-compass.css" />
- <link rel="stylesheet" type="text/css" href="leaflet-gps/leaflet-gps.css" />
- <style type="text/css"><!--/*--><![CDATA[/*><!--*/
-  html, body {
-	position:fixed;
-	overflow:hidden;
-	width:100%;
-	height:100%;
-	margin:0px;
-  }
-  #nomap {
-	padding:12px;
-	margin:12px;
-	border:1px solid black;
-	width:24em;
-  }
-  #map {
-	height:100%;
-	width:100%;
-	position:relative;
-  }
-  #map_coors {
-	font:12px monospace, sans-serif;
-	text-align:right;
-	z-index:3;
-  }
-  #map_coors span {
-	background:rgba(255, 255, 255, 0.33);
-  }
-  #map_wrapper {
-	position:absolute;
-	top:0; left:0;
-	bottom:0; right:0;
-	-webkit-overflow-scrolling:touch;
-  }
-  .leaflet-top.leaflet-right {
-	max-width:90%;
-	bottom:54px;
-  }
-  .leaflet-control-layers-expanded {
-	max-height:100%;
-	overflow-y:scroll;
-  }
-  .leaflet-control-layers-list, .leaflet-control-layers-base {
-	max-height:100%;
-  }
-  .myzoomcontrol-text {
-	font:bold 14px 'Lucida Console', Monaco, monospace;
-	text-align:center;
-	vertical-align:middle;
-  }
-  .nowrap {
-	white-space:nowrap;
-  }
- /*]]>*/--></style>
- <script type="text/javascript" src="leaflet/leaflet-src.js"></script>
- <script type="text/javascript" src="leaflet-compass/leaflet-compass.js"></script>
- <script type="text/javascript" src="leaflet-gps/leaflet-gps.js"></script>
- <script type="text/javascript" src="prototype/prototype.js"></script>
- <script type="text/javascript" src="togeojson/togeojson.js"></script>
- <script type="text/javascript" src="zip.js/WebContent/zip.js"></script>
- <script type="text/javascript"><!--//--><![CDATA[//><!--
-  zip.workerScriptsPath = "zip.js/WebContent/";
 EOF
+sed \
+    -e '/<title>/s^.*$ <title>MirKarte for GeoVexilla (Beta)</title>' \
+    <tpl/0-prefix.htm
 print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
 
 "${fetch[@]}" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?zoom=$defzoom&lat=$deflat&lon=$deflon" | \
