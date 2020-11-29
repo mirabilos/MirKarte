@@ -21,6 +21,11 @@
 unset LANGUAGE; export LC_ALL=C
 unset HTTP_PROXY
 
+#XXX make these CGI parameters
+deflat=50.7
+deflon=7.11
+defzoom=8
+
 #XXX add attribution (either to #map_coors or by moving CGI content
 #XXX into a layer; maybe even make an AJAX version of the CGIs that
 #XXX merge all the CGIs into layers)
@@ -238,14 +243,16 @@ print
 sed \
     -e '/<title>/s^.*$ <title>MirKarte for xkcd Geo Hashing in Central Europe (Beta)</title>' \
     <tpl/0-prefix.htm
-print '  mirkarte_default_loc = [50.7, 7.11, 8];'
+print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
+print
+
 cat tpl/2-gh-graticules.js
+print
 print "  var geohashing_offset = [\"${latlon[0]}\", \"${latlon[1]}\"];"
 print "  var geohashing_day = \"$dY-$dM-$dD\";"
 
+cat tpl/5-hookfn.js
 cat <<'EOF'
-
-  function mirkarte_hookfn(map) {
 	var el_span = L.DomUtil.create("span", "");
 	var el_a = L.DomUtil.create("a", "", el_span);
 	el_a.href = "http://wiki.xkcd.com/geohashing/Main_Page";

@@ -21,14 +21,14 @@
 unset LANGUAGE; export LC_ALL=C
 unset HTTP_PROXY
 
-#XXX add attribution (either to #map_coors or by moving CGI content
-#XXX into a layer; maybe even make an AJAX version of the CGIs that
-#XXX merge all the CGIs into layers)
-
 #XXX make these CGI parameters
 deflat=50.7
 deflon=7.11
 defzoom=9
+
+#XXX add attribution (either to #map_coors or by moving CGI content
+#XXX into a layer; maybe even make an AJAX version of the CGIs that
+#XXX merge all the CGIs into layers)
 
 xff="${HTTP_X_FORWARDED_FOR:+$HTTP_X_FORWARDED_FOR, }$REMOTE_ADDR"
 set -A fetch -- ftp -H "X-Forwarded-For: $xff" -H "User-Agent: MirKarte/0.2 (Beta; +https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git using MirBSD ftp)" -o -
@@ -42,6 +42,7 @@ sed \
     -e '/<title>/s^.*$ <title>MirKarte for GeoVexilla (Beta)</title>' \
     <tpl/0-prefix.htm
 print "  mirkarte_default_loc = [$deflat, $deflon, $defzoom];"
+print
 
 "${fetch[@]}" "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?zoom=$defzoom&lat=$deflat&lon=$deflon" | \
     fgrep google.maps.InfoWindow | sed \
@@ -54,9 +55,8 @@ while IFS= read -pr line; do
 done
 print '	[0, ""]'
 print '  ];'
-print
-print '  function mirkarte_hookfn(map) {'
 
+cat tpl/5-hookfn.js
 cat <<'EOF'
 	var el_span = L.DomUtil.create("span", "");
 	var el_a = L.DomUtil.create("a", "", el_span);
