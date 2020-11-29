@@ -22,6 +22,11 @@ If you use this, you must check the terms of use of the
 various tile or WMS services yourself. (Support for more
 tile/WMS services welcome; send me patches please!)
 
+You *must* get a Mapbox API token and create a file .mapbox.js
+from the contents of mapbox.js.example with TOKEN substituted.
+Otherwise, drop its inclusion from index.htm and other files
+sourcing it.
+
 Variants:
 – index.htm (mirkarte.js): standard/basic map
 – marker.htm (marker.js): allows multiple markers, quick hack,
