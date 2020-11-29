@@ -81,33 +81,6 @@ cat <<'EOF'
 		    geovexilla_arr[i][1]);
 		i++;
 	}
-
-	var compass = new L.Control.Compass();
-	map.addControl(compass);
-	compass.activate();
-
-	var gpsctl = new L.Control.Gps({
-		"setView": true,
-		"title": "Centre map on your location"
-	});
-	map.addControl(gpsctl);
-  }
-
- //--><!]]></script>
- <!-- see mapbox.js.example about this -->
- <script type="text/javascript" src=".mapbox.js"></script>
- <script type="text/javascript" src="mirkarte.js"></script>
-</head><body>
-<div id="map_wrapper">
- <div id="map">
-  <p id="nomap">
-   This is an interactive map application called “MirKarte”.
-   Unfortunately, it is implemented completely client-side
-   in JavaScript – so, you have to enable that, and use a
-   GUI webbrowser supported by Leaflet and Prototype.
-  </p>
- </div>
-</div>
-</body></html>
 EOF
+cat tpl/9-suffix.htm
 exit 0
