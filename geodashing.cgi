@@ -44,10 +44,9 @@ set -A mirtime_months -- Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
 set -A mirtime_wdays -- Sun Mon Tue Wed Thu Fri Sat
 readonly mirtime_months[*] mirtime_wdays[*]
 
-cat <<'EOF'
-Content-type: text/html; charset=utf-8
-
-EOF
+cd "$(realpath "$0/..")" || exit 255
+print 'Content-type: text/html; charset=utf-8'
+print
 sed \
     -e '/<title>/s^.*$ <title>MirKarte for GeoDashing (Beta)</title>' \
     <tpl/0-prefix.htm

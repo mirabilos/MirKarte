@@ -232,10 +232,9 @@ set -A latlon -- $(print -nr -- "$dY-$dM-$dD-$i" | $md | \
     sed -e 'y/abcdef/ABCDEF/' -e 's/.\{16\}/.&p/g' | \
     dc -e 16i -)
 
-cat <<'EOF'
-Content-type: text/html; charset=utf-8
-
-EOF
+cd "$(realpath "$0/..")" || exit 255
+print 'Content-type: text/html; charset=utf-8'
+print
 sed \
     -e '/<title>/s^.*$ <title>MirKarte for xkcd Geo Hashing in Central Europe (Beta)</title>' \
     <tpl/0-prefix.htm

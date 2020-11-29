@@ -35,10 +35,9 @@ set -A fetch -- ftp -H "X-Forwarded-For: $xff" -H "User-Agent: MirKarte/0.2 (Bet
 whence -p wget >/dev/null 2>&1 && \
     set -A fetch -- wget -e robots=off --header "X-Forwarded-For: $xff" -U "MirKarte/0.2 (Beta; +https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git using GNU wget)" -qO- -T3
 
-cat <<'EOF'
-Content-type: text/html; charset=utf-8
-
-EOF
+cd "$(realpath "$0/..")" || exit 255
+print 'Content-type: text/html; charset=utf-8'
+print
 sed \
     -e '/<title>/s^.*$ <title>MirKarte for GeoVexilla (Beta)</title>' \
     <tpl/0-prefix.htm
