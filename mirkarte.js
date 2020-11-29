@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2015, 2017, 2018
+ * Copyright © 2014, 2015, 2017, 2018, 2020
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -31,6 +31,7 @@ var attributions = {
 	"MapQuestOpen": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"MapQuestAerial": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> — Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
 	"MapBox": 'Imagery from <a href="http://mapbox.com/about/maps/">MapBox</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+	"MapboxAPI": '<a href="http://mapbox.com/about/maps" style="position:absolute;display:block;height:20px;width:65px;left:-70px;bottom:0px;text-indent:-9999px;z-index:99999;overflow:hidden;background-image:url(mapboxwm.svg);background-repeat:no-repeat;background-position:0 0;background-size:65px 20px;" target="_blank"></a>© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> — © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> — <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>',
 	"Stamen": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"Esri": "Tiles © Esri",
 	"EsriDeLorme": "Tiles © Esri — Copyright: ©2012 DeLorme",
@@ -524,29 +525,7 @@ $(document).observe("dom:loaded", function () {
 	$("nomap").hide();
 	L.control.attribution({"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
 	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
-	maplayers = function (map, layers) {
-		var baseMaps = {};
-		var n = layers.length;
-
-		for (var i = 0; i < n; ++i) {
-			var data = layers[i];
-			var name = data["_name"];
-			var url = data["_url"];
-			var layer;
-
-			delete data["_name"];
-			delete data["_url"];
-			if (data["_wms"]) {
-				delete data["_wms"];
-				layer = L.tileLayer.wms(url, data);
-			} else
-				layer = L.tileLayer(url, data);
-			if (i == 0)
-				layer.addTo(map);
-			baseMaps[name] = layer;
-		}
-		return (L.control.layers(baseMaps).addTo(map));
-	    } (map, [
+	var maplayerlist = [
 		{
 			"_name": "OpenStreetMap (0..19)",
 			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -562,7 +541,18 @@ $(document).observe("dom:loaded", function () {
 			"_name": "OSM Germany (0..18)",
 			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
-		},
+		}
+	    ];
+	if (typeof mirkarte_mapbox_token !== 'undefined') maplayerlist = maplayerlist.concat([
+		{
+			"_name": "Mapbox Satellite (0..22)",
+			"_url": "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=" + mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		}
+	    ]);
+	maplayerlist = maplayerlist.concat([
 /* 503
 		{
 			"_name": "MapQuestOpen OSM (0..18) 🅒",
@@ -798,6 +788,29 @@ too much */
 			"attribution": attributions["CartoDB"]
 		}
 	    ]);
+	maplayers = function (map, layers) {
+		var baseMaps = {};
+		var n = layers.length;
+
+		for (var i = 0; i < n; ++i) {
+			var data = layers[i];
+			var name = data["_name"];
+			var url = data["_url"];
+			var layer;
+
+			delete data["_name"];
+			delete data["_url"];
+			if (data["_wms"]) {
+				delete data["_wms"];
+				layer = L.tileLayer.wms(url, data);
+			} else
+				layer = L.tileLayer(url, data);
+			if (i == 0)
+				layer.addTo(map);
+			baseMaps[name] = layer;
+		}
+		return (L.control.layers(baseMaps).addTo(map));
+	    } (map, maplayerlist);
 	var myzoomclass = L.Control.Zoom.extend({
 		onAdd: function (map) {
 			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
