@@ -1,6 +1,6 @@
 #!/bin/mksh
 #-
-# Copyright © 2014
+# Copyright © 2014, 2020
 #	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -68,9 +68,6 @@ Content-type: text/html; charset=utf-8
 	position:relative;
   }
   #map_coors {
-	position:fixed;
-	right:0; bottom:16px;
-	padding:6px;
 	font:12px monospace, sans-serif;
 	text-align:right;
 	z-index:3;
@@ -126,10 +123,17 @@ while IFS= read -pr line; do
 done
 print '	[0, ""]'
 print '  ];'
+print
+print '  function mirkarte_hookfn(map) {'
 
 cat <<'EOF'
+	var el_span = L.DomUtil.create("span", "");
+	var el_a = L.DomUtil.create("a", "", el_span);
+	el_a.href = "http://geovexilla.gpsgames.org/cgi-bin/vx.pl";
+	el_a.update("GeoVexilla");
+	var el_br = L.DomUtil.create("br", "");
+	map._coorscontrol._unshift(el_br)._unshift(el_span);
 
-  function mirkarte_hookfn(map) {
 	var i = 0;
 	var xre = /wp=(VX[0-9A-Z][0-9A-Z]-[0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z])&lat=([0-9.-]*)&lon=([0-9.-]*)\'/;
 
@@ -171,11 +175,6 @@ cat <<'EOF'
    in JavaScript – so, you have to enable that, and use a
    GUI webbrowser supported by Leaflet and Prototype.
   </p>
- </div>
- <div id="map_coors">
-  <span><a href="http://geovexilla.gpsgames.org/cgi-bin/vx.pl">GeoVexilla</a></span><br />
-  <span id="map_coors_ns"></span><br />
-  <span id="map_coors_we"></span>
  </div>
 </div>
 </body></html>

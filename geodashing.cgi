@@ -1,6 +1,6 @@
 #!/bin/mksh
 #-
-# Copyright © 2014, 2017
+# Copyright © 2014, 2017, 2020
 #	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -77,9 +77,6 @@ Content-type: text/html; charset=utf-8
 	position:relative;
   }
   #map_coors {
-	position:fixed;
-	right:0; bottom:16px;
-	padding:6px;
 	font:12px monospace, sans-serif;
 	text-align:right;
 	z-index:3;
@@ -134,10 +131,19 @@ while read -pr id lat lon; do
 done
 print '	[0, 0, 0, ""]'
 print '  ];'
+print
+print '  function mirkarte_hookfn(map) {'
+print -r "	var el_t = document.createTextNode(\" ${mirtime_months[defmon - 1]} 20$defyear\");"
 
 cat <<'EOF'
+	var el_span = L.DomUtil.create("span", "");
+	var el_a = L.DomUtil.create("a", "", el_span);
+	el_a.href = "http://geodashing.gpsgames.org/";
+	el_a.update("GeoDashing");
+	el_span.appendChild(el_t);
+	var el_br = L.DomUtil.create("br", "");
+	map._coorscontrol._unshift(el_br)._unshift(el_span);
 
-  function mirkarte_hookfn(map) {
 	var i = 0;
 	while (geodashing_arr[i][0] != 0) {
 		var ghlat = geodashing_arr[i][1];
@@ -177,13 +183,6 @@ cat <<'EOF'
    in JavaScript – so, you have to enable that, and use a
    GUI webbrowser supported by Leaflet and Prototype.
   </p>
- </div>
- <div id="map_coors">
-EOF
-echo "  <span><a href=\"http://geodashing.gpsgames.org/\">GeoDashing</a> ${mirtime_months[defmon - 1]} 20$defyear</span><br />"
-cat <<'EOF'
-  <span id="map_coors_ns"></span><br />
-  <span id="map_coors_we"></span>
  </div>
 </div>
 </body></html>

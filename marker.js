@@ -354,8 +354,8 @@ var tc_icon = L.icon({
 var fn_mousemove = function (e) {
 	var f = llformat(e.latlng.lat, e.latlng.lng, 1);
 
-	$("map_coors_ns").update(f[0]);
-	$("map_coors_we").update(f[1]);
+	map._coorscontrol._lat.update(f[0]);
+	map._coorscontrol._lon.update(f[1]);
 };
 var ign_hashchange = false;
 var update_hash = function () {
@@ -780,6 +780,29 @@ too much */
 	var myzoomcontrol = new myzoomclass();
 	map.addControl(myzoomcontrol);
 	L.control.scale().addTo(map);
+	var mycoorsclass = L.Control.extend({
+		options: {
+			"position": "bottomright",
+			"autoZIndex": true
+		},
+		_unshift: function (el) {
+			this._firstchild = this._container.insertBefore(el, this._firstchild);
+			return this;
+		},
+		onAdd: function (map) {
+			this._container = L.DomUtil.create("div", "leaflet-control");
+			this._container.id = "map_coors";
+			this._lat = L.DomUtil.create("span", "", this._container);
+			this._firstchild = this._lat;
+			this._lat.id = "map_coors_ns";
+			this._container.appendChild(L.DomUtil.create("br", ""));
+			this._lon = L.DomUtil.create("span", "", this._container);
+			this._lon.id = "map_coors_we";
+			return this._container;
+		}
+	    });
+	map._coorscontrol = new mycoorsclass();
+	map.addControl(map._coorscontrol);
 	map_initialised = true;
 	map.on("moveend", function () {
 		var newloc = map.getCenter();
@@ -806,10 +829,11 @@ too much */
 		marker_popup(marker,
 		    'Marker<br />°N<br />°E');
 	    });
-	map.on("mousemove", fn_mousemove);
 	map.on("dragstart", function () { map.off("mousemove", fn_mousemove); });
 	map.on("dragend", function () { map.on("mousemove", fn_mousemove); });
 	fn_hashchange(false);
+	fn_mousemove({"latlng": map.getCenter()});
+	map.on("mousemove", fn_mousemove);
 	$("map").focus();
 	if (typeof mirkarte_hookfn == 'function')
 		mirkarte_hookfn(map);

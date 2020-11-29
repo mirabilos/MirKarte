@@ -265,9 +265,6 @@ Content-type: text/html; charset=utf-8
 	position:relative;
   }
   #map_coors {
-	position:fixed;
-	right:0; bottom:16px;
-	padding:6px;
 	font:12px monospace, sans-serif;
 	text-align:right;
 	z-index:3;
@@ -618,9 +615,19 @@ Content-type: text/html; charset=utf-8
 EOF
 print "  var geohashing_offset = [\"${latlon[0]}\", \"${latlon[1]}\"];"
 print "  var geohashing_day = \"$dY-$dM-$dD\";"
+
 cat <<'EOF'
 
   function mirkarte_hookfn(map) {
+	var el_span = L.DomUtil.create("span", "");
+	var el_a = L.DomUtil.create("a", "", el_span);
+	el_a.href = "http://wiki.xkcd.com/geohashing/Main_Page";
+	el_a.update("Geo Hashing");
+	var el_t = document.createTextNode(" on " + geohashing_day);
+	el_span.appendChild(el_t);
+	var el_br = L.DomUtil.create("br", "");
+	map._coorscontrol._unshift(el_br)._unshift(el_span);
+
 	var i = 0;
 
 	while (graticules[i][0] != "666") {
@@ -675,13 +682,6 @@ cat <<'EOF'
    in JavaScript – so, you have to enable that, and use a
    GUI webbrowser supported by Leaflet and Prototype.
   </p>
- </div>
- <div id="map_coors">
-EOF
-echo "  <span><a href=\"http://wiki.xkcd.com/geohashing/Main_Page\">Geo Hashing</a> on $dY-$dM-$dD</span><br />"
-cat <<'EOF'
-  <span id="map_coors_ns"></span><br />
-  <span id="map_coors_we"></span>
  </div>
 </div>
 </body></html>
