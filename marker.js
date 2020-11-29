@@ -754,7 +754,6 @@ too much */
 		    '</span><br /><span class="nowrap">dm: ' + f[0] +
 		    " " + f[1] + "</span>";
 
-//		L.popup().setLatLng(l).setContent(s).openOn(map);
 		var marker = L.marker([llat, llon], {
 			"icon": marker_icon,
 			"draggable": true
