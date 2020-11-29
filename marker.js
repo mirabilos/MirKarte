@@ -803,6 +803,17 @@ too much */
 	    });
 	map._coorscontrol = new mycoorsclass();
 	map.addControl(map._coorscontrol);
+
+	var compass = new L.Control.Compass();
+	map.addControl(compass);
+	compass.activate();
+
+	var gpsctl = new L.Control.Gps({
+		"setView": true,
+		"title": "Centre map on your location"
+	});
+	map.addControl(gpsctl);
+
 	map_initialised = true;
 	map.on("moveend", function () {
 		var newloc = map.getCenter();
