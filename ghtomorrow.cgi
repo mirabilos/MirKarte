@@ -1,7 +1,7 @@
 #!/bin/mksh
 #-
 # Copyright © 2007, 2008, 2012, 2013, 2014
-#	Thorsten “mirabilos” Glaser <tg@mirbsd.org>
+#	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
 # are retained or reproduced in an accompanying document, permission

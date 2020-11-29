@@ -1,7 +1,7 @@
 # $MirOS: src/share/misc/licence.template,v 1.28 2008/11/14 15:33:44 tg Rel $
 #-
 # Copyright © 2014
-#	Thorsten Glaser <tg@mirbsd.org>
+#	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
 # are retained or reproduced in an accompanying document, permission
