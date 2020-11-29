@@ -6,5 +6,6 @@
 # Remotes not used:
 # - polyfill git@github.com:inexorabletash/polyfill.git
 #
+*~
 .mapbox.js
 gpxload.htm
