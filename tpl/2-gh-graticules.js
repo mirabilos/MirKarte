@@ -1,5 +1,11 @@
+  /* BEGIN generated file from xkcd2js.sh {{{ */
+  /*
+   * we always apply the 30W rule, so the code would need to be
+   * changed, both here and in the CGI, to go further west… but
+   * that would not scale either, anyway, plus we calculate all
+   * points using CET/CEST, so we don’t do that
+   */
   var graticules = [
-	/* BEGIN generated file from xkcd2js.sh */
 	["42", "-6", "<a href=\"http://wiki.xkcd.com/geohashing/Ponferrada,_Spain\">Ponferrada, Spain</a>"],
 	["42", "-5", "<a href=\"http://wiki.xkcd.com/geohashing/Le%C3%B3n,_Spain\">León, Spain</a>"],
 	["42", "-4", "<a href=\"http://wiki.xkcd.com/geohashing/Palencia,_Spain\">Palencia, Spain</a>"],
@@ -301,5 +307,5 @@
 	["56", "11", "<a href=\"http://wiki.xkcd.com/geohashing/Anholt,_Denmark\">Anholt, Denmark</a>"],
 	["56", "12", "<a href=\"http://wiki.xkcd.com/geohashing/Helsingborg,_Sweden\">Helsingborg, Sweden</a>"],
 	["666", "666", ""]
-	/* END generated file from xkcd2js.sh */
   ];
+  /* END generated file from xkcd2js.sh }}} */
