@@ -1,6 +1,6 @@
 # $MirOS: src/share/misc/licence.template,v 1.28 2008/11/14 15:33:44 tg Rel $
 #-
-# Copyright © 2014
+# Copyright © 2014, 2020
 #	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -76,12 +76,17 @@ function json_escape {
 	print -nr -- "$o\""
 }
 
-exec >xkcd2js.out
-
-# we always apply the 30W rule, so the code would need to be
-# changed, both here and in the CGI, to go further west… but
-# that would not scale either, anyway, plus we calculate all
-# points using CET/CEST, so we don’t do that
+exec >tpl/2-gh-graticules.js
+cat <<\EOF
+  /* BEGIN generated file from xkcd2js.sh {{{ */
+  /*
+   * we always apply the 30W rule, so the code would need to be
+   * changed, both here and in the CGI, to go further west… but
+   * that would not scale either, anyway, plus we calculate all
+   * points using CET/CEST, so we don’t do that
+   */
+  var graticules = [
+EOF
 
 for lat in 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56; do
 	for lon in -6 -5 -4 -3 -2 -1 -0 0 1 2 3 4 5 6 7 8 9 10 11 12; do
@@ -91,5 +96,10 @@ for lat in 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56; do
 		print "	[\"$lat\", \"$lon\", $(json_escape "$x")],"
 	done
 done
-print "	[\"666\", \"666\", \"\"]"
-ls -la xkcd2js.out >&2
+cat <<\EOF
+	["666", "666", ""]
+  ];
+  /* END generated file from xkcd2js.sh }}} */
+EOF
+exec >&2
+ls -la tpl/2-gh-graticules.js >&2
