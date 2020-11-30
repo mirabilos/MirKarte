@@ -29,7 +29,8 @@ var attributions = {
 	"OSM": '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"OCM": '© <a href="http://www.opencyclemap.org">OpenCycleMap</a>, <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"MapboxAPI": '<a href="http://mapbox.com/about/maps" style="position:absolute;display:block;height:20px;width:65px;left:-70px;bottom:0px;text-indent:-9999px;z-index:99999;overflow:hidden;background-image:url(img/mapboxwm.svg);background-repeat:no-repeat;background-position:0 0;background-size:65px 20px;" target="_blank"></a>© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> — © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> — <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>',
-	"Stamen": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+	"StamenT": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>',
+	"StamenW": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>',
 	"Esri": "Tiles © Esri",
 	"EsriDeLorme": "Tiles © Esri — Copyright: ©2012 DeLorme",
 	"EsriWorldTopoMap": "Tiles © Esri — Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community",
@@ -40,6 +41,10 @@ var attributions = {
 	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attribution">CARTO</a>',
 	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
 	"OpenMapSurfer": 'Imagery from <a href="http://www.geog.uni-heidelberg.de/gis/index.html">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+	"HikeBikeMap": 'Map Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Hillshading: SRTM3 v2 (<a href="http://www2.jpl.nasa.gov/srtm/">NASA</a>)',
+	"ÖPNVkarte": ' (© by <a href="http://memomaps.de/">MeMoMaps</a>).',
+	"OpenTopoMap": 'map data: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org/">SRTM</a> | map style: © <a href="https://opentopomap.org/">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+	"OpenRailwayMap": 'Data <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a>',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
     };
 
@@ -537,88 +542,196 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["OSM"]
 		},
 		{
+			"_name": "wmflabs Hike &amp; Bike (0‥19)",
+			"_url": "http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png",
+			"minZoom": 0,
+			"maxZoom": 19,
+			"attribution": attributions["HikeBikeMap"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "wmflabs Hillshading (0‥15)",
+			"_url": "http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png",
+			"minZoom": 0,
+			"maxZoom": 15,
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_name": "wmflabs Mapnik unlabelled (0‥18)",
+			"_url": "http://{s}.tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png",
+			"attribution": attributions["OSM"]
+		},
+		{
 			"_name": "OSM Germany (0‥18)",
 			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
 		{
+			"_name": "OSM Humanitarian (0‥19)",
+			"_url": "http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+			"maxZoom": 19,
+			"subdomains": "ab",
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "openptmap Transport",
+			"_url": "http://www.openptmap.org/tiles/{z}/{x}/{y}.png",
+			"_nohttps": true,
+			"attribution": attributions["OSM"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "OpenRailwayMap infrastructure",
+			"_url": "http://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
+			"subdomains": "abc",
+			"attribution": attributions["OpenRailwayMap"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "OpenRailwayMap maxspeed",
+			"_url": "http://{s}.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png",
+			"subdomains": "abc",
+			"attribution": attributions["OpenRailwayMap"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "OpenRailwayMap signals",
+			"_url": "http://{s}.tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png",
+			"subdomains": "abc",
+			"attribution": attributions["OpenRailwayMap"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "OpenSeaMap sea marks (9‥18)",
+			"_url": "http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+			"minZoom": 9,
+			"maxZoom": 18,
+			"attribution": attributions["OSM"]
+		},
+		{
 			"_name": "Thunderforest OpenCycleMap (0‥18)",
-			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "Thunderforest Transport (0‥18)",
-			"_url": "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "Thunderforest Landscape (0‥18)",
-			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
+			"_name": "ÖPNVkarte (0‥18)",
+			"_url": "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+			"attribution": attributions["OSM"] + attributions["ÖPNVkarte"]
+		},
+		{
+			"_name": "OpenTopoMap (0‥18)",
+			"_url": "http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+			"subdomains": "abc",
+			"attribution": attributions["OpenTopoMap"]
+		},
+		{
+			"_name": "Lima Labs Open Carto (0‥18)",
+			"_url": "http://cdn.lima-labs.com/{z}/{x}/{y}.png?free",
+			"attribution": attributions["OSM"]
+		},
+		{
 			"_name": "Stamen Toner (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
 			"_name": "Stamen TonerBackground (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
+			"_isOverlay": true,
 			"_name": "Stamen TonerHybrid (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner-hybrid/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
+			"_isOverlay": true,
 			"_name": "Stamen TonerLines (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
+			"_isOverlay": true,
 			"_name": "Stamen TonerLabels (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
 			"_name": "Stamen TonerLite (0‥20)",
-			"_url": "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
 		},
 		{
 			"_name": "Stamen Terrain (4‥18)",
-			"_url": "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
 			"subdomains": "abcd",
 			"minZoom": 4,
 			"maxZoom": 18,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenT"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "Stamen TerrainLabels (4‥18)",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/terrain-labels/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 4,
+			"maxZoom": 18,
+			"attribution": attributions["StamenT"]
+		},
+		{
+			"_isOverlay": true,
+			"_name": "Stamen TerrainLines (4‥18)",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/terrain-lines/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 4,
+			"maxZoom": 18,
+			"attribution": attributions["StamenT"]
+		},
+		{
+			"_name": "Stamen TerrainBackground (4‥18)",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 4,
+			"maxZoom": 18,
+			"attribution": attributions["StamenT"]
 		},
 		{
 			"_name": "Stamen Watercolor (3‥16)",
-			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+			"_url": "http://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
 			"subdomains": "abcd",
 			"minZoom": 3,
 			"maxZoom": 16,
-			"attribution": attributions["Stamen"]
+			"attribution": attributions["StamenW"]
 		},
 		{
 			"_name": "de Topo (WMS)",
@@ -692,12 +805,13 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
 			"attribution": attributions["OpenMapSurfer"]
 		},
+ */
 		{
 			"_name": "MapSurfer.NET OSM Administrative Boundaries",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
+			"_disabled": true,
 			"attribution": attributions["OpenMapSurfer"]
 		},
- */
 		{
 			"_name": "Lyrk (0‥18)",
 			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
@@ -791,13 +905,21 @@ $(document).observe("dom:loaded", function () {
 	    ]);
 	ctl_layers = function (map, layers) {
 		var baseMaps = {};
+		var overlays = {};
 		var n = layers.length;
+		var ishttps = (location.protocol === "https:");
 
 		for (var i = 0; i < n; ++i) {
 			var data = layers[i];
 			var name = data["_name"];
 			var url = data["_url"];
 			var layer;
+
+			if (ishttps) {
+				if (data["_nohttps"])
+					data["_disabled"] = true;
+				url = url.replace(/^http:/, "https:");
+			}
 
 			delete data["_name"];
 			delete data["_url"];
@@ -808,9 +930,9 @@ $(document).observe("dom:loaded", function () {
 				layer = L.tileLayer(url, data);
 			if (i == 0)
 				layer.addTo(map);
-			baseMaps[name] = layer;
+			(data["_isOverlay"] ? overlays : baseMaps)[name] = layer;
 		}
-		return (L.control.layers(baseMaps));
+		return (L.control.layers(baseMaps, overlays));
 	    } (map, maplayerlist);
 
 	var myzoomclass = L.Control.Zoom.extend({
