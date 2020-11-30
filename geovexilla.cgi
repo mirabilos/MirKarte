@@ -63,7 +63,7 @@ cat <<'EOF'
 	el_a.href = "http://geovexilla.gpsgames.org/cgi-bin/vx.pl";
 	el_a.update("GeoVexilla");
 	var el_br = L.DomUtil.create("br", "");
-	map._coorscontrol._unshift(el_br)._unshift(el_span);
+	ctl_coors._unshift(el_br)._unshift(el_span);
 
 	var i = 0;
 	var xre = /wp=(VX[0-9A-Z][0-9A-Z]-[0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z])&lat=([0-9.-]*)&lon=([0-9.-]*)\'/;

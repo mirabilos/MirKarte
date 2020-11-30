@@ -76,7 +76,7 @@ cat <<'EOF'
 	el_a.update("GeoDashing");
 	el_span.appendChild(el_t);
 	var el_br = L.DomUtil.create("br", "");
-	map._coorscontrol._unshift(el_br)._unshift(el_span);
+	ctl_coors._unshift(el_br)._unshift(el_span);
 
 	var i = 0;
 	while (geodashing_arr[i][0] != 0) {
