@@ -28,9 +28,6 @@ var map, ctl_layers, ctl_coors, marker = false, params, params_saved = "";
 var attributions = {
 	"OSM": '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"OCM": '© <a href="http://www.opencyclemap.org">OpenCycleMap</a>, <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-	"MapQuestOpen": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-	"MapQuestAerial": 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> — Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
-	"MapBox": 'Imagery from <a href="http://mapbox.com/about/maps/">MapBox</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"MapboxAPI": '<a href="http://mapbox.com/about/maps" style="position:absolute;display:block;height:20px;width:65px;left:-70px;bottom:0px;text-indent:-9999px;z-index:99999;overflow:hidden;background-image:url(img/mapboxwm.svg);background-repeat:no-repeat;background-position:0 0;background-size:65px 20px;" target="_blank"></a>© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> — © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> — <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>',
 	"Stamen": 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> — Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"Esri": "Tiles © Esri",
@@ -40,11 +37,9 @@ var attributions = {
 	"EsriOceanBasemap": "Tiles © Esri — Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri",
 	"EsriNatGeoWorldMap": "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC",
 	"Google": 'Map data © <a href="http://googlemaps.com">Google</a>',
-	"Geocommons": 'Tiles by Geocommons © <a href="http://geocommons.com/overlays/acetate">Esri &amp; Stamen</a>. © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 	"CartoDB": '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attribution">CARTO</a>',
 	"Lyrk": '<a href="/copyright">Lizenzinformationen</a>, Tiles by <a href="http://lyrk.de/">Lyrk</a>',
 	"OpenMapSurfer": 'Imagery from <a href="http://www.geog.uni-heidelberg.de/gis/index.html">GIScience Research Group @ University of Heidelberg</a> – Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-	"CloudMade": 'CloudMade (403, tbd)',
 	"TC": '© <a href="http://www.terracaching.com/">Terra Interactive, LLC</a>'
     };
 
@@ -531,25 +526,197 @@ $(document).observe("dom:loaded", function () {
 
 	var maplayerlist = [
 		{
-			"_name": "OpenStreetMap (0..19)",
+			"_name": "OpenStreetMap (0‥19)",
 			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			"maxZoom": 19,
 			"attribution": attributions["OSM"]
 		},
 		{
-			"_name": "OSM Black&amp;White (0..18)",
+			"_name": "OSM Black&amp;White (0‥18)",
 			"_url": "http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
 		},
 		{
-			"_name": "OSM Germany (0..18)",
+			"_name": "OSM Germany (0‥18)",
 			"_url": "http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
 			"attribution": attributions["OSM"]
+		},
+		{
+			"_name": "Thunderforest OpenCycleMap (0‥18)",
+			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "Thunderforest Transport (0‥18)",
+			"_url": "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "Thunderforest Landscape (0‥18)",
+			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
+			"attribution": attributions["OCM"]
+		},
+		{
+			"_name": "Stamen Toner (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerBackground (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerHybrid (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner-hybrid/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerLines (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerLabels (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen TonerLite (0‥20)",
+			"_url": "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 0,
+			"maxZoom": 20,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen Terrain (4‥18)",
+			"_url": "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png",
+			"subdomains": "abcd",
+			"minZoom": 4,
+			"maxZoom": 18,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "Stamen Watercolor (3‥16)",
+			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+			"subdomains": "abcd",
+			"minZoom": 3,
+			"maxZoom": 16,
+			"attribution": attributions["Stamen"]
+		},
+		{
+			"_name": "de Topo (WMS)",
+			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
+			"_wms": true,
+			"attribution": "Bundesamt für Kartographie und Geodäsie",
+			"format": "image/jpeg",
+			"layers": "webatlasde"
+		},
+		{
+			"_name": "Google Maps (0‥20)",
+			"_url": "http://mt{s}.googleapis.com/vt?x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"maxZoom": 20,
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Google Satellite (0‥20)",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=s&x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"maxZoom": 20,
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Google Terrain (0‥20)",
+			"_url": "http://mt{s}.googleapis.com/vt?lyrs=p&x={x}&y={y}&z={z}",
+			"subdomains": "0123",
+			"maxZoom": 20,
+			"attribution": attributions["Google"]
+		},
+		{
+			"_name": "Esri WorldStreetMap (0‥18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["Esri"]
+		},
+		{
+			"_name": "Esri DeLorme (0‥11)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/{z}/{y}/{x}",
+			"maxZoom": 11,
+			"attribution": attributions["EsriDeLorme"]
+		},
+		{
+			"_name": "Esri WorldTopoMap (0‥18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriWorldTopoMap"]
+		},
+		{
+			"_name": "Esri WorldImagery (0‥18)",
+			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriWorldImagery"]
+		},
+		{
+			"_name": "Esri OceanBasemap (0‥11)",
+			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}",
+			"maxZoom": 11,
+			"attribution": attributions["EsriOceanBasemap"]
+		},
+		{
+			"_name": "Esri NatGeoWorldMap (0‥18)",
+			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
+			"attribution": attributions["EsriNatGeoWorldMap"]
+		},
+/*
+		{
+			"_name": "MapSurfer.NET OSM Roads",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+		{
+			"_name": "MapSurfer.NET OSM Semitransparent",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+		{
+			"_name": "MapSurfer.NET OSM Administrative Boundaries",
+			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
+			"attribution": attributions["OpenMapSurfer"]
+		},
+ */
+		{
+			"_name": "Lyrk (0‥18)",
+			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
+			"attribution": attributions["Lyrk"]
+		},
+		{
+			"_name": "CartoDB Positron (0‥18)",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
+		},
+		{
+			"_name": "CartoDB Dark Matter (0‥18)",
+			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
+			"attribution": attributions["CartoDB"]
 		}
 	    ];
 	if (typeof mirkarte_mapbox_token !== 'undefined') maplayerlist = maplayerlist.concat([
 		{
-			"_name": "Mapbox Satellite (0..22)",
+			"_name": "Mapbox Satellite (0‥22)",
 			"_url": "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg90?access_token={accessToken}",
 			"id": "mapbox.satellite",
 			"accessToken": mirkarte_mapbox_token,
@@ -558,7 +725,7 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["MapboxAPI"]
 		},
 		{
-			"_name": "Mapbox Hybrid (0..22)",
+			"_name": "Mapbox Hybrid (0‥22)",
 			"_url": "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={accessToken}",
 			"id": "mapbox.satellite,mapbox.country-boundaries-v1,mapbox.mapbox-streets-v8,mapbox.mapbox-incidents-v1,mapbox.mapbox-traffic-v1",
 			"accessToken": mirkarte_mapbox_token,
@@ -567,7 +734,51 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["MapboxAPI"]
 		},
 		{
-			"_name": "Mapbox Draußen (0..22)",
+			"_name": "Mapbox Satellite+Streets (0‥22)",
+			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+			"id": "mapbox/satellite-streets-v11",
+			"tileSize": 512,
+			"zoomOffset": -1,
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Streets (0‥22)",
+			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+			"id": "mapbox/streets-v11",
+			"tileSize": 512,
+			"zoomOffset": -1,
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Light (0‥22)",
+			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+			"id": "mapbox/light-v10",
+			"tileSize": 512,
+			"zoomOffset": -1,
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Dark (0‥22)",
+			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+			"id": "mapbox/dark-v10",
+			"tileSize": 512,
+			"zoomOffset": -1,
+			"accessToken": mirkarte_mapbox_token,
+			"minZoom": 0,
+			"maxZoom": 22,
+			"attribution": attributions["MapboxAPI"]
+		},
+		{
+			"_name": "Mapbox Draußen (0‥22)",
 			"_url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
 			"id": "mirabilos/cki3kecpw2sm619mye2622h5l",
 			"tileSize": 512,
@@ -576,242 +787,6 @@ $(document).observe("dom:loaded", function () {
 			"minZoom": 0,
 			"maxZoom": 22,
 			"attribution": attributions["MapboxAPI"]
-		}
-	    ]);
-	maplayerlist = maplayerlist.concat([
-/* 503
-		{
-			"_name": "MapQuestOpen OSM (0..18) 🅒",
-			"_url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
-			"subdomains": "1234",
-			"attribution": attributions["MapQuestOpen"]
-		},
-		{
-			"_name": "MapQuestOpen Aerial (0..18)",
-			"_url": "http://oatile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg",
-			"subdomains": "1234",
-			"attribution": attributions["MapQuestAerial"]
-		},
- */
-		{
-			"_name": "Thunderforest OpenCycleMap (0..18)",
-			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-			"attribution": attributions["OCM"]
-		},
-		{
-			"_name": "Thunderforest Transport (0..18)",
-			"_url": "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
-			"attribution": attributions["OCM"]
-		},
-		{
-			"_name": "Thunderforest Landscape (0..18)",
-			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
-			"attribution": attributions["OCM"]
-		},
-/* to be replaced: https://www.mapbox.com/maps/
-		{
-			"_name": "MapBox Warden (0..18)",
-			"_url": "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-warden/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"attribution": attributions["MapBox"]
-		},
- */
-		{
-			"_name": "Stamen Toner (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-/* otherwise it gets too much
-		{
-			"_name": "Stamen TonerBackground (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Stamen TonerHybrid (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner-hybrid/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Stamen TonerLines (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Stamen TonerLabels (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-too much */
-		{
-			"_name": "Stamen TonerLite (0..20)",
-			"_url": "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Stamen Terrain (4..18)",
-			"_url": "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png",
-			"subdomains": "abcd",
-			"minZoom": 4,
-			"maxZoom": 18,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Stamen Watercolor (3..16)",
-			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
-			"subdomains": "abcd",
-			"minZoom": 3,
-			"maxZoom": 16,
-			"attribution": attributions["Stamen"]
-		},
-		{
-			"_name": "Esri WorldStreetMap (0..18)",
-			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-			"attribution": attributions["Esri"]
-		},
-		{
-			"_name": "Esri DeLorme (0..11)",
-			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/{z}/{y}/{x}",
-			"maxZoom": 11,
-			"attribution": attributions["EsriDeLorme"]
-		},
-		{
-			"_name": "Esri WorldTopoMap (0..18)",
-			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-			"attribution": attributions["EsriWorldTopoMap"]
-		},
-		{
-			"_name": "Esri WorldImagery (0..18)",
-			"_url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-			"attribution": attributions["EsriWorldImagery"]
-		},
-		{
-			"_name": "Esri OceanBasemap (0..11)",
-			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}",
-			"maxZoom": 11,
-			"attribution": attributions["EsriOceanBasemap"]
-		},
-		{
-			"_name": "Esri NatGeoWorldMap (0..18)",
-			"_url": "http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
-			"attribution": attributions["EsriNatGeoWorldMap"]
-		},
-/* 403
-		{
-			"_name": "CloudMade (0..18)",
-			"_url": "http://{s}.tile.cloudmade.com/31913eba82dc43a998d52a5804668c11/997/256/{z}/{x}/{y}.png",
-			"subdomains": "ab",
-			"tileSize": 256,
-			"attribution": attributions["CloudMade"]
-		},
-*/
-		{
-			"_name": "MapSurfer.NET OSM Roads",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-/* not so good for a map
-		{
-			"_name": "MapSurfer.NET OSM Semitransparent",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-*/
-/* overlays, not full layers
-		{
-			"_name": "MapSurfer.NET ASTER GDEM & SRTM Hillshade",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterh/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-		{
-			"_name": "MapSurfer.NET ASTER GDEM contour lines",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/asterc/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-*/
-		{
-			"_name": "MapSurfer.NET OSM Administrative Boundaries",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-/* not so good for a map
-		{
-			"_name": "MapSurfer.NET OSM Roads Grayscale",
-			"_url": "http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}",
-			"attribution": attributions["OpenMapSurfer"]
-		},
-*/
-		{
-			"_name": "de Topo (WMS) 🅒",
-			"_url": "https://sg.geodatenzentrum.de/wms_webatlasde__8f827e84-bdc9-cda4-aad0-f9711caab5c3?",
-			"_wms": true,
-			"attribution": "Bundesamt für Kartographie und Geodäsie",
-			"format": "image/jpeg",
-			"layers": "webatlasde"
-		},
-		{
-			"_name": "Google Maps (0..20)",
-			"_url": "http://mt{s}.googleapis.com/vt?x={x}&y={y}&z={z}",
-			"subdomains": "0123",
-			"maxZoom": 20,
-			"attribution": attributions["Google"]
-		},
-		{
-			"_name": "Google Satellite (0..20)",
-			"_url": "http://mt{s}.googleapis.com/vt?lyrs=s&x={x}&y={y}&z={z}",
-			"subdomains": "0123",
-			"maxZoom": 20,
-			"attribution": attributions["Google"]
-		},
-		{
-			"_name": "Google Terrain (0..20)",
-			"_url": "http://mt{s}.googleapis.com/vt?lyrs=p&x={x}&y={y}&z={z}",
-			"subdomains": "0123",
-			"maxZoom": 20,
-			"attribution": attributions["Google"]
-		},
-/* 401
-		{
-			"_name": "Lyrk (nōn-commercial, ..18) 🅒",
-			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
-			"attribution": attributions["Lyrk"]
-		},
-*/
-/* Aborted
-		{
-			"_name": "Geocommons Acetate (2..18)",
-			"_url": "http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png",
-			"subdomains": "0123456",
-			"attribution": attributions["Geocommons"]
-		},
- */
-		{
-			"_name": "CartoDB Positron",
-			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-			"attribution": attributions["CartoDB"]
-		},
-		{
-			"_name": "CartoDB Dark Matter",
-			"_url": "http://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
-			"attribution": attributions["CartoDB"]
 		}
 	    ]);
 	ctl_layers = function (map, layers) {
