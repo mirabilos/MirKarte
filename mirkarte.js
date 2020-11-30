@@ -921,7 +921,8 @@ too much */
 	map.on("dragstart", function () { map.off("mousemove", fn_mousemove); });
 	map.on("dragend", function () { map.on("mousemove", fn_mousemove); });
 	fn_hashchange(false);
-	fn_mousemove({"latlng": map.getCenter()});
+	if (!L.Browser.touch)
+		fn_mousemove({"latlng": map.getCenter()});
 	map.on("mousemove", fn_mousemove);
 	$("map").focus();
 	if (typeof mirkarte_hookfn == 'function')
