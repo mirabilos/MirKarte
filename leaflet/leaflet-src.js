@@ -1,5 +1,6 @@
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
+ (c) 2014, 2020 mirabilos <m@mirbsd.org>
  (c) 2010-2013, Vladimir Agafonkin
  (c) 2010-2011, CloudMade
 */
@@ -8439,6 +8440,7 @@ L.Control.Layers = L.Control.extend({
 		container.setAttribute('aria-haspopup', true);
 
 		L.DomEvent.disableClickPropagation(container);
+		L.DomEvent.on(container, 'contextmenu', L.DomEvent.stopPropagation);
 		L.DomEvent.disableScrollPropagation(container);
 
 		var form = this._form = L.DomUtil.create('form', className + '-list');
