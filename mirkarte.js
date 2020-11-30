@@ -869,10 +869,8 @@ too much */
 			this._container.id = "map_coors";
 			this._lat = L.DomUtil.create("span", "", this._container);
 			this._firstchild = this._lat;
-			this._lat.id = "map_coors_ns";
 			this._container.appendChild(L.DomUtil.create("br", ""));
 			this._lon = L.DomUtil.create("span", "", this._container);
-			this._lon.id = "map_coors_we";
 			return this._container;
 		}
 	    });

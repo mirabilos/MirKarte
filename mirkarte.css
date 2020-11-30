@@ -31,19 +31,11 @@
 #map_coors {
 	font:12px monospace, sans-serif;
 	text-align:right;
-}
-#map_coors span {
-	background:rgba(255, 255, 255, 0.33);
-	padding-left:0.5em;
-	padding-right:0.25em;
-	margin-right:-0.25em;
-}
-#map_coors_ns {
-	padding-top:2px;
-}
-#map_coors_we {
-	padding-bottom:3px;
-	margin-bottom:-3px;
+	background:rgba(255, 255, 255, 0.666);
+	/*       ↑   →   ↓   ←   */
+	padding:2px 3px 2px 6px;
+	margin-right:7px;
+	margin-bottom:8px;
 }
 
 .leaflet-top.leaflet-right {
