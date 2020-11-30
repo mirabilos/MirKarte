@@ -7,5 +7,5 @@
 # - polyfill git@github.com:inexorabletash/polyfill.git
 #
 *~
-.mapbox.js
+.apikeys.js
 gpxload.htm

@@ -1,4 +1,6 @@
-// fill in and save as .mapbox.js
+// fill in and save as .apikeys.js
+
+// Mapbox
 mirkarte_mapbox_token = 'TOKEN';
 // or…
 mirkarte_mapbox_token = undefined;
