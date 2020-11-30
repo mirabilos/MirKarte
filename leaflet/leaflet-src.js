@@ -8221,7 +8221,7 @@ L.Control.Attribution = L.Control.extend({
 			prefixAndAttribs.push(this.options.prefix);
 		}
 		if (attribs.length) {
-			prefixAndAttribs.push(attribs.join(', '));
+			prefixAndAttribs.push(attribs.join(' | '));
 		}
 
 		this._container.innerHTML = prefixAndAttribs.join(' | ');
