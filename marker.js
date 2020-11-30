@@ -23,7 +23,7 @@ var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNumSlashd = /^-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var isThreeNumSlashd = /^[1-9][0-9]*\/-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
-var map, maplayers, params, params_saved = "";
+var map, ctl_layers, ctl_coors, params, params_saved = "";
 
 var attributions = {
 	"OSM": '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -130,7 +130,7 @@ function add_gpx_to_map(gpx_string, layer_name) {
 	    "text/xml");
 	var gjsn = toGeoJSON.gpx(dom);
 	var xn = -1000, xe = -1000, xs = 1000, xw = 1000;
-	maplayers.addOverlay(L.geoJson(gjsn, {
+	ctl_layers.addOverlay(L.geoJson(gjsn, {
 		coordsToLatLng: function (coords) {
 			if (coords[1] > xn)
 				xn = coords[1];
@@ -354,8 +354,8 @@ var tc_icon = L.icon({
 var fn_mousemove = function (e) {
 	var f = llformat(e.latlng.lat, e.latlng.lng, 1);
 
-	map._coorscontrol._lat.update(f[0]);
-	map._coorscontrol._lon.update(f[1]);
+	ctl_coors._lat.update(f[0]);
+	ctl_coors._lon.update(f[1]);
 };
 var ign_hashchange = false;
 var update_hash = function () {
@@ -454,8 +454,12 @@ $(document).observe("dom:loaded", function () {
 		"zoomControl": false
 	    });
 	$("nomap").hide();
-	L.control.attribution({"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
-	    L.Control.Attribution.prototype.options.prefix}).addTo(map);
+
+	var ctl_attr = L.control.attribution({
+		"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
+		    L.Control.Attribution.prototype.options.prefix
+	    });
+
 	var maplayerlist = [
 		{
 			"_name": "OpenStreetMap (0..19)",
@@ -741,7 +745,7 @@ too much */
 			"attribution": attributions["CartoDB"]
 		}
 	    ]);
-	maplayers = function (map, layers) {
+	ctl_layers = function (map, layers) {
 		var baseMaps = {};
 		var n = layers.length;
 
@@ -762,8 +766,9 @@ too much */
 				layer.addTo(map);
 			baseMaps[name] = layer;
 		}
-		return (L.control.layers(baseMaps).addTo(map));
+		return (L.control.layers(baseMaps));
 	    } (map, maplayerlist);
+
 	var myzoomclass = L.Control.Zoom.extend({
 		onAdd: function (map) {
 			var container = L.Control.Zoom.prototype.onAdd.apply(this, [map]);
@@ -777,9 +782,10 @@ too much */
 			return (container);
 		}
 	    });
-	var myzoomcontrol = new myzoomclass();
-	map.addControl(myzoomcontrol);
-	L.control.scale().addTo(map);
+	var ctl_zoom = new myzoomclass();
+
+	var ctl_scale = L.control.scale();
+
 	var mycoorsclass = L.Control.extend({
 		options: {
 			"position": "bottomright",
@@ -801,20 +807,25 @@ too much */
 			return this._container;
 		}
 	    });
-	map._coorscontrol = new mycoorsclass();
-	map.addControl(map._coorscontrol);
+	ctl_coors = new mycoorsclass();
 
-	var compass = new L.Control.Compass();
-	map.addControl(compass);
-	compass.activate();
+	var ctl_compass = new L.Control.Compass();
 
-	var gpsctl = new L.Control.Gps({
+	var ctl_gps = new L.Control.Gps({
 		"setView": true,
 		"title": "Centre map on your location"
 	});
-	map.addControl(gpsctl);
+
+	map.addControl(ctl_attr);
+	map.addControl(ctl_coors);
+	map.addControl(ctl_scale);
+	map.addControl(ctl_zoom);
+	map.addControl(ctl_gps);
+	map.addControl(ctl_layers);
+	map.addControl(ctl_compass);
 
 	map_initialised = true;
+	ctl_compass.activate();
 	map.on("moveend", function () {
 		var newloc = map.getCenter();
 
