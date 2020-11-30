@@ -34,10 +34,20 @@
 }
 #map_coors span {
 	background:rgba(255, 255, 255, 0.33);
+	padding-left:0.5em;
+	padding-right:0.25em;
+	margin-right:-0.25em;
+}
+#map_coors_ns {
+	padding-top:2px;
+}
+#map_coors_we {
+	padding-bottom:3px;
+	margin-bottom:-3px;
 }
 
 .leaflet-top.leaflet-right {
-	max-width:90%;
+	max-width:85%;
 	/* achieves a bottom offset of 10px matching top and right */
 	bottom:30px;
 	/* one more than .leaflet-bottom.leaflet-right in leaflet/leaflet.css */
@@ -52,4 +62,9 @@
 .leaflet-control-layers-list,
 .leaflet-control-layers-base {
 	max-height:100%;
+}
+
+.leaflet-control-layers-expanded label {
+	padding-left:2em;
+	text-indent:-2em;
 }
