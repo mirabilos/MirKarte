@@ -474,22 +474,23 @@ $(document).observe("dom:loaded", function () {
 		},
 		{
 			"_name": "Thunderforest OpenCycleMap (0‥18)",
-			"_url": "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "Thunderforest Transport (0‥18)",
-			"_url": "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "Thunderforest Landscape (0‥18)",
-			"_url": "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
+			"_url": "http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
 			"attribution": attributions["OCM"]
 		},
 		{
 			"_name": "Stamen Toner (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -498,6 +499,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen TonerBackground (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -506,6 +508,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen TonerHybrid (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner-hybrid/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -514,6 +517,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen TonerLines (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -522,6 +526,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen TonerLabels (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -530,6 +535,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen TonerLite (0‥20)",
 			"_url": "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 0,
 			"maxZoom": 20,
@@ -538,6 +544,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen Terrain (4‥18)",
 			"_url": "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 4,
 			"maxZoom": 18,
@@ -546,6 +553,7 @@ $(document).observe("dom:loaded", function () {
 		{
 			"_name": "Stamen Watercolor (3‥16)",
 			"_url": "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+			"_nohttps": true,
 			"subdomains": "abcd",
 			"minZoom": 3,
 			"maxZoom": 16,
@@ -724,12 +732,19 @@ $(document).observe("dom:loaded", function () {
 	ctl_layers = function (map, layers) {
 		var baseMaps = {};
 		var n = layers.length;
+		var ishttps = (location.protocol === "https:");
 
 		for (var i = 0; i < n; ++i) {
 			var data = layers[i];
 			var name = data["_name"];
 			var url = data["_url"];
 			var layer;
+
+			if (ishttps) {
+				if (data["_nohttps"])
+					data["_disabled"] = true;
+				url = url.replace(/^http:/, "https:");
+			}
 
 			delete data["_name"];
 			delete data["_url"];
