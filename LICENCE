@@ -45,9 +45,10 @@ which comes under an MIT licence:
 # IN THE SOFTWARE.
 
 MirKarte makes use of the Leaflet mapping framework (bundled
-content from the libjs-leaflet (= 0.7.3~dfsg-1) Debian package)
-under a 2-clause BSD-style licence:
+content from the libjs-leaflet (= 0.7.3~dfsg-1) Debian package
+but locally bugfixed) under a 2-clause BSD-style licence:
 
+# Copyright (c) 2014, 2020 mirabilos <m@mirbsd.org>
 # Copyright (c) 2010-2013, Vladimir Agafonkin
 # Copyright (c) 2010-2011, CloudMade
 # All rights reserved.
