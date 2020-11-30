@@ -8567,10 +8567,15 @@ L.Control.Layers = L.Control.extend({
 
 		input.layerId = L.stamp(obj.layer);
 
+		if (obj.layer.options._disabled)
+			input.disabled = true;
+	      else
 		L.DomEvent.on(input, 'click', this._onInputClick, this);
 
 		var name = document.createElement('span');
 		name.innerHTML = ' ' + obj.name;
+		if (obj.layer.options._disabled)
+			name.style.color = '#AAAAAA';
 
 		label.appendChild(input);
 		label.appendChild(name);

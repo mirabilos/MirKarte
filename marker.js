@@ -623,12 +623,13 @@ $(document).observe("dom:loaded", function () {
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/hybrid/x={x}&y={y}&z={z}",
 			"attribution": attributions["OpenMapSurfer"]
 		},
+ */
 		{
 			"_name": "MapSurfer.NET OSM Administrative Boundaries",
 			"_url": "http://korona.geog.uni-heidelberg.de/tiles/adminb/x={x}&y={y}&z={z}",
+			"_disabled": true,
 			"attribution": attributions["OpenMapSurfer"]
 		},
- */
 		{
 			"_name": "Lyrk (0‥18)",
 			"_url": "https://tiles.lyrk.org/ls/{z}/{x}/{y}",
