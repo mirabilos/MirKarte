@@ -504,7 +504,7 @@ case $wptype {
 	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
 	wpcode=${hex#16#}					# WP code 8byte
 	wpdesc="${wpname//_/ } GeoHash"				# title text
-	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
+	wpurlt="https://geohashing.site/geohashing/$wpname"	# link target
 	wpurln="Meetup ${wpname//_/ }"				# link text
 	wpownr="The Internet"					# owner text
 	wp_dif=2						# D rating
@@ -562,7 +562,7 @@ case $wptype {
 	typeset -Uui16 -Z11 hex="0x${wpname@#} & 0x7FFFFFFF"
 	wpcode=${hex#16#}					# WP code 8byte
 	wpdesc="${wpname//_/ } GeoHash"				# title text
-	wpurlt="http://wiki.xkcd.com/geohashing/$wpname"	# link target
+	wpurlt="https://geohashing.site/geohashing/$wpname"	# link target
 	wpurln="Meetup ${wpname//_/ }"				# link text
 	wpownr="The Internet"					# owner text
 	wp_dif=2						# D rating

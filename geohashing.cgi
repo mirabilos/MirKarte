@@ -255,7 +255,7 @@ cat tpl/5-hookfn.js
 cat <<'EOF'
 	var el_span = L.DomUtil.create("span", "");
 	var el_a = L.DomUtil.create("a", "", el_span);
-	el_a.href = "http://wiki.xkcd.com/geohashing/Main_Page";
+	el_a.href = "https://geohashing.site/geohashing/Main_Page";
 	el_a.update("Geo Hashing");
 	var el_t = document.createTextNode(" on " + geohashing_day);
 	el_span.appendChild(el_t);
@@ -274,7 +274,7 @@ cat <<'EOF'
 		    '_' + graticules[i][1];
 		marker_popup(ghmarker,
 		    'Geo Hashing Point<br />' + graticules[i][2] +
-		    '<br /><a href="http://wiki.xkcd.com/geohashing/' +
+		    '<br /><a href="https://geohashing.site/geohashing/' +
 		    ghwp + '">Meetup</a> | <a href="gpx.cgi?' + ghwp +
 		    '">GPX</a><br />°N<br />°E');
 		i++;
@@ -287,8 +287,8 @@ cat <<'EOF'
 	    }).addTo(map);
 	var ghwp = geohashing_day + '_global';
 	marker_popup(ghmarker,
-	    '<a href="http://wiki.xkcd.com/geohashing/Globalhash">Global Geohash</a>' +
-	    '<br /><a href="http://wiki.xkcd.com/geohashing/' + ghwp +
+	    '<a href="https://geohashing.site/geohashing/Globalhash">Global Geohash</a>' +
+	    '<br /><a href="https://geohashing.site/geohashing/' + ghwp +
 	    '">Meetup</a> | <a href="gpx.cgi?' + ghwp +
 	    '">GPX</a><br />°N<br />°E');
 EOF
