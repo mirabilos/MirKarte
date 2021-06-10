@@ -1,4 +1,4 @@
-my $rcsid = '$MirOS: www/files/wp.pm,v 1.4 2019/06/08 17:17:46 tg Exp $';
+my $rcsid = '$MirOS: www/files/wp.pm,v 1.5 2021/06/10 22:23:28 tg Exp $';
 #-
 # Copyright © 2018, 2019
 #	mirabilos <m@mirbsd.org>
@@ -112,11 +112,11 @@ sub explwp($) {
 	    ($wp =~ m!^(WM[0-9A-Z]{1,6})$!);
 	return ("m/", "$1", "$1", "https://www.munzee.com/$1/") if
 	    ($wp =~ m!^(m/[0-9A-Za-z_-]+/[0-9]+)/?$!);
-	return ("gh", "$s", "$s", "http://wiki.xkcd.com/geohashing/$s") if
+	return ("gh", "$s", "$s", "https://geohashing.site/geohashing/$s") if
 	    ($wp =~ m!^(2[0-9]{3})-(0[1-9]|1[0-2])-([0-2][1-9]|[1-3][01])_(-?[0-9]{1,2})_(-?[0-9]{1,3})$! &&
 	    chkdate($1, $2, $3) && $4 >= -90 && $4 <= 90 && $5 >= -180 && $5 <= 180) &&
 	    ($s = sprintf("%04d-%02d-%02d_%d_%d", $1, $2, $3, $4, $5)) ne '';
-	return ("Gh", "$s", "$s", "http://wiki.xkcd.com/geohashing/$s") if
+	return ("Gh", "$s", "$s", "https://geohashing.site/geohashing/$s") if
 	    ($wp =~ m!^(2[0-9]{3})-(0[1-9]|1[0-2])-([0-2][1-9]|[1-3][01])_global$! &&
 	    chkdate($1, $2, $3)) &&
 	    ($s = sprintf("%04d-%02d-%02d_global", $1, $2, $3)) ne '';
