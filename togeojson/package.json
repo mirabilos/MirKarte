@@ -34,7 +34,6 @@
   },
   "license": "BSD",
   "dependencies": {
-    "xmldom": "~0.1.19"
   },
   "keywords": [
     "kml",
