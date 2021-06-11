@@ -27,6 +27,9 @@
 unset LANGUAGE; export LC_ALL=C
 unset HTTP_PROXY
 
+mydir=$(realpath "$0/..")
+. "$mydir/geo.sh"
+
 # magic from MirOS: src/kern/c/mirtime.c,v 1.3 2011/11/20 23:40:10 tg Exp $
 
 # struct tm members and (POSIX) time functions
@@ -233,108 +236,6 @@ function arbusage {
 	print -ru2 "E: arbitrary waypoint $1"
 	print -ru2 "I: gpx.sh -WP1234 lat lon owner url title description"
 	exit 1
-}
-
-function chklatlon {
-	local minus plus vmax mins
-	local -i10 val
-	local -u arg=${2//+([\'\"]|’|′|°|�)}
-	arg=${arg##+([	 ])}
-	arg=${arg%%+([	 ])}
-
-	case $1 {
-	(lat)
-		minus=S
-		plus=N
-		vmax=90
-		;;
-	(lon)
-		minus=W
-		plus=E
-		vmax=180
-		;;
-	(*)
-		print internal error
-		return 1
-		;;
-	}
-	if [[ $arg = ${minus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
-		arg=-${arg##$minus*([	 ])}
-	elif [[ $arg = ${plus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
-		arg=${arg##$plus*([	 ])}
-	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$minus ]]; then
-		arg=-${arg%%*([	 ])$minus}
-	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$plus ]]; then
-		arg=${arg%%*([	 ])$plus}
-	elif [[ $arg = ${minus}*([	 ]).+([0-9]) ]]; then
-		arg=-0${arg##$minus*([	 ])}
-	elif [[ $arg = ${plus}*([	 ]).+([0-9]) ]]; then
-		arg=0${arg##$plus*([	 ])}
-	elif [[ $arg = .+([0-9])*([	 ])$minus ]]; then
-		arg=-0${arg%%*([	 ])$minus}
-	elif [[ $arg = .+([0-9])*([	 ])$plus ]]; then
-		arg=0${arg%%*([	 ])$plus}
-	elif [[ $arg = ${minus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
-		arg=${arg##$minus*([	 ])}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
-		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = ${plus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
-		arg=${arg##$plus*([	 ])}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
-		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$minus ]]; then
-		arg=${arg%%*([	 ])$minus}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
-		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$plus ]]; then
-		arg=${arg%%*([	 ])$plus}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
-		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
-	fi
-	[[ $arg = '+'* ]] && arg=${arg#+}
-	[[ $arg = ?(-)+([0-9]) ]] && arg+=.
-	[[ $arg = ?(-).+([0-9]) ]] && arg=${arg/./0.}
-	case $arg {
-	(+([0-9]).*([0-9]))
-		arg=${arg#+}
-		val=10#${arg%.*}
-		mins=${arg#*.}
-		mins=${mins%%*(0)}
-		if (( val < vmax )); then
-			:
-		elif (( val == vmax )) && [[ -z $mins ]]; then
-			:
-		else
-			print -r "value $arg out of range"
-			return 1
-		fi
-		arg=$val.${mins:-0}
-		;;
-	(-+([0-9]).*([0-9]))
-		arg=${arg#-}
-		val=10#${arg%.*}
-		mins=${arg#*.}
-		mins=${mins%%*(0)}
-		if (( val < vmax )); then
-			:
-		elif (( val == vmax )) && [[ -z $mins ]]; then
-			:
-		else
-			print -r "value $arg out of range"
-			return 1
-		fi
-		arg=-$val.${mins:-0}
-		;;
-	(*)
-		print -r "value $arg unrecognised"
-		return 1
-		;;
-	}
-	print -r -- $arg
 }
 
 typeset -i10 -Z4 dY
