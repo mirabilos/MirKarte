@@ -20,6 +20,8 @@
 #-
 # Geodesic helper functions
 
+# lat_decimal=$(chklatlon lat "$userinput")  # same for lon
+# userinput: decimal, geocaching (deg/min) or deg/min/sec
 function chklatlon {
 	local minus plus vmax mins
 	local -i10 val
@@ -79,6 +81,38 @@ function chklatlon {
 		val=10#${arg%% *}
 		arg=${arg##*+( )}
 		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
+	elif [[ $arg = ${minus}*( )+([0-9])+( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$minus*( )}
+		mins=${arg#* }
+		val=10#${arg%% *}
+		arg=$mins
+		mins=10#${arg%% *}
+		arg=${arg##*+( )}
+		arg=-$(dc -e "20k $arg 60/ $((mins))+ 60/ ${val}+ps.")
+	elif [[ $arg = ${plus}*( )+([0-9])+( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$plus*( )}
+		mins=${arg#* }
+		val=10#${arg%% *}
+		arg=$mins
+		mins=10#${arg%% *}
+		arg=${arg##*+( )}
+		arg=$(dc -e "20k $arg 60/ $((mins))+ 60/ ${val}+ps.")
+	elif [[ $arg = +([0-9])+( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9]))*( )$minus ]]; then
+		arg=${arg%%*( )$minus}
+		mins=${arg#* }
+		val=10#${arg%% *}
+		arg=$mins
+		mins=10#${arg%% *}
+		arg=${arg##*+( )}
+		arg=-$(dc -e "20k $arg 60/ $((mins))+ 60/ ${val}+ps.")
+	elif [[ $arg = +([0-9])+( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9]))*( )$plus ]]; then
+		arg=${arg%%*( )$plus}
+		mins=${arg#* }
+		val=10#${arg%% *}
+		arg=$mins
+		mins=10#${arg%% *}
+		arg=${arg##*+( )}
+		arg=$(dc -e "20k $arg 60/ $((mins))+ 60/ ${val}+ps.")
 	fi
 	arg=${arg#+}
 	[[ $arg = ?(-)+([0-9]) ]] && arg+=.
