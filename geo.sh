@@ -26,8 +26,13 @@ function chklatlon {
 	local minus plus vmax mins
 	local -i10 val
 	local -u arg=${2//+([\'\"	 ]|’|′|°|�)/ }
-	arg=${arg## }
-	arg=${arg%% }
+	if [[ $arg = *.* ]]; then
+		arg=${arg//,/ }
+	else
+		arg=${arg//,/.}
+	fi
+	arg=${arg##+( )}
+	arg=${arg%%+( )}
 
 	case $1 {
 	(lat)
