@@ -88,9 +88,13 @@ cat <<\EOF
   var graticules = [
 EOF
 
+set -A fetch -- ftp -H "User-Agent: MirKarte/0.2 (Beta; +https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git using MirBSD ftp)" -o -
+whence -p wget >/dev/null 2>&1 && \
+    set -A fetch -- wget -e robots=off -U "MirKarte/0.2 (Beta; +https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git using GNU wget)" -qO- -T3
+
 for lat in 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56; do
 	for lon in -6 -5 -4 -3 -2 -1 -0 0 1 2 3 4 5 6 7 8 9 10 11 12; do
-		x=$(ftp -o - http://carabiner.peeron.com/xkcd/map/data/loc/$lat,$lon)
+		x=$("${fetch[@]}" http://carabiner.peeron.com/xkcd/map/data/loc/$lat,$lon)
 		x=$(xhtml_escape "$x")
 		[[ $x = *'!/'* ]] && x="<a href=\"https://geohashing.site/${x##*'!/'}\">${x%'!/'*}</a>"
 		print "	[\"$lat\", \"$lon\", $(json_escape "$x")],"
