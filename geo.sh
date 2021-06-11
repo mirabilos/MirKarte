@@ -128,7 +128,7 @@ function chklatlon {
 		elif (( val == vmax )) && [[ -z $mins ]]; then
 			:
 		else
-			print -r "value $arg out of range"
+			print -r "value ${arg@Q} out of range"
 			return 1
 		fi
 		arg=$val.${mins:-0}
@@ -143,13 +143,13 @@ function chklatlon {
 		elif (( val == vmax )) && [[ -z $mins ]]; then
 			:
 		else
-			print -r "value $arg out of range"
+			print -r "value ${arg@Q} out of range"
 			return 1
 		fi
 		arg=-$val.${mins:-0}
 		;;
 	(*)
-		print -r "value $arg unrecognised"
+		print -r "value ${arg@Q} unrecognised"
 		return 1
 		;;
 	}
@@ -178,7 +178,10 @@ function decmin2txt {
 	n=10#${graticule#-}
 	REPLY+=" ${n}° "
 
-	x=${|decmin2min $decimal;} || return 1
+	if ! x=${|decmin2min $decimal;}; then
+		REPLY="unable to convert ${decimal@Q}"
+		return 1
+	fi
 	typeset -i10 -Z2 n=${x%.*}
 	x=${x#*.}
 	typeset -i10 -Z4 m=${x::4}
