@@ -24,8 +24,8 @@ function chklatlon {
 	local minus plus vmax mins
 	local -i10 val
 	local -u arg=${2//+([\'\"	 ]|’|′|°|�)/ }
-	arg=${arg##+([	 ])}
-	arg=${arg%%+([	 ])}
+	arg=${arg## }
+	arg=${arg%% }
 
 	case $1 {
 	(lat)
@@ -43,41 +43,41 @@ function chklatlon {
 		return 1
 		;;
 	}
-	if [[ $arg = ${minus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
-		arg=-${arg##$minus*([	 ])}
-	elif [[ $arg = ${plus}*([	 ])+([0-9])?(.*([0-9])) ]]; then
-		arg=${arg##$plus*([	 ])}
-	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$minus ]]; then
-		arg=-${arg%%*([	 ])$minus}
-	elif [[ $arg = +([0-9])?(.*([0-9]))*([	 ])$plus ]]; then
-		arg=${arg%%*([	 ])$plus}
-	elif [[ $arg = ${minus}*([	 ]).+([0-9]) ]]; then
-		arg=-0${arg##$minus*([	 ])}
-	elif [[ $arg = ${plus}*([	 ]).+([0-9]) ]]; then
-		arg=0${arg##$plus*([	 ])}
-	elif [[ $arg = .+([0-9])*([	 ])$minus ]]; then
-		arg=-0${arg%%*([	 ])$minus}
-	elif [[ $arg = .+([0-9])*([	 ])$plus ]]; then
-		arg=0${arg%%*([	 ])$plus}
-	elif [[ $arg = ${minus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
-		arg=${arg##$minus*([	 ])}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
+	if [[ $arg = ${minus}*( )+([0-9])?(.*([0-9])) ]]; then
+		arg=-${arg##$minus*( )}
+	elif [[ $arg = ${plus}*( )+([0-9])?(.*([0-9])) ]]; then
+		arg=${arg##$plus*( )}
+	elif [[ $arg = +([0-9])?(.*([0-9]))*( )$minus ]]; then
+		arg=-${arg%%*( )$minus}
+	elif [[ $arg = +([0-9])?(.*([0-9]))*( )$plus ]]; then
+		arg=${arg%%*( )$plus}
+	elif [[ $arg = ${minus}*( ).+([0-9]) ]]; then
+		arg=-0${arg##$minus*( )}
+	elif [[ $arg = ${plus}*( ).+([0-9]) ]]; then
+		arg=0${arg##$plus*( )}
+	elif [[ $arg = .+([0-9])*( )$minus ]]; then
+		arg=-0${arg%%*( )$minus}
+	elif [[ $arg = .+([0-9])*( )$plus ]]; then
+		arg=0${arg%%*( )$plus}
+	elif [[ $arg = ${minus}*( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$minus*( )}
+		val=10#${arg%% *}
+		arg=${arg##*+( )}
 		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = ${plus}*([	 ])+([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
-		arg=${arg##$plus*([	 ])}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
+	elif [[ $arg = ${plus}*( )+([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9])) ]]; then
+		arg=${arg##$plus*( )}
+		val=10#${arg%% *}
+		arg=${arg##*+( )}
 		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$minus ]]; then
-		arg=${arg%%*([	 ])$minus}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
+	elif [[ $arg = +([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9]))*( )$minus ]]; then
+		arg=${arg%%*( )$minus}
+		val=10#${arg%% *}
+		arg=${arg##*+( )}
 		arg=-$(dc -e "20k $arg 60/ ${val}+ps.")
-	elif [[ $arg = +([0-9])+([	 ])@(+([0-9])?(.*([0-9]))|.+([0-9]))*([	 ])$plus ]]; then
-		arg=${arg%%*([	 ])$plus}
-		val=10#${arg%%[	 ]*}
-		arg=${arg##*+([	 ])}
+	elif [[ $arg = +([0-9])+( )@(+([0-9])?(.*([0-9]))|.+([0-9]))*( )$plus ]]; then
+		arg=${arg%%*( )$plus}
+		val=10#${arg%% *}
+		arg=${arg##*+( )}
 		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
 	fi
 	[[ $arg = '+'* ]] && arg=${arg#+}
