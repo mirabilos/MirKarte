@@ -80,12 +80,12 @@ function chklatlon {
 		arg=${arg##*+( )}
 		arg=$(dc -e "20k $arg 60/ ${val}+ps.")
 	fi
-	[[ $arg = '+'* ]] && arg=${arg#+}
+	arg=${arg#+}
 	[[ $arg = ?(-)+([0-9]) ]] && arg+=.
 	[[ $arg = ?(-).+([0-9]) ]] && arg=${arg/./0.}
 	case $arg {
 	(+([0-9]).*([0-9]))
-		arg=${arg#+}
+		#arg=${arg#+}
 		val=10#${arg%.*}
 		mins=${arg#*.}
 		mins=${mins%%*(0)}
