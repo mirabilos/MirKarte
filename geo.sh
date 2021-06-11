@@ -203,3 +203,65 @@ function lldecmin2txt {
 	lon=${|decmin2txt "${lon%.*}" ".${lon#*.}" E W 3;}
 	REPLY="$lat  $lon"
 }
+
+# distance lat1 lon1 lat2 lon2 → metres (rounded to millimetres)
+distance() (
+	set -e
+	# make GNU bc use POSIX mode and shut up
+	export BC_ENV_ARGS=-qs
+
+	# assignment of constants, variables and functions
+	# p: multiply with to convert from degrees to radians
+	# r: earth radius in metres
+	# d: distance
+	# h: haversine intermediate
+	# i,j: (lat,lon) point 1
+	# x,y: (lat,lon) point 2
+	# k: delta lat
+	# l: delta lon
+	# m: sin(k/2) (square root of hav(k))
+	# n: sin(l/2) (  partial haversine  )
+	# n(x): arcsin(x)
+	# r(x,n): round x to n decimal digits
+	# v(x): sign (Vorzeichen)
+	# w(x): min(1, sqrt(x)) (Wurzel)
+
+	bc -l <<-EOF
+	scale=42
+	define n(x) {
+		return (a(x / sqrt(1 - x*x)))
+	}
+	define v(x) {
+		if (x < 0) return (-1)
+		if (x > 0) return (1)
+		return (0)
+	}
+	define r(x, n) {
+		auto o
+		o = scale
+		if (scale < (n + 1)) scale = (n + 1)
+		x += v(x) * 0.5 * A^-n
+		scale = n
+		x /= 1
+		scale = o
+		return (x)
+	}
+	define w(x) {
+		if (x >= 1) return (1)
+		return (sqrt(x))
+	}
+	p = (3.1415926535897932 / 180)
+	r = 6371008.8
+	i = (p * $1)
+	j = (p * $2)
+	x = (p * $3)
+	y = (p * $4)
+	k = (x - i)
+	l = (y - j)
+	m = s(k / 2)
+	n = s(l / 2)
+	h = ((m * m) + (c(i) * c(x) * n * n))
+	d = 2 * r * n(w(h))
+	r(d, 3)
+	EOF
+)
