@@ -23,7 +23,7 @@
 function chklatlon {
 	local minus plus vmax mins
 	local -i10 val
-	local -u arg=${2//+([\'\"]|’|′|°|�)}
+	local -u arg=${2//+([\'\"	 ]|’|′|°|�)/ }
 	arg=${arg##+([	 ])}
 	arg=${arg%%+([	 ])}
 
