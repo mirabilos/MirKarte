@@ -126,7 +126,7 @@ function decmin2min {
 	local x=${1#.}0000000
 	typeset -i10 -Z9 y
 
-	x=${x::7}
+	x=10#${x::7}
 	(( y = x * 60 ))
 
 	REPLY=${y::2}.${y:2}
@@ -141,10 +141,10 @@ function decmin2txt {
 	else
 		REPLY=$plus
 	fi
-	n=${graticule#-}
+	n=10#${graticule#-}
 	REPLY+=" ${n}° "
 
-	x=${|decmin2min $decimal;}
+	x=${|decmin2min $decimal;} || return 1
 	typeset -i10 -Z2 n=${x%.*}
 	x=${x#*.}
 	typeset -i10 -Z4 m=${x::4}
