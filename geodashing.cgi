@@ -29,6 +29,9 @@ defzoom=9
 #XXX make these CGI parameters
 set -A defyear -- $(date +'%y %m')
 defmon=${defyear[1]}
+#XXX last game ☹ until 2021-08-31 then no more :'(
+defyear=21
+defmon=06
 
 #XXX add attribution (either to #map_coors or by moving CGI content
 #XXX into a layer; maybe even make an AJAX version of the CGIs that
