@@ -1,7 +1,7 @@
 #!/usr/bin/perl -T
 # From MirOS: www/files/wp.cgi,v 1.28 2018/08/29 02:13:26 tg Exp $
 #-
-# Copyright © 2013, 2014, 2019
+# Copyright © 2013, 2014, 2019, 2021
 #	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -70,7 +70,7 @@ $query =~ s/\s+$//;
 
 # handle early, before uppercasing
 my ($code, $wp, $label, $url) = explwp($query);
-if ($code eq 'm/') {
+if ($code eq 'm/' and $url ne '') {
 	&redirect($url);
 }
 if ($code =~ m!^(gh|Gh)$!) {
@@ -142,5 +142,6 @@ if ($found == 2) {
 	$found = 0;
 }
 
+$found = 0 if $output eq '';
 $output = "http://www.mirbsd.org/wp.htm" unless ($found > 0);
 &redirect($output);
