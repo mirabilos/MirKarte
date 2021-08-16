@@ -1,6 +1,6 @@
-my $rcsid = '$MirOS: www/files/wp.pm,v 1.5 2021/06/10 22:23:28 tg Exp $';
+my $rcsid = '$MirOS: www/files/wp.pm,v 1.7 2021/08/16 04:41:21 tg Exp $';
 #-
-# Copyright © 2018, 2019
+# Copyright © 2018, 2019, 2021
 #	mirabilos <m@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -63,7 +63,7 @@ sub chkdate($$$) {
 sub explwp($) {
 	my ($wp) = @_;
 	my $s;
-	return ("BC", sprintf("BC%d", $1), sprintf("BesserCacher#%d", $1), sprintf("https://bessercacher.de/forum/viewtopic.php?t=%d", $1)) if
+	return ("BC", sprintf("BC%d", $1), sprintf("BesserCacher#%d", $1), "") if
 	    ($wp =~ m!^BC(\d+)$!);
 	return ("EC", $s, "$s", sprintf("http://extremcaching.com/index.php/output-2/%d", $1)) if
 	    ($wp =~ m!^EC(\d+)$!) &&
@@ -72,11 +72,11 @@ sub explwp($) {
 	    ($wp =~ m!^(GA[0-9A-Z]{1,6})$!);
 	return ("GC", "$1", "$1", "https://www.geocaching.com/seek/cache_details.aspx?wp=$1") if
 	    ($wp =~ m!^(GC[0-9A-Z]{1,6})$!);
-	return ("GD", "$1", "$1", "http://geodashing.gpsgames.org/cgi-bin/dp.pl?dp=$1") if
+	return ("GD", "$1", "$1", "") if
 	    ($wp =~ m!^(GD[0-9A-Z]{2}-[A-Z]{4})$!);
-	return ("GE", "$1", "$1", "http://geocaching.gpsgames.org/cgi-bin/ge.pl?wp=$1") if
+	return ("GE", "$1", "$1", "") if
 	    ($wp =~ m!^(GE[0-9A-Z]{1,6})$!);
-	return ("GG", "$1", "$1", "http://golf.gpsgames.org/cgi-bin/golf.pl?course=$1&coursedetails=Go") if
+	return ("GG", "$1", "$1", "") if
 	    ($wp =~ m!^(GG[0-9A-Z]{1,6})$!);
 	return ("GK", "GK$1", "GK$1", "https://geokrety.org/konkret.php?id=" . hex($1)) if
 	    ($wp =~ m!^GK([0-9A-F]+)$!);
@@ -96,19 +96,21 @@ sub explwp($) {
 	    ($wp =~ m!^(OR[0-9A-Z]{1,6})$!);
 	return ("OU", "$1", "$1", "http://www.opencaching.us/viewcache.php?wp=$1") if
 	    ($wp =~ m!^(OU[0-9A-Z]{1,6})$!);
+	return ("OX", "$1", "$1", "") if
+	    ($wp =~ m!^(OX[0-9A-Z]{1,6})$!);
 	return ("OZ", "$1", "$1", "https://opencaching.cz/viewcache.php?wp=$1") if
 	    ($wp =~ m!^(OZ[0-9A-Z]{1,6})$!);
 	return ("PR", "$1", "$1", "http://coord.info/$1") if
 	    ($wp =~ m!^(PR[0-9A-Z]{1,6})$!);
-	return ("SH", "$1", "$1", "http://shutterspot.gpsgames.org/cgi-bin/sh.pl?wp=$1") if
+	return ("SH", "$1", "$1", "") if
 	    ($wp =~ m!^(SH[0-9A-Z]{1,6})$!);
 	return ("TB", "$1", "$1", "https://www.geocaching.com/track/details.aspx?tracker=$1") if
 	    ($wp =~ m!^(TB[0-9A-Z]{1,6})$!);
 	return ("TC", "$1", "$1", "https://play.terracaching.com/Cache/$1") if
 	    ($wp =~ m!^([TLC]C[0-9A-Z]{1,6})$!);
-	return ("VX", "$1", "$1", "http://geovexilla.gpsgames.org/cgi-bin/vx.pl?listwaypointlogs=yes&wp=$1") if
+	return ("VX", "$1", "$1", "") if
 	    ($wp =~ m!^(VX[0-9A-Z]{2}-[A-Z]{4})$!);
-	return ("WM", "$1", "$1", "http://www.waymarking.com/waymarks/$1") if
+	return ("WM", "$1", "$1", "https://www.waymarking.com/waymarks/$1") if
 	    ($wp =~ m!^(WM[0-9A-Z]{1,6})$!);
 	return ("m/", "$1", "$1", "https://www.munzee.com/$1/") if
 	    ($wp =~ m!^(m/[0-9A-Za-z_-]+/[0-9]+)/?$!);
@@ -127,7 +129,7 @@ sub explwp($) {
 sub substwps($) {
 	my ($s) = @_;
 
-	$s =~ s@\b([BE]C\d+|(?:G[ACEGL]|O[BCKPRUZ]|PR|SH|TB|[TLC]C|WM)[0-9A-Z]{1,6}|(?:GD|VX)[0-9A-Z]{2}-[A-Z]{4}|(?:GK|N)[0-9A-F]+|2[0-9]{3}-[0-9]{2}-[0-9]{2}_(?:-?[0-9]{1,2}_-?[0-9]{1,3}|global))\b@chkwp($1)@eg;
+	$s =~ s@\b([BE]C\d+|(?:G[ACEGL]|O[BCKPRUXZ]|PR|SH|TB|[TLC]C|WM)[0-9A-Z]{1,6}|(?:GD|VX)[0-9A-Z]{2}-[A-Z]{4}|(?:GK|N)[0-9A-F]+|2[0-9]{3}-[0-9]{2}-[0-9]{2}_(?:-?[0-9]{1,2}_-?[0-9]{1,3}|global))\b@chkwp($1)@eg;
 	return $s;
 }
 
