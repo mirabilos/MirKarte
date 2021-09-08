@@ -234,6 +234,8 @@ distance() (
 	bc -l <<-EOF
 	scale=42
 	define n(x) {
+		if (x == -1) return (-2 * a(1))
+		if (x == 1) return (2 * a(1))
 		return (a(x / sqrt(1 - x*x)))
 	}
 	define v(x) {
