@@ -257,17 +257,20 @@ distance() (
 		if (x >= 1) return (1)
 		return (sqrt(x))
 	}
-	p = (4 * a(1) / 180)
-	# WGS84 reference ellipsoid: große Halbachse, Abplattung
+	/* WGS84 reference ellipsoid: große Halbachse (metres), Abplattung */
 	i = 6378137.000
 	x = 1/298.257223563
+	/* other axis */
 	j = i * (1 - x)
-	# resulting mean radius in metres
+	/* mean radius resulting */
 	r = (2 * i + j) / 3
+	/* coordinates */
+	p = (4 * a(1) / 180)
 	i = (p * $1)
 	j = (p * $2)
 	x = (p * $3)
 	y = (p * $4)
+	/* calculation */
 	k = (x - i)
 	l = (y - j)
 	m = s(k / 2)
