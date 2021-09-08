@@ -216,7 +216,7 @@ distance() (
 	export BC_ENV_ARGS=-qs
 
 	# assignment of constants, variables and functions
-	# p: multiply with to convert from degrees to radians
+	# p: multiply with to convert from degrees to radians (π/180)
 	# r: earth radius in metres
 	# d: distance
 	# h: haversine intermediate
@@ -255,7 +255,7 @@ distance() (
 		if (x >= 1) return (1)
 		return (sqrt(x))
 	}
-	p = (3.1415926535897932 / 180)
+	p = (4 * a(1) / 180)
 	r = 6371008.8
 	i = (p * $1)
 	j = (p * $2)
