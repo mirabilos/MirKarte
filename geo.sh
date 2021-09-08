@@ -209,7 +209,7 @@ function lldecmin2txt {
 	REPLY="$lat  $lon"
 }
 
-# distance lat1 lon1 lat2 lon2 → metres (rounded to millimetres)
+# distance lat1 lon1 lat2 lon2 → metres (rounded to millimetres), error < ¼%
 distance() (
 	set -e
 	# make GNU bc use POSIX mode and shut up
@@ -232,7 +232,7 @@ distance() (
 	# w(x): min(1, sqrt(x)) (Wurzel)
 
 	bc -l <<-EOF
-	scale=42
+	scale=64
 	define n(x) {
 		if (x == -1) return (-2 * a(1))
 		if (x == 1) return (2 * a(1))
@@ -258,7 +258,12 @@ distance() (
 		return (sqrt(x))
 	}
 	p = (4 * a(1) / 180)
-	r = 6371008.8
+	# WGS84 reference ellipsoid: große Halbachse, Abplattung
+	i = 6378137.000
+	x = 1/298.257223563
+	j = i * (1 - x)
+	# resulting mean radius in metres
+	r = (2 * i + j) / 3
 	i = (p * $1)
 	j = (p * $2)
 	x = (p * $3)
