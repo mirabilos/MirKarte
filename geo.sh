@@ -199,6 +199,7 @@ function decmin2txt {
 	REPLY+=$n.$m
 }
 
+# echo "${|lldecmin2txt $lat_decimal $lon_decimal;}"
 function lldecmin2txt {
 	local lat=$1 lon=$2
 
