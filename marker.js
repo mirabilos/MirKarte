@@ -481,10 +481,11 @@ $(document).observe("dom:loaded", function () {
 		},
 		{
 			"_isOverlay": true,
-			"_name": "wmflabs Hillshading (0‥15)",
+			"_name": "wmflabs Hillshading (0‥15+)",
 			"_url": "http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png",
 			"minZoom": 0,
-			"maxZoom": 15,
+			"maxZoom": 22,
+			"maxNativeZoom": 15,
 			"attribution": attributions["OSM"]
 		},
 		{
