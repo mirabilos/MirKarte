@@ -632,9 +632,11 @@ $(document).observe("dom:loaded", function () {
 			"attribution": attributions["OSM"] + attributions["ÖPNVkarte"]
 		},
 		{
-			"_name": "OpenTopoMap (0‥18)",
+			"_name": "OpenTopoMap (0‥17+)",
 			"_url": "http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
 			"subdomains": "abc",
+			"maxZoom": 20,
+			"maxNativeZoom": 17,
 			"attribution": attributions["OpenTopoMap"]
 		},
 		{
