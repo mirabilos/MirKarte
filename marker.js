@@ -462,9 +462,10 @@ $(document).observe("dom:loaded", function () {
 
 	var maplayerlist = [
 		{
-			"_name": "OpenStreetMap (0‥19)",
+			"_name": "OpenStreetMap (0‥19+)",
 			"_url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-			"maxZoom": 19,
+			"maxZoom": 22,
+			"maxNativeZoom": 19,
 			"attribution": attributions["OSM"]
 		},
 		{
