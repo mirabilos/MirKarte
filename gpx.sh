@@ -197,41 +197,6 @@ function xhtml_fesc {
 	REPLY=${REPLY//'"'/'&#34;'}
 }
 
-function decmin2min {
-	local x=${1#.}0000000
-	typeset -i10 -Z9 y
-
-	x=${x::7}
-	(( y = x * 60 ))
-
-	REPLY=${y::2}.${y:2}
-}
-
-function decmin2txt {
-	local graticule=$1 decimal=$2 plus=$3 minus=$4 places=$5 x
-	typeset -i10 -Z$places n
-
-	if [[ $graticule = -* ]]; then
-		REPLY=$minus
-	else
-		REPLY=$plus
-	fi
-	n=${graticule#-}
-	REPLY+=" ${n}° "
-
-	x=${|decmin2min $decimal;}
-	typeset -i10 -Z2 n=${x%.*}
-	x=${x#*.}
-	typeset -i10 -Z4 m=${x::4}
-	if (( ${x:4:1} >= 5 )); then
-		if (( ++m > 9999 )); then
-			(( ++n ))
-			m=0
-		fi
-	fi
-	REPLY+=$n.$m
-}
-
 function arbusage {
 	print -ru2 "E: arbitrary waypoint $1"
 	print -ru2 "I: gpx.sh -WP1234 lat lon owner url title description"
