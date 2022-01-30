@@ -259,7 +259,7 @@ distance() (
 		return (sqrt(x))
 	}
 	/* WGS84 reference ellipsoid: große Halbachse (metres), Abplattung */
-	i = 6378137.000
+	i = 6378136.600
 	x = 1/298.257223563
 	/* other axis */
 	j = i * (1 - x)
