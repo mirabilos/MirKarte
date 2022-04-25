@@ -25,7 +25,7 @@
 function chklatlon {
 	local minus plus vmax mins
 	local -i10 val
-	local -u arg=${2//+([\'\"	 ]|’|′|°|�)/ }
+	local -u arg=${2//+([\'\"	 ]|’|′|°|$'\xB0')/ }
 	if [[ $arg = *.* ]]; then
 		arg=${arg//,/ }
 	else
