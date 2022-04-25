@@ -232,7 +232,7 @@ distance() (
 	# v(x): sign (Vorzeichen)
 	# w(x): min(1, sqrt(x)) (Wurzel)
 
-	bc -l <<-EOF
+	exec bc -l <<-EOF
 	scale=64
 	define n(x) {
 		if (x == -1) return (-2 * a(1))
