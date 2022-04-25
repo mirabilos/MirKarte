@@ -223,8 +223,8 @@ distance() (
 	# h: haversine intermediate
 	# i,j: (lat,lon) point 1
 	# x,y: (lat,lon) point 2
-	# k: delta lat
-	# l: delta lon
+	# k: delta lat/ΔΦ
+	# l: delta lon/Δλ
 	# m: sin(k/2) (square root of hav(k))
 	# n: sin(l/2) (  partial haversine  )
 	# n(x): arcsin(x)
@@ -259,6 +259,7 @@ distance() (
 		return (sqrt(x))
 	}
 	/* WGS84 reference ellipsoid: große Halbachse (metres), Abplattung */
+	/* (6378137 in WGS84); this radius from Astronomical Almanac 2021 */
 	i = 6378136.600
 	x = 1/298.257223563
 	/* other axis */
