@@ -20,3 +20,18 @@ https://wiki.openstreetmap.org/wiki/Tiles
 • MapTiler
 • MapTiles (rapidapi)
 • waymarkedtrails
+
+https://learn.microsoft.com/en-us/azure/azure-maps/zoom-levels-and-tile-grid?tabs=typescript
+• uses 85.05112878 as clipping latitude inexactly; exact is:
+  ‣ sin¯¹( (e(2*π)-1) / (e(2*π)+1) ) * 180/π
+  ‣ a(((e(2*p)-1)/(e(2*p)+1))/sqrt(1-((e(2*p)-1)/(e(2*p)+1))*((e(2*p)-1)/(e(2*p)+1))))*180/p
+  ≈ 85.05112877980659237779671552192469206698259126842068840576245939159
+  ← leaflet uses 85.0511287798 which is… only marginally better
+• better clip check:
+    var sinLatitude = Math.sin(latitude * Math.PI / 180);
+    var y = 0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI);
+  → make sure 0≤y<1 (≤1 will do, given the follow-up clipping)
+    (though latitude still must be in ]-90;90[ or this will div by zero!)
+• explains map zoom levels (L.TileLayer and TMS)
+  and pixel coordinates, graphically and with sample code
+• quadkey indicēs (great!)
