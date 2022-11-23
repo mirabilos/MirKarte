@@ -146,13 +146,29 @@ L.Control.Compass = L.Control.extend({
 		return this._currentAngle;
 	},
 
-	activate: function() {
-
+	_activate: function () {
 		this._isActive = true;
 
 		L.DomEvent.on(window, 'deviceorientation', this._rotateHandler, this);
 		
 		L.DomUtil.addClass(this._button, 'active');
+	},
+
+	activate: function () {
+		if (typeof(DeviceOrientationEvent) !== 'undefined' &&
+		    typeof(DeviceOrientationEvent.requestPermission) === 'function') {
+			/* iPhoneOS, must ask interactively */
+			var that = this;
+			DeviceOrientationEvent.requestPermission().then(function (permission) {
+				if (permission === 'granted')
+					that._activate();
+				else
+					alert('Cannot activate compass: permission ' + permission);
+			    }, function (reason) {
+				alert('Error activating compass: ' + reason);
+			    });
+		} else
+			this._activate();
 	},
 
 	deactivate: function() {
