@@ -993,7 +993,6 @@ $(document).observe("dom:loaded", function () {
 	map.addControl(ctl_compass);
 
 	map_initialised = true;
-	ctl_compass.activate();
 	map.on("moveend", function () {
 		var newloc = map.getCenter();
 
