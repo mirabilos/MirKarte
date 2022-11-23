@@ -78,7 +78,7 @@ L.Control.Compass = L.Control.extend({
 		}, this);
 
 		if(this.options.autoActive)
-			this.activate();
+			this.activate(true);
 
 		return container;
 	},
@@ -154,7 +154,7 @@ L.Control.Compass = L.Control.extend({
 		L.DomUtil.addClass(this._button, 'active');
 	},
 
-	activate: function () {
+	activate: function (isAutoActivation) {
 		if (typeof(DeviceOrientationEvent) !== 'undefined' &&
 		    typeof(DeviceOrientationEvent.requestPermission) === 'function') {
 			/* iPhoneOS, must ask interactively */
@@ -162,10 +162,11 @@ L.Control.Compass = L.Control.extend({
 			DeviceOrientationEvent.requestPermission().then(function (permission) {
 				if (permission === 'granted')
 					that._activate();
-				else
+				else if (isAutoActivation !== true)
 					alert('Cannot activate compass: permission ' + permission);
 			    }, function (reason) {
-				alert('Error activating compass: ' + reason);
+				if (isAutoActivation !== true)
+					alert('Error activating compass: ' + reason);
 			    });
 		} else
 			this._activate();
