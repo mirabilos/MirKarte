@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2020
+ * Copyright © 2014, 2020, 2022
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -17,6 +17,21 @@
  * damage or existence of a defect, except proven that it results out
  * of said person’s immediate fault when using the work as intended.
  */
+
+/* browser workarounds */
+
+button, input, input::file-selector-button {
+	appearance:none;
+}
+input[type=checkbox], input[type=radio], input[type=range] {
+	appearance:auto;
+}
+
+body {
+	-webkit-font-smoothing:antialiased;
+}
+
+/* mirkarte styles */
 
 .nowrap {
 	white-space:nowrap;
