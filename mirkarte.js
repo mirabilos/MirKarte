@@ -308,7 +308,9 @@ var show_menu_marker = (function () {
 
 		s = '<span class="nowrap">Current centre: ' + f[0] + " " +
 		    f[1] + "</span><hr />" + filestr;
-		L.popup().setLatLng(pos).setContent(s).openOn(map);
+		L.popup({
+			autoPan: false
+		}).setLatLng(pos).setContent(s).openOn(map);
 		if (hasfile) {
 			document.getElementById("files").addEventListener("change",
 			    handleGpxFileSelect, false);
