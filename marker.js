@@ -1,5 +1,5 @@
 /*-
- * Copyright © 2014, 2015, 2017, 2018, 2020
+ * Copyright © 2014, 2015, 2017, 2018, 2020, 2023
  *	mirabilos <m@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -23,7 +23,8 @@ var isTwoNum = /^-?[0-9]*(\.[0-9]*)?,-?[0-9]*(\.[0-9]*)?$/;
 var isTwoNumSlashd = /^-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var isThreeNumSlashd = /^[1-9][0-9]*\/-?[0-9]*(\.[0-9]*)?\/-?[0-9]*(\.[0-9]*)?$/;
 var map_initialised = false, myzoomcontrol_text;
-var map, ctl_layers, ctl_coors, params, params_saved = "";
+var map, ctl_attr, ctl_compass, ctl_coors, ctl_gps, ctl_layers, ctl_scale, ctl_zoom;
+var params, params_saved = "";
 
 var attributions = {
 	"OSM": '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -189,17 +190,20 @@ function add_gpx_to_map(gpx_string, layer_name) {
 
 var show_menu_marker = (function () {
 	var hasfile = false;
-	var filestr = "Your browser does not support the File API";
+	var p2str = "Your browser does not support the File API";
 	var current_filename = "";
 
 	if (window.File && window.FileList && window.FileReader && window.Blob) {
 		hasfile = true;
-		filestr = '<fieldset><legend>GPX upload</legend>' +
-		    '<div id="gpxupload"><table>' +
+		p2str = '<div id="gpxupload"><table>' +
 		    '<tr><th>*.gpx:</th><td><input type="file" id="files" name="files[]" /></td></tr>' +
 		    '<tr><th>*.zip:</th><td><input type="file" id="filez" name="filez[]" /></td></tr>' +
-		    '</table></div></fieldset>';
+		    '</table></div>';
 	}
+
+	p2str = '<fieldset><legend>GPX upload</legend>' + p2str +
+	    '</fieldset><hr /><button id="gpsoff"">' +
+	    'Disable GPS and Compass</button>';
 
 	var handleGpxFileLoaded = function (e) {
 		var s = "GPX " + current_filename.escapeHTML() + " loaded.";
@@ -292,12 +296,17 @@ var show_menu_marker = (function () {
 		handleFileSelect(e, "zip", handleZipFileLoaded);
 	};
 
+	var handleGPSoff = function (e) {
+		ctl_compass.deactivate();
+		ctl_gps.deactivate();
+	};
+
 	var res = function () {
 		var s, pos = map.getCenter();
 		var f = llformat(pos.lat, pos.lng, 0);
 
 		s = '<span class="nowrap">Current centre: ' + f[0] + " " +
-		    f[1] + "</span><hr />" + filestr;
+		    f[1] + "</span><hr />" + p2str;
 		L.popup({
 			autoPan: false
 		}).setLatLng(pos).setContent(s).openOn(map);
@@ -307,6 +316,8 @@ var show_menu_marker = (function () {
 			document.getElementById("filez").addEventListener("change",
 			    handleZipFileSelect, false);
 		}
+		document.getElementById("gpsoff").addEventListener("click",
+		    handleGPSoff, false);
 	};
 
 	return (res);
@@ -457,7 +468,7 @@ $(document).observe("dom:loaded", function () {
 	    });
 	$("nomap").hide();
 
-	var ctl_attr = L.control.attribution({
+	ctl_attr = L.control.attribution({
 		"prefix": '<a href="https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/mirkarte.git">MirKarte</a> (Beta) | ' +
 		    L.Control.Attribution.prototype.options.prefix
 	    });
@@ -885,9 +896,9 @@ $(document).observe("dom:loaded", function () {
 			return (container);
 		}
 	    });
-	var ctl_zoom = new myzoomclass();
+	ctl_zoom = new myzoomclass();
 
-	var ctl_scale = L.control.scale();
+	ctl_scale = L.control.scale();
 
 	var mycoorsclass = L.Control.extend({
 		options: {
@@ -910,9 +921,9 @@ $(document).observe("dom:loaded", function () {
 	    });
 	ctl_coors = new mycoorsclass();
 
-	var ctl_compass = new L.Control.Compass();
+	ctl_compass = new L.Control.Compass();
 
-	var ctl_gps = new L.Control.Gps({
+	ctl_gps = new L.Control.Gps({
 		"setView": true,
 		"title": "Centre map on your location"
 	});
