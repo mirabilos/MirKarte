@@ -173,8 +173,13 @@ L.Control.Compass = L.Control.extend({
 	},
 
 	deactivate: function() {
-		
-		this.setAngle(0);
+
+		/* reset icon angle */
+		this._currentAngle = 0;
+		this._rotateElement(this._icon);
+		/* keep application angle but reset state */
+		this._digit.innerHTML = '';
+		this._currentAngle = null;
 
 		this._isActive = false;
 
