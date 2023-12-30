@@ -1,14 +1,16 @@
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
- (c) 2014, 2020 mirabilos <m@mirbsd.org>
+ (c) 2014, 2020, 2023 mirabilos <m@mirbsd.org>
  (c) 2010-2013, Vladimir Agafonkin
  (c) 2010-2011, CloudMade
 */
+
 (function (window, document, undefined) {
+
 var oldL = window.L,
     L = {};
 
-L.version = '0.7.3';
+L.version = '0.7.3-mirkarte';
 
 // define Leaflet for Node module pattern loaders, including Browserify
 if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -1240,7 +1242,6 @@ L.latLng = function (a, b) { // (LatLng) or ([Number, Number]) or (Number, Numbe
 	}
 	return new L.LatLng(a, b);
 };
-
 
 
 /*
@@ -3594,7 +3595,7 @@ L.Marker = L.Class.extend({
 			if (options.title) {
 				icon.title = options.title;
 			}
-			
+
 			if (options.alt) {
 				icon.alt = options.alt;
 			}
@@ -5084,7 +5085,7 @@ L.Path = (L.Path.SVG && !window.L_PREFER_CANVAS) || !L.Browser.canvas ? L.Path :
 		}
 
 		this._requestUpdate();
-		
+
 		this.fire('remove');
 		this._map = null;
 	},
@@ -6531,23 +6532,27 @@ L.DomEvent = {
 	},
 
 	getMousePosition: function (e, container) {
+		var rect;
+
 		if (!container) {
 			return new L.Point(e.clientX, e.clientY);
 		}
 
 		if (container.getBoundingClientRect) {
-			var rect = container.getBoundingClientRect();
+			rect = container.getBoundingClientRect();
 		} else {
 			/* clumsy fallback for Opera 9 */
-			var rect = {}, top = 0, left = 0, elem = container;
+			var elem = container, top = 0, left = 0;
 
 			while (elem) {
 				top = top + parseInt(elem.offsetTop);
 				left = left + parseInt(elem.offsetLeft);
 				elem = elem.offsetParent;
 			}
-			rect["top"] = top;
-			rect["left"] = left;
+			rect = {
+				'top': top,
+				'left': left
+			};
 		}
 
 		return new L.Point(
@@ -7668,8 +7673,8 @@ L.Map.BoxZoom = L.Handler.extend({
 					latlng: this._map.mouseEventToLatLng(e),
 					layerPoint: this._lp,
 					originalEvent: this
-				    });
-			    }.bind(e);
+				});
+			}.bind(e);
 			window.setTimeout(e._fn, 1);
 			return;
 		}
@@ -8131,7 +8136,6 @@ L.control.zoom = function (options) {
 };
 
 
-
 /*
  * L.Control.Attribution is used for displaying attribution on the map (added by default).
  */
@@ -8139,7 +8143,7 @@ L.control.zoom = function (options) {
 L.Control.Attribution = L.Control.extend({
 	options: {
 		position: 'bottomright',
-		prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
+		prefix: '<a href="https://leafletjs.com/" title="JS library for interactive maps">Leaflet</a>'
 	},
 
 	initialize: function (options) {
@@ -8157,7 +8161,7 @@ L.Control.Attribution = L.Control.extend({
 				this.addAttribution(map._layers[i].getAttribution());
 			}
 		}
-		
+
 		map
 		    .on('layeradd', this._onLayerAdd, this)
 		    .on('layerremove', this._onLayerRemove, this);
@@ -8554,6 +8558,7 @@ L.Control.Layers = L.Control.extend({
 	_addItem: function (obj) {
 		var label = document.createElement('label'),
 		    input,
+		    isDisabled,
 		    checked = this._map.hasLayer(obj.layer);
 
 		if (obj.overlay) {
@@ -8567,15 +8572,18 @@ L.Control.Layers = L.Control.extend({
 
 		input.layerId = L.stamp(obj.layer);
 
-		if (obj.layer.options._disabled)
+		isDisabled = obj.layer.options && obj.layer.options._disabled;
+		if (isDisabled) {
 			input.disabled = true;
-	      else
-		L.DomEvent.on(input, 'click', this._onInputClick, this);
+		} else {
+			L.DomEvent.on(input, 'click', this._onInputClick, this);
+		}
 
 		var name = document.createElement('span');
 		name.innerHTML = ' ' + obj.name;
-		if (obj.layer.options._disabled)
+		if (isDisabled) {
 			name.style.color = '#AAAAAA';
+		}
 
 		label.appendChild(input);
 		label.appendChild(name);
