@@ -923,9 +923,19 @@ $(document).observe("dom:loaded", function () {
 
 	ctl_compass = new L.Control.Compass();
 
-	ctl_gps = new L.Control.Gps({
-		"setView": true,
-		"title": "Centre map on your location"
+	var mygpsclass = L.Control.Gps.extend({
+		_switchGps: function () {
+			if (this._isLoading) {
+				this.deactivate();
+			} else if (this._isActive) {
+				this._map.setView(this.getLocation());
+			} else {
+				this.activate();
+			}
+		}
+	    });
+	ctl_gps = new mygpsclass({
+		"title": "Click once to enable GPS, then to centre map on your location"
 	});
 
 	map.addControl(ctl_attr);
