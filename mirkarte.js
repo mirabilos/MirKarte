@@ -308,6 +308,7 @@ var show_menu_marker = (function () {
 	};
 
 	var handleGPSoff = function (e) {
+		map.closePopup();
 		ctl_compass.deactivate();
 		ctl_gps.deactivate();
 	};
@@ -316,8 +317,26 @@ var show_menu_marker = (function () {
 		var s, pos = map.getCenter();
 		var f = llformat(pos.lat, pos.lng, 0);
 
-		s = '<span class="nowrap">Current centre: ' + f[0] + " " +
-		    f[1] + "</span><hr />" + p2str;
+		s = '<table border="0"><tr>' +
+		    '<td class="nowrap">Current centre:</td>' +
+		    '<td class="nowrap">' + f[0] + ' ' + f[1] + '</td>' +
+		    '</tr>';
+		if (ctl_gps._isActive) {
+			var gpos, gl;
+
+			if (ctl_gps._isLoading)
+				gl = '<i>not yet available</i>';
+			else {
+				gpos = ctl_gps.getLocation();
+				f = llformat(gpos.lat, gpos.lng, 0);
+				gl = f[0] + ' ' + f[1];
+			}
+			s += '<tr>' +
+			    '<td class="nowrap">GPS location:</td>' +
+			    '<td class="nowrap">' + gl + '</td>' +
+			    '</tr>';
+		}
+		s += '</table><hr />' + p2str;
 		L.popup({
 			autoPan: false
 		}).setLatLng(pos).setContent(s).openOn(map);
